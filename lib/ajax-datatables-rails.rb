@@ -4,25 +4,11 @@ class AjaxDatatablesRails
 
   VERSION = '0.0.1'
 
-  class << self
-
-    def columns(column_array)
-      @@columns ||= column_array
-    end
-
-    def model_name(model_name)
-      @@model_name ||= model_name
-    end
-
-    def searchable_columns(columns_array)
-      @@searchable_columns ||= columns_array
-    end
-
-  end
-
   def initialize(view)
     @view = view
   end
+    
+  attr_reader :columns, :model_name, :searchable_columns
 
   def method_missing(meth, *args, &block)
     @view.send(meth, *args, &block)
@@ -31,7 +17,7 @@ class AjaxDatatablesRails
   def as_json(options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: @@model_name.count,
+      iTotalRecords: @model_name.count,
       iTotalDisplayRecords: get_raw_records.count,
       aaData: data
     }
@@ -57,7 +43,7 @@ private
 
   def search_records(records)
     if params[:sSearch].present?
-      query = @@searchable_columns.map do |column|
+      query = @searchable_columns.map do |column|
         "#{column} LIKE :search"
       end.join(" OR ")
       records = records.where(query, search: "%#{params[:sSearch]}%")
@@ -74,7 +60,7 @@ private
   end
 
   def sort_column
-    @@columns[params[:iSortCol_0].to_i]
+    @columns[params[:iSortCol_0].to_i]
   end
 
   def sort_direction
