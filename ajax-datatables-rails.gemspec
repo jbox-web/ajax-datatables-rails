@@ -14,6 +14,4 @@ Gem::Specification.new do |gem|
   gem.name          = "ajax-datatables-rails"
   gem.require_paths = ["lib"]
   gem.version       = AjaxDatatablesRails::VERSION
-
-  gem.add_runtime_dependency 'jquery-datatables-rails', '~> 1.9.1'
 end
