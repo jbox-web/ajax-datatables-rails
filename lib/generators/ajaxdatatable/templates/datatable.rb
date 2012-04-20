@@ -20,4 +20,6 @@ private
     def get_raw_records
       # insert query here
     end
+    
+    # ==== Insert 'presenter'-like methods below if necessary
 end
