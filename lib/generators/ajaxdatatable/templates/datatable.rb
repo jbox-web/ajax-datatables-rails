@@ -1,7 +1,11 @@
-class <%= model.classify %>Datatable < AjaxDatatableRails
-  model_name <%= model.classify %>
-  columns # insert array of column names here
-  searchable_columns #insert array of columns that will be searched
+class <%= model.classify.pluralize %>Datatable < AjaxDatatablesRails
+  
+  def initialize(view)
+    @model_name = <%= model.classify %>
+    @columns = # insert array of column names here
+    @searchable_columns = #insert array of columns that will be searched
+    super(view)
+  end
   
 private
 
