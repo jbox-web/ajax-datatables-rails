@@ -3,6 +3,6 @@ class AjaxdatatableGenerator < Rails::Generators::Base
   argument :model, type: :string
 
   def generate_ajaxdatatable
-    template 'datatable.rb', File.join('app/datatables', "#{model}.rb")
+    template 'datatable.rb', File.join('app/datatables', "#{model.tableize}_datatable.rb")
   end
 end

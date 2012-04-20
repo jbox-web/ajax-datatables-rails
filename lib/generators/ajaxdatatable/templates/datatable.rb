@@ -6,7 +6,11 @@ class <%= model.classify %>Datatable < AjaxDatatableRails
 private
 
     def data
-      # generate a 2-dimensional array that holds the data
+      <%= model.tableize %>.map do |<%= model.tableize.singularize %>|
+        [
+          # comma separated list of the values for each cell of a table row
+        ]
+      end
     end
 
     def <%= model.tableize %>
