@@ -18,7 +18,7 @@ class AjaxDatatablesRails
     {
       sEcho: params[:sEcho].to_i,
       iTotalRecords: @model_name.count,
-      iTotalDisplayRecords: get_raw_records.count,
+      iTotalDisplayRecords: get_raw_record_count,
       aaData: data
     }
   end
@@ -29,6 +29,10 @@ private
     raise
   end
 
+  def get_raw_record_count
+    raise
+  end
+  
   def fetch_records
     search_records(sort_records(paginate_records(get_raw_records)))
   end
