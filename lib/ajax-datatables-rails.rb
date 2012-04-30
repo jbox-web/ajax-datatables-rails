@@ -1,14 +1,16 @@
 # require 'rails'
 
 class AjaxDatatablesRails
+  
+  class MethodError < StandardError; end
 
   VERSION = '0.0.1'
+    
+  attr_reader :columns, :model_name, :searchable_columns
 
   def initialize(view)
     @view = view
   end
-    
-  attr_reader :columns, :model_name, :searchable_columns
 
   def method_missing(meth, *args, &block)
     @view.send(meth, *args, &block)
@@ -25,12 +27,16 @@ class AjaxDatatablesRails
 
 private
 
+  def data
+    raise MethodError, "The method `data' is not defined."
+  end
+
   def get_raw_records
-    raise
+    raise MethodError, "The method `get_raw_records' is not defined."
   end
 
   def get_raw_record_count
-    raise
+    search_records(get_raw_records).count
   end
   
   def fetch_records
