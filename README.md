@@ -16,13 +16,25 @@ And then execute:
     $ bundle
 
 ## Usage
-
+*The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model*
 ### Model
 Run the following command:
 
-    rails generate ajaxdatatable <modelname>
+    $ rails generate ajaxdatatable User
 
-This will generate a file in `app/datatables`
+This will generate a file named `users_datatable.rb` in `app/datatables`. Open the file and customize in the functions as directed by the comments
+
+#### Initializer
+```ruby
+def initialize(view)
+  @model_name = User
+  @columns = # insert array of column names here
+  @searchable_columns = #insert array of columns that will be searched
+  super(view)
+end
+```
+
+
 ## Contributing
 
 1. Fork it
