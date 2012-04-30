@@ -6,22 +6,23 @@ Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile:
 
+    gem 'jquery-datatables-rails'
     gem 'ajax-datatables-rails'
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install ajax-datatables-rails
-
 ## Usage
 
-TODO: Write usage instructions here
+### Model
+Run the following command:
 
+    rails generate ajaxdatatable <modelname>
+
+This will generate a file in `app/datatables`
 ## Contributing
 
 1. Fork it
