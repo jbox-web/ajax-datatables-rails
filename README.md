@@ -34,9 +34,9 @@ def initialize(view)
 end
 ```
 
-For `@columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns
+* For `@columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns
 
-For `@searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
+* For `@searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
 
 This gives us: 
 ```ruby
@@ -86,6 +86,51 @@ This is where your query goes.
 def get_raw_records
   User.all
 end
+```
+
+### Controller
+Set up the controller to respond to JSON
+
+```ruby
+def index
+  respond_to do |format|
+    format.html
+    format.json { render json: UsersDatatable.new(view_context) }
+  end
+end
+```
+
+### View
+* Set up an html `<table>` with a `<thead>` and `<tbody>`
+* Add in your table headers if desired
+* Don't add any rows to the body of the table, datatables does this automatically
+* Add a data attribute to the `<table>` tag with the url of the JSON feed
+
+The resulting view may look like this:
+
+```erb
+<table id="user-table", data-source="<%= users_path(format: :json) %>">
+  <thead>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Brief Bio</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+```
+
+### Javascript
+Finally, the javascript to tie this all together. In the appropriate `js.coffee` file:
+
+```coffeescript
+$ ->
+  $('#users-table').dataTable
+    bProcessing: true
+    bServerSide: true
+    sAjaxSource: $('#users-table').data('source')
 ```
 
 ## Contributing
