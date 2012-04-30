@@ -34,6 +34,20 @@ def initialize(view)
 end
 ```
 
+For `@columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns
+
+For `@searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
+
+This gives us: 
+```ruby
+def initialize(view)
+  @model_name = User
+  @columns = [users.f_name, users.l_name, users.bio]
+  @searchable_columns = [users.f_name, users.l_name]
+  super(view)
+end
+```
+
 
 ## Contributing
 
