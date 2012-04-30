@@ -25,5 +25,9 @@ private
       # insert query here
     end
     
+    def get_raw_record_count
+      search_records(get_raw_records).count
+    end
+    
     # ==== Insert 'presenter'-like methods below if necessary
 end
