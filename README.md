@@ -48,6 +48,45 @@ def initialize(view)
 end
 ```
 
+#### Data
+```ruby
+def data
+  users.map do |user|
+    [
+      # comma separated list of the values for each cell of a table row
+    ]
+  end
+end
+```
+
+This method builds a 2d array that is used by datatables to construct the html table. Insert the values you want on each column.
+
+```ruby
+def data
+  users.map do |user|
+    [
+      user.f_name,
+      user.l_name,
+      user.bio
+    ]
+  end
+end
+```
+
+#### Get Raw Records
+```ruby
+def get_raw_records
+  # insert query here
+end
+```
+
+This is where your query goes.
+
+```ruby
+def get_raw_records
+  User.all
+end
+```
 
 ## Contributing
 
