@@ -44,7 +44,7 @@ private
   end
 
   def paginate_records(records)
-    records.page(page).per(per_page)
+    records.offset((page - 1) * per_page).limit(per_page)
   end
 
   def sort_records(records)
