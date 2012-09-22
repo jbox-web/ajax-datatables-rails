@@ -54,7 +54,7 @@ private
   def search_records(records)
     if params[:sSearch].present?
       query = @searchable_columns.map do |column|
-        "#{column} LIKE :search"
+        "#{column} ILIKE :search"
       end.join(" OR ")
       records = records.where(query, search: "%#{params[:sSearch]}%")
     end
