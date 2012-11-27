@@ -1,11 +1,11 @@
 # require 'rails'
 
 class AjaxDatatablesRails
-  
+
   class MethodError < StandardError; end
 
   VERSION = '0.0.1'
-    
+
   attr_reader :columns, :model_name, :searchable_columns
 
   def initialize(view)
@@ -38,9 +38,9 @@ private
   def filtered_record_count
     search_records(get_raw_records).count
   end
-  
+
   def fetch_records
-    search_records(sort_records(paginate_records(get_raw_records)))
+    paginate_records(search_records(sort_records(get_raw_records)))
   end
 
   def paginate_records(records)
