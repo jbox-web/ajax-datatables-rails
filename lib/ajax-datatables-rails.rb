@@ -55,7 +55,7 @@ private
     if params[:sSearch].present?
       search_param = params[:sSearch].strip
       query = @searchable_columns.map do |column|
-        "#{column} ILIKE :search"
+        "LOWER(#{column}) LIKE LOWER(:search)"
       end.join(" OR ")
       records = records.where(query, search: "%#{search_param}%")
     end
