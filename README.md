@@ -80,13 +80,16 @@ def get_raw_records
 end
 ```
 
-This is where your query goes.
+This is where your query goes. For instance, if you want to show all users:
 
 ```ruby
 def get_raw_records
-  User.all
+  User
 end
 ```
+
+Do not put `User.all` as this will convert to an array, and give you an error
+because the `offset` and `limit` methods are not defined for an array.
 
 ### Controller
 Set up the controller to respond to JSON
