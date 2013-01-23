@@ -11,7 +11,7 @@ class AjaxDatatablesRails
   def initialize(view)
     @view = view
     db_adapter = ActiveRecord::Base.configurations[Rails.env]['adapter']
-    @search_query_method = db_adapter == 'postgresql' ? 'ILIKE' : 'LIKE'
+    @search_query_method = db_adapter.match('postgres') ? 'ILIKE' : 'LIKE'
   end
 
   def method_missing(meth, *args, &block)
