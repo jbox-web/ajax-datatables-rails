@@ -80,6 +80,6 @@ private
   end
 
   def sort_direction index
-    params["iSortDir_#{index}".to_sym] == "desc" ? "DESC" : "ASC"
+    params["sSortDir_#{index}".to_sym] == "desc" ? "DESC" : "ASC"
   end
 end
