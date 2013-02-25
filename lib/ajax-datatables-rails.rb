@@ -58,6 +58,10 @@ private
       end.join(" OR ")
       records = records.where(query, search: "%#{params[:sSearch]}%")
     end
+    @columns.each_with_index do |column, index|
+      query = params[:"sSearch_#{index}"]
+      records = records.where("#{column} LIKE ?", query) unless query.blank?
+    end
     return records
   end
 
