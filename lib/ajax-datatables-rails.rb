@@ -53,16 +53,24 @@ private
 
   def search_records(records)
     if params[:sSearch].present?
-      query = @searchable_columns.map do |column|
-        "#{column} LIKE :search"
-      end.join(" OR ")
-      records = records.where(query, search: "%#{params[:sSearch]}%")
+      value = params[:sSearch]
+      conditions = @searchable_columns.map do |column|
+        search_condition(column, value)
+      end
+      conditions = conditions.reduce(:or)
+      records = records.where(conditions)
     end
-    @columns.each_with_index do |column, index|
-      query = params[:"sSearch_#{index}"]
-      records = records.where("#{column} LIKE ?", query) unless query.blank?
+    conditions = @columns.each_with_index.map do |column, index|
+      value = params[:"sSearch_#{index}"]
+      search_condition(column, value) if value.present?
     end
-    return records
+    conditions = conditions.compact.reduce(:and)
+    records.where(conditions)
+  end
+
+  def search_condition(column, value)
+    column = column.split('.').last
+    @model_name.arel_table[column].matches("%#{value}%")
   end
 
   def page
