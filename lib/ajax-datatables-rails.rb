@@ -70,7 +70,11 @@ private
 
   def search_condition(column, value)
     column = column.split('.').last
-    @model_name.arel_table[column].matches("%#{value}%")
+    column_hash = @model_name.columns_hash[column]
+    if column_hash && [:string, :text].include?(column_hash.type)
+      return @model_name.arel_table[column].matches("%#{value}%")
+    end
+    @model_name.arel_table[column].eq(value)
   end
 
   def page
