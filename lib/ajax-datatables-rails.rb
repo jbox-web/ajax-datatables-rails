@@ -65,7 +65,8 @@ private
       search_condition(column, value) if value.present?
     end
     conditions = conditions.compact.reduce(:and)
-    records.where(conditions)
+    records = records.where(conditions) if conditions.present?
+    records
   end
 
   def search_condition(column, value)
