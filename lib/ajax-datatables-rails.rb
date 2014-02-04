@@ -1,11 +1,11 @@
 # require 'rails'
 
 class AjaxDatatablesRails
-  
+
   class MethodError < StandardError; end
 
   VERSION = '0.0.1'
-    
+
   attr_reader :columns, :model_name, :searchable_columns
 
   def initialize(view)
@@ -38,9 +38,9 @@ private
   def filtered_record_count
     search_records(get_raw_records).count
   end
-  
+
   def fetch_records
-    search_records(sort_records(paginate_records(get_raw_records)))
+    paginate_records(search_records(sort_records(get_raw_records)))
   end
 
   def paginate_records(records)
@@ -53,10 +53,11 @@ private
 
   def search_records(records)
     if params[:sSearch].present?
+      search_param = params[:sSearch].strip
       query = @searchable_columns.map do |column|
-        "#{column} LIKE :search"
+        "LOWER(#{column}) LIKE LOWER(:search)"
       end.join(" OR ")
-      records = records.where(query, search: "%#{params[:sSearch]}%")
+      records = records.where(query, search: "%#{search_param}%")
     end
     return records
   end
