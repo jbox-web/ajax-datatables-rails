@@ -1,2 +1,0 @@
-Description:
-  The ajaxdatatable generator creates a *_datatable model in the app/datatables directory. This class inherits from AjaxDatatablesRails

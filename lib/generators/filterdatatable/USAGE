@@ -1,2 +1,0 @@
-Description:
-  The ajaxdatatable generator creates a *_filter_datatable model in the app/datatables directory. This class overwrites the query in it's parent class
