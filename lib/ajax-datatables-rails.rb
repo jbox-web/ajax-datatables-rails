@@ -1,11 +1,11 @@
 # require 'rails'
 
 class AjaxDatatablesRails
-  
+
   class MethodError < StandardError; end
 
   VERSION = '0.0.1'
-    
+
   attr_reader :columns, :model_name, :searchable_columns
 
   def initialize(view)
@@ -19,7 +19,7 @@ class AjaxDatatablesRails
   def as_json(options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: @model_name.count,
+      iTotalRecords: get_raw_record_count,
       iTotalDisplayRecords: filtered_record_count,
       aaData: data
     }
@@ -38,7 +38,7 @@ private
   def filtered_record_count
     search_records(get_raw_records).count
   end
-  
+
   def fetch_records
     search_records(sort_records(paginate_records(get_raw_records)))
   end
