@@ -1,4 +1,4 @@
-class <%= model.classify.pluralize %>Datatable < AjaxDatatablesRails
+class <%= model.classify.pluralize %>Datatable < DatatablesRails::Base
   
   def initialize(view)
     @model_name = <%= model.classify %>
