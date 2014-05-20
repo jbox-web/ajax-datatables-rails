@@ -10,6 +10,8 @@ class AjaxDatatablesRails
 
   def initialize(view)
     @view = view
+    db_adapter = ActiveRecord::Base.configurations[Rails.env]['adapter']
+    @search_query_method = db_adapter.match('postgres') ? 'ILIKE' : 'LIKE'
   end
 
   def method_missing(meth, *args, &block)
@@ -54,7 +56,7 @@ private
   def search_records(records)
     if params[:sSearch].present?
       query = @searchable_columns.map do |column|
-        "#{column} LIKE :search"
+        "#{column} #{@search_query_method} :search"
       end.join(" OR ")
       records = records.where(query, search: "%#{params[:sSearch]}%")
     end
