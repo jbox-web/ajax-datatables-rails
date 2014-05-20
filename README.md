@@ -1,10 +1,17 @@
 # ajax-datatables-rails
 
-**Important note: ajax-datatables-rails is no longer maintained. If you would like to take over the project, please contact me** 
+
+### Under new management
+
+> Hi,
+>
+> New maintainer here. Just to let you know that we have some plans in store
+> for this gem that will be released soon.
+
 
 Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and search your html tables. When dealing with large tables (more than a couple hundred rows) however, we run into performance issues. These can be fixed by using server-side pagination, but this breaks some datatables functionality.
 
-`ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app. It was inspired by this [railscast](http://railscasts.com/episodes/340-datatables). I needed to implement a similar solution in a couple projects I was working on so I extracted it out into a gem.
+`ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app. It was inspired by this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to implement a similar solution in a couple projects I was working on so I extracted it out into a gem.
 
 ## Installation
 
@@ -18,7 +25,9 @@ And then execute:
     $ bundle
 
 ## Usage
+
 *The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model*
+
 ### Model
 Run the following command:
 
@@ -142,3 +151,4 @@ $ ->
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
