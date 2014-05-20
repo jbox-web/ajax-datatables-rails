@@ -1,3 +1,3 @@
-require 'rails'
 require 'pry'
-require 'ajax_datatables_rails'
+require 'rails'
+require 'ajax-datatables-rails'
