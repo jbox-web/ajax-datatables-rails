@@ -24,5 +24,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "generator_spec"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "rails", ">= 3.1.0"
+  
+  if RUBY_VERSION == '1.9.2'
+    gem.add_development_dependency "rails", "3.1.0"
+  else
+    gem.add_development_dependency "rails", ">= 3.1.0"
+  end
 end
