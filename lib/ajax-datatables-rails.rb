@@ -48,7 +48,7 @@ private
   end
 
   def sort_records(records)
-    records.order("#{sort_column} #{sort_direction}")
+    records.order(sort_order)
   end
 
   def search_records(records)
@@ -68,12 +68,18 @@ private
   def per_page
     params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
   end
-
-  def sort_column
-    @columns[params[:iSortCol_0].to_i]
+  
+  def sort_order
+    (0..(params[:iSortingCols].to_i - 1)).map do |index|
+      "#{sort_column index} #{sort_direction index}"
+    end
+  end
+  
+  def sort_column index
+    @columns[params["iSortCol_#{index}".to_sym].to_i]
   end
 
-  def sort_direction
-    params[:sSortDir_0] == "desc" ? "DESC" : "ASC"
+  def sort_direction index
+    params["sSortDir_#{index}".to_sym] == "desc" ? "DESC" : "ASC"
   end
 end
