@@ -1,5 +1,7 @@
 # ajax-datatables-rails
 
+[![Build Status](https://travis-ci.org/antillas21/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/antillas21/ajax-datatables-rails)
+[![Gem Version](https://badge.fury.io/rb/ajax-datatables-rails.svg)](http://badge.fury.io/rb/ajax-datatables-rails)
 
 ### Under new management
 
@@ -13,9 +15,11 @@ Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and
 
 `ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app. It was inspired by this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to implement a similar solution in a couple projects I was working on so I extracted it out into a gem.
 
-## ORM Support
+## ORM support
 
-Currently, it only supports `ActiveRecord` as ORM for performing database queries.
+Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
+
+Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature for this gem. If you'd be interested in contributing to speed development, please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new) and get in touch.
 
 ## Installation
 
@@ -37,7 +41,9 @@ Run the following command:
     $ rails generate datatable User
 
 
-This will generate a file named `user_datatable.rb` in `app/datatables`. Open the file and customize in the functions as directed by the comments
+This will generate a file named `user_datatable.rb` in `app/datatables`. Open the file and customize in the functions as directed by the comments.
+
+Take a look [here](#generator-syntax) for an explanation about the generator syntax.
 
 ### Customize
 ```ruby
@@ -60,9 +66,9 @@ def searchable_columns
 end
 ```
 
-* For `extensions`, just uncomment the paginator you would like to use, given
+* For `paginator options`, just uncomment the paginator you would like to use, given
 the gems bundled in your project. For example, if your models are using `Kaminari`, uncomment `AjaxDatatablesRails::Extensions::Kaminari`. You may remove all commented lines.
-  * `SimplePaginator` falls back to passing `offset` and `limit` at the database level (through `ActiveRecord` of course).
+  * `SimplePaginator` is the most basic of them all, it falls back to passing `offset` and `limit` at the database level (through `ActiveRecord` of course, as that is the only ORM supported for the time being).
 
 * For `sortable_columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns.
 
@@ -123,6 +129,8 @@ def get_raw_records
 end
 ```
 
+Obviously, you can construct your query as required for the use case the datatable is used. Example: `User.active.with_recent_messages`.
+
 ### Controller
 Set up the controller to respond to JSON
 
@@ -135,6 +143,8 @@ def index
 end
 ```
 
+Don't forget to make sure the proper route has been added to `config/routes.rb`.
+
 ### View
 * Set up an html `<table>` with a `<thead>` and `<tbody>`
 * Add in your table headers if desired
@@ -144,7 +154,7 @@ end
 The resulting view may look like this:
 
 ```erb
-<table id="user-table", data-source="<%= users_path(format: :json) %>">
+<table id="users-table", data-source="<%= users_path(format: :json) %>">
   <thead>
     <tr>
       <th>First Name</th>
@@ -162,10 +172,31 @@ Finally, the javascript to tie this all together. In the appropriate `js.coffee`
 
 ```coffeescript
 $ ->
-  $('#user-table').dataTable
+  $('#users-table').dataTable
     bProcessing: true
     bServerSide: true
-    sAjaxSource: $('#user-table').data('source')
+    sAjaxSource: $('#users-table').data('source')
+    sPaginationType: 'full_numbers'
+    # optional, if you want full pagination controls.
+    # Check dataTables documentation to learn more about
+    # available options.
+```
+
+or, if you're using plain javascript:
+```javascript
+// users.js
+
+jQuery(document).ready(function() {
+  $('#users-table').dataTable({
+    'bProcessing': true,
+    'bServerSide': true,
+    'sAjaxSource': $('#users-table').data('source'),
+    'sPaginationType': 'full_numbers',
+    // optional, if you want full pagination controls.
+    // Check dataTables documentation to learn more about
+    // available options.
+  });
+});
 ```
 
 ### Additional Notes
@@ -179,8 +210,8 @@ class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
   # customized methods here
 end
 
-datatable = UnrespondedMessagesDatatable.new(
-  view_context, { :foo => { :bar => Baz.new }, :from => 1.month.ago }
+datatable = UnrespondedMessagesDatatable.new(view_context,
+  { :foo => { :bar => Baz.new }, :from => 1.month.ago }
 )
 
 datatable.options
