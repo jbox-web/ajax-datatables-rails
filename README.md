@@ -7,8 +7,12 @@
 
 > Hi,
 >
-> New maintainer here. Just to let you know that we have some plans in store
-> for this gem that will be released soon.
+> New maintainer here. Just to let you know that we have
+> released version 0.1.0 which includes breaking changes.
+>
+> Please check the [CHANGELOG](https://github.com/antillas21/ajax-datatables-rails/blob/master/CHANGELOG.md) to learn about these changes.
+>
+> All changes have been documented below.
 
 
 Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and search your html tables. When dealing with large tables (more than a couple hundred rows) however, we run into performance issues. These can be fixed by using server-side pagination, but this breaks some datatables functionality.
