@@ -13,6 +13,12 @@ describe AjaxDatatablesRails::Base do
     end
   end
 
+  class UserData
+    def self.arel_table
+      { :bar => Column.new }
+    end
+  end
+
   params = {
     :sEcho => '0', :sSortDir_0 => 'asc',
     :iSortCol_0 => '1', :iDisplayStart => '11'
@@ -132,6 +138,19 @@ describe AjaxDatatablesRails::Base do
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
         datatable.stub(:searchable_columns) { ['users.foo'] }
+
+        records.should_receive(:where)
+        datatable.send(:filter_records, records)
+      end
+    end
+
+    describe '#filter_records with multi word model' do
+      let(:records) { double('UserData', :where => []) }
+      let(:search_view) { double('view', :params => { :sSearch => 'bar' }) }
+
+      it 'applies search like functionality on a collection' do
+        datatable = AjaxDatatablesRails::Base.new(search_view)
+        datatable.stub(:searchable_columns) { ['user_datas.bar'] }
 
         records.should_receive(:where)
         datatable.send(:filter_records, records)
