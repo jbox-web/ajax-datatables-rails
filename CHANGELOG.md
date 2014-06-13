@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.1.1
+* Fixes problem on `searchable_columns` where the corresponding model is
+a composite model name, e.g. `UserData`, `BillingAddress`. 
+Thanks to [iruca3](https://github.com/iruca3) for the fix.
+
 ## 0.1.0
 * A fresh start. Sets base class name to: `AjaxDatatablesRails::Base`.
 * Extracts pagination functions to mixable modules.
