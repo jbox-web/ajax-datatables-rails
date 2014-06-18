@@ -3,17 +3,25 @@
 [![Build Status](https://travis-ci.org/antillas21/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/antillas21/ajax-datatables-rails)
 [![Gem Version](https://badge.fury.io/rb/ajax-datatables-rails.svg)](http://badge.fury.io/rb/ajax-datatables-rails)
 
-### Under new management
+### Versions
 
-> Hi,
->
-> New maintainer here. Just to let you know that we have
-> released version 0.1.0 which includes breaking changes.
->
-> Please check the [CHANGELOG](https://github.com/antillas21/ajax-datatables-rails/blob/master/CHANGELOG.md) to learn about these changes.
->
-> All changes have been documented below.
+[Datatables](http://datatables.net) recently released version 1.10 and deprecated version 1.9 which includes a new API and features.
 
+If you have dataTables 1.9 in your project and want to keep using it, please use this gem's version `0.1.x` in your `Gemfile`:
+
+```ruby
+# specific version number
+gem 'ajax-datatables-rails', '0.1.2'
+
+# or, support on datatables 1.9
+gem 'ajax-datatables-rails', git: 'git://github.com/antillas21/ajax-datatables-rails.git', branch: 'legacy'
+```
+
+If you have dataTables 1.10 in your project, then use the gem's latest version, or point to the `master` branch.
+
+
+
+## Description
 
 Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and search your html tables. When dealing with large tables (more than a couple hundred rows) however, we run into performance issues. These can be fixed by using server-side pagination, but this breaks some datatables functionality.
 
