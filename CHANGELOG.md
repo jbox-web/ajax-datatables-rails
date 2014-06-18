@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.2
+* Fixes `where` clause being built even when search term is an empty string.
+  Thanks to [e-fisher](https://github.com/e-fisher) for spotting and fixing this.
+
 ## 0.1.1
 * Fixes problem on `searchable_columns` where the corresponding model is
 a composite model name, e.g. `UserData`, `BillingAddress`. 
