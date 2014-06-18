@@ -99,7 +99,7 @@ module AjaxDatatablesRails
     def aggregate_query
       conditions = searchable_columns.each_with_index.map do |column, index|
         value = params["sSearch_#{index}".to_sym]
-        search_condition(column, value) if value
+        search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
     end
