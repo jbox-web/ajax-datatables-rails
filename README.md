@@ -30,7 +30,7 @@ Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature fo
 Add these lines to your application's Gemfile:
 
     gem 'jquery-datatables-rails'
-    gem 'rails-datatables'
+    gem 'ajax-datatables-rails'
 
 And then execute:
 
