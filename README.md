@@ -49,7 +49,7 @@ jQuery dataTables to your Rails project. You can always add the plugin assets
 manually via the assets pipeline. If you decide to use the `jquery-datatables-rails` gem, please refer to its installation instructions [here](https://github.com/rweng/jquery-datatables-rails).
 
 ## Usage
-*The following examples assume that we are setting up rails-datatables for an index of users from a `User` model*
+*The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model*
 
 ### Generate
 Run the following command:
