@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.0
+* This version works with jQuery dataTables ver. 1.10 and it's new API syntax.
+* Added `legacy` branch to repo. If your project is working with jQuery
+  dataTables ver. 1.9, this is the branch you need to pull, or use the last
+  `0.1.x` version of this gem.
+
 ## 0.1.2
 * Fixes `where` clause being built even when search term is an empty string.
   Thanks to [e-fisher](https://github.com/e-fisher) for spotting and fixing this.

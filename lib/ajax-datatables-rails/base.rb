@@ -35,10 +35,10 @@ module AjaxDatatablesRails
 
     def as_json(options = {})
       {
-        :sEcho => params[:sEcho].to_i,
-        :iTotalRecords => get_raw_records.count,
-        :iTotalDisplayRecords => filter_records(get_raw_records).count,
-        :aaData => data
+        :draw => params[:draw].to_i,
+        :recordsTotal =>  get_raw_records.count,
+        :recordsFiltered => filter_records(get_raw_records).count,
+        :data => data
       }
     end
 
@@ -74,8 +74,8 @@ module AjaxDatatablesRails
     end
 
     def simple_search(records)
-      return records unless params[:sSearch]
-      conditions = build_conditions_for(params[:sSearch])
+      return records unless (params[:search] && params[:search][:value])
+      conditions = build_conditions_for(params[:search][:value])
       records = records.where(conditions) if conditions
       records
     end
@@ -98,7 +98,7 @@ module AjaxDatatablesRails
 
     def aggregate_query
       conditions = searchable_columns.each_with_index.map do |column, index|
-        value = params["sSearch_#{index}".to_sym]
+        value = params[:columns]["#{index}"][:search][:value]
         search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
@@ -109,20 +109,20 @@ module AjaxDatatablesRails
     end
 
     def page
-      (params[:iDisplayStart].to_i / per_page) + 1
+      (params[:start].to_i / per_page) + 1
     end
 
     def per_page
-      params.fetch(:iDisplayLength, 10).to_i
+      params.fetch(:length, 10).to_i
     end
 
     def sort_column
-      sortable_columns[params[:iSortCol_0].to_i]
+      sortable_columns[params[:order]['0'][:column].to_i]
     end
 
     def sort_direction
       options = %w(desc asc)
-      options.include?(params[:sSortDir_0]) ? params[:sSortDir_0].upcase : 'ASC'
+      options.include?(params[:order]['0'][:dir]) ? params[:order]['0'][:dir].upcase : 'ASC'
     end
   end
 end

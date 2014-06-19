@@ -37,12 +37,16 @@ Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature fo
 
 Add these lines to your application's Gemfile:
 
-    gem 'jquery-datatables-rails'
+    gem 'jquery-datatables-rails', git: 'git://github.com/rweng/jquery-datatables-rails.git', branch: 'master'
     gem 'ajax-datatables-rails'
 
 And then execute:
 
     $ bundle
+
+The `jquery-datatables-rails` gem is listed as a convenience, to ease adding
+jQuery dataTables to your Rails project. You can always add the plugin assets
+manually via the assets pipeline. If you decide to use the `jquery-datatables-rails` gem, please refer to its installation instructions [here](https://github.com/rweng/jquery-datatables-rails).
 
 ## Usage
 *The following examples assume that we are setting up rails-datatables for an index of users from a `User` model*
@@ -187,10 +191,10 @@ Finally, the javascript to tie this all together. In the appropriate `js.coffee`
 ```coffeescript
 $ ->
   $('#users-table').dataTable
-    bProcessing: true
-    bServerSide: true
-    sAjaxSource: $('#users-table').data('source')
-    sPaginationType: 'full_numbers'
+    processing: true
+    serverSide: true
+    ajax: $('#users-table').data('source')
+    pagingType: 'full_numbers'
     # optional, if you want full pagination controls.
     # Check dataTables documentation to learn more about
     # available options.
@@ -202,10 +206,10 @@ or, if you're using plain javascript:
 
 jQuery(document).ready(function() {
   $('#users-table').dataTable({
-    'bProcessing': true,
-    'bServerSide': true,
-    'sAjaxSource': $('#users-table').data('source'),
-    'sPaginationType': 'full_numbers',
+    "processing": true,
+    "serverSide": true,
+    "ajax": $('#users-table').data('source')
+    "pagingType": "full_numbers",
     // optional, if you want full pagination controls.
     // Check dataTables documentation to learn more about
     // available options.

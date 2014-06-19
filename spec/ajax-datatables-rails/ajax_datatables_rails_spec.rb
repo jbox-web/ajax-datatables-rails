@@ -20,8 +20,28 @@ describe AjaxDatatablesRails::Base do
   end
 
   params = {
-    :sEcho => '0', :sSortDir_0 => 'asc',
-    :iSortCol_0 => '1', :iDisplayStart => '11'
+    :draw => '5',
+    :columns => {
+      "0" => {
+        :data => '0',
+        :name => '',
+        :searchable => true,
+        :orderable => true,
+        :search => { :value => '', :regex => false }
+      },
+      "1" => {
+        :data => '1',
+        :name => '',
+        :searchable => true,
+        :orderable => true,
+        :search => { :value => '', :regex => false }
+      }
+    },
+    :order => { "0" => { :column => '1', :dir => 'desc' } },
+    :start => '0',
+    :length => '10',
+    :search => { :value => '', :regex => false },
+    '_' => '1403141483098'
   }
   let(:view) { double('view', :params => params) }
 
@@ -44,16 +64,16 @@ describe AjaxDatatablesRails::Base do
         expect(datatable.send(:offset)).to eq(0)
       end
 
-      it 'matches the value on view params[:iDisplayStart] minus 1' do
-        paginated_view = double('view', :params => { :iDisplayStart => '11' })
+      it 'matches the value on view params[:start] minus 1' do
+        paginated_view = double('view', :params => { :start => '11' })
         datatable = AjaxDatatablesRails::Base.new(paginated_view)
         expect(datatable.send(:offset)).to eq(10)
       end
     end
 
     describe '#page' do
-      it 'calculates page number from params[:iDisplayStart] and #per_page' do
-        paginated_view = double('view', :params => { :iDisplayStart => '11' })
+      it 'calculates page number from params[:start] and #per_page' do
+        paginated_view = double('view', :params => { :start => '11' })
         datatable = AjaxDatatablesRails::Base.new(paginated_view)
         expect(datatable.send(:page)).to eq(2)
       end
@@ -65,8 +85,8 @@ describe AjaxDatatablesRails::Base do
         expect(datatable.send(:per_page)).to eq(10)
       end
 
-      it 'matches the value on view params[:iDisplayLength]' do
-        other_view = double('view', :params => { :iDisplayLength => 20 })
+      it 'matches the value on view params[:length]' do
+        other_view = double('view', :params => { :length => 20 })
         datatable = AjaxDatatablesRails::Base.new(other_view)
         expect(datatable.send(:per_page)).to eq(20)
       end
@@ -74,8 +94,15 @@ describe AjaxDatatablesRails::Base do
 
     describe '#sort_column' do
       it 'returns a column name from the #sorting_columns array' do
-        sort_view = double('view', :params => { :iSortCol_0 => '1' })
-        datatable = AjaxDatatablesRails::Base.new(view)
+        sort_view = double(
+          'view',
+          :params => {
+            :order => {
+              '0' => { :column => '1' }
+            }
+          }
+        )
+        datatable = AjaxDatatablesRails::Base.new(sort_view)
         datatable.stub(:sortable_columns) { ['foo', 'bar', 'baz'] }
 
         expect(datatable.send(:sort_column)).to eq('bar')
@@ -84,13 +111,27 @@ describe AjaxDatatablesRails::Base do
 
     describe '#sort_direction' do
       it 'matches value of params[:sSortDir_0]' do
-        sorting_view = double('view', :params => { :sSortDir_0 => 'desc' })
+        sorting_view = double(
+          'view',
+          :params => {
+            :order => {
+              '0' => { :column => '1', :dir => 'desc' }
+            }
+          }
+        )
         datatable = AjaxDatatablesRails::Base.new(sorting_view)
         expect(datatable.send(:sort_direction)).to eq('DESC')
       end
 
       it 'can only be one option from ASC or DESC' do
-        sorting_view = double('view', :params => { :sSortDir_0 => 'foo' })
+        sorting_view = double(
+          'view',
+          :params => {
+            :order => {
+              '0' => { :column => '1', :dir => 'foo' }
+            }
+          }
+        )
         datatable = AjaxDatatablesRails::Base.new(sorting_view)
         expect(datatable.send(:sort_direction)).to eq('ASC')
       end
@@ -113,7 +154,7 @@ describe AjaxDatatablesRails::Base do
 
   describe 'perform' do
     let(:results) { double('Collection', :offset => [], :limit => []) }
-    let(:view) { double('view', :params => {}) }
+    let(:view) { double('view', :params => params) }
     let(:datatable) { AjaxDatatablesRails::Base.new(view) }
 
     describe '#paginate_records' do
@@ -133,7 +174,7 @@ describe AjaxDatatablesRails::Base do
 
     describe '#filter_records' do
       let(:records) { double('User', :where => []) }
-      let(:search_view) { double('view', :params => { :sSearch => 'foo' }) }
+      let(:search_view) { double('view', :params => params) }
 
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
@@ -146,7 +187,7 @@ describe AjaxDatatablesRails::Base do
 
     describe '#filter_records with multi word model' do
       let(:records) { double('UserData', :where => []) }
-      let(:search_view) { double('view', :params => { :sSearch => 'bar' }) }
+      let(:search_view) { double('view', :params => params) }
 
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
