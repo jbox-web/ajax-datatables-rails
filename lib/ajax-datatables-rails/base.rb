@@ -92,7 +92,11 @@ module AjaxDatatablesRails
 
     def search_condition(column, value)
       model, column = column.split('.')
-      model = model.singularize.titleize.gsub( / /, '' ).constantize
+      if model.scan('/').any?
+        model = model.singularize.gsub( / /, '' ).classify.constantize
+      else
+        model = model.singularize.titleize.gsub( / /, '' ).constantize
+      end
       model.arel_table[column.to_sym].matches("%#{value}%")
     end
 
