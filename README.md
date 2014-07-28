@@ -148,6 +148,8 @@ end
 ```
 
 Obviously, you can construct your query as required for the use case the datatable is used. Example: `User.active.with_recent_messages`.
+__IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object as the end product of this method. Why? Because the result from
+this method, will be chained (for now) to `ActiveRecord` methods for sorting, filtering and pagination.
 
 ### Controller
 Set up the controller to respond to JSON
