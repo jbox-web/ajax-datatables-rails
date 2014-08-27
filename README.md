@@ -200,7 +200,9 @@ We want to sort and search on all columns of the list. The related definition wo
 ```
 __Some comments for the above code:__
 1. In the list we show full_name, but in sortable_columns and searchable_columns we use last_name from the Contact model. The reason is we can use only database columns as sort or search fields and the full_name is not a database field.
+
 2. In the get_raw_records method we have quite a complex query having one to many and may to many associations using the joins ActiveRecord method. The joins will generate INNER JOIN relations in the SQL query. In this case we do not include all event in the report if we have events which is not associated with any model record from the relation.
+
 3. To have all event records in the list we should use the .includes method, which generate LEFT OUTER JOIN relation of the SQL query. __IMPORTANT:__ Make sure to append .references(:related_model) with any associated model. That forces the eager loading of all the associated models by one SQL query, and the search condition for any column works fine. Otherwise the :recordsFiltered => filter_records(get_raw_records).count(:all) will generate 2 SQL queries (one for the Event model, and then another for the associated tables). The :recordsFiltered => filter_records(get_raw_records).count(:all) will use only the first one to return from the ActiveRecord::Relation object in get_raw_records and you will get an error message of __Unknown column 'yourtable.yourfield' in 'where clause'__ in case the search field value is not empty.
 
 So the query with includes() method is:
