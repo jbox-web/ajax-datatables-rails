@@ -198,7 +198,9 @@ We want to sort and search on all columns of the list. The related definition wo
      Event.joins([{course: :coursetype}, {allocations: {teacher: [:contact, {competencies: :competency_type}]}} ]).distinct
   end
 ```
+
 __Some comments for the above code:__
+
 1. In the list we show full_name, but in sortable_columns and searchable_columns we use last_name from the Contact model. The reason is we can use only database columns as sort or search fields and the full_name is not a database field.
 
 2. In the get_raw_records method we have quite a complex query having one to many and may to many associations using the joins ActiveRecord method. The joins will generate INNER JOIN relations in the SQL query. In this case we do not include all event in the report if we have events which is not associated with any model record from the relation.
