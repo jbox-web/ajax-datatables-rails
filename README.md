@@ -151,6 +151,69 @@ Obviously, you can construct your query as required for the use case the datatab
 __IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object as the end product of this method. Why? Because the result from
 this method, will be chained (for now) to `ActiveRecord` methods for sorting, filtering and pagination.
 
+#### Associated and nested models
+The previous example has only one single model. But what about if you have some associated nested models and in a report you want to show fields from these tables.
+
+Take an example that has an Event, Course, Coursetype, Allocation, Teacher, Contact, Competency and Competency_type models. We want to have a datatables report which has the following column:
+```ruby
+        'coursetypes.name',
+        'courses.name',
+        'events.title',
+        'events.event_start',
+        'events.event_end',
+        'contacts.full_name',
+        'competency_types.name',
+        'events.status'
+```
+We want to sort and search on all columns of the list. The related definition would be:
+```ruby
+
+  def sortable_columns
+    @sortable_columns ||= [
+        'coursetypes.name',
+        'courses.name',
+        'events.title',
+        'events.event_start',
+        'events.event_end',
+        'contacts.last_name',
+        'competency_types.name',
+        'events.status'
+    ]
+  end
+
+  def searchable_columns
+    @searchable_columns ||= [
+        'coursetypes.name',
+        'courses.name',
+        'events.title',
+        'events.event_start',
+        'events.event_end',
+        'contacts.last_name',
+        'competency_types.name',
+        'events.status'
+    ]
+  end
+
+  def get_raw_records
+     Event.joins([{course: :coursetype}, {allocations: {teacher: [:contact, {competencies: :competency_type}]}} ]).distinct
+  end
+```
+
+__Some comments for the above code:__
+
+1. In the list we show full_name, but in sortable_columns and searchable_columns we use last_name from the Contact model. The reason is we can use only database columns as sort or search fields and the full_name is not a database field.
+
+2. In the get_raw_records method we have quite a complex query having one to many and may to many associations using the joins ActiveRecord method. The joins will generate INNER JOIN relations in the SQL query. In this case we do not include all event in the report if we have events which is not associated with any model record from the relation.
+
+3. To have all event records in the list we should use the .includes method, which generate LEFT OUTER JOIN relation of the SQL query. __IMPORTANT:__ Make sure to append .references(:related_model) with any associated model. That forces the eager loading of all the associated models by one SQL query, and the search condition for any column works fine. Otherwise the :recordsFiltered => filter_records(get_raw_records).count(:all) will generate 2 SQL queries (one for the Event model, and then another for the associated tables). The :recordsFiltered => filter_records(get_raw_records).count(:all) will use only the first one to return from the ActiveRecord::Relation object in get_raw_records and you will get an error message of __Unknown column 'yourtable.yourfield' in 'where clause'__ in case the search field value is not empty.
+
+So the query with includes() method is:
+```
+  def get_raw_records
+     Event.includes([{course: :coursetype}, {allocations: {teacher: [:contact, {competencies: :competency_type}]}} ]).references(:course).distinct
+  end
+```
+
 ### Controller
 Set up the controller to respond to JSON
 
