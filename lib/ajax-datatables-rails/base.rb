@@ -93,12 +93,13 @@ module AjaxDatatablesRails
     def search_condition(column, value)
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
-      model.arel_table[column.to_sym].matches("%#{value}%")
+      casted_column = Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as('CHAR')])
+      casted_column.matches("%#{value}%")
     end
 
     def aggregate_query
       conditions = searchable_columns.each_with_index.map do |column, index|
-        value = params[:columns]["#{index}"][:search][:value]
+        value = params[:columns]["#{index}"][:search][:value] if params[:columns]
         search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
@@ -117,12 +118,12 @@ module AjaxDatatablesRails
     end
 
     def sort_column
-      sortable_columns[params[:order]['0'][:column].to_i]
+      sortable_columns[params[:order]['0'][:column].to_i] if params[:order]
     end
 
     def sort_direction
       options = %w(desc asc)
-      options.include?(params[:order]['0'][:dir]) ? params[:order]['0'][:dir].upcase : 'ASC'
+      options.include?(params[:order]['0'][:dir]) ? params[:order]['0'][:dir].upcase : 'ASC' if params[:order]
     end
   end
 end
