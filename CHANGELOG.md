@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## (yet) Unreleased
+* Fix count method to work with select statements under Rails 4.1. Thanks to [Jason Mitchell](https://github.com/mitchej123) for the contribution.
+* Edits to `README` documentation about the `options` hash. Thanks to [Jonathan E Hogue](https://github.com/hoguej) for pointing out that previous documentation was confusing and didn't address its usage properly.
+* Edits to `README` documentation on complex model queries inside the `get_raw_records` method. A round of applause to [Zoltan Paulovics](https://github.com/zpaulovics) for contributing this awesome piece of documentation. :smile:
+
 ## 0.2.0
 * This version works with jQuery dataTables ver. 1.10 and it's new API syntax.
 * Added `legacy` branch to repo. If your project is working with jQuery
@@ -12,7 +17,7 @@
 
 ## 0.1.1
 * Fixes problem on `searchable_columns` where the corresponding model is
-a composite model name, e.g. `UserData`, `BillingAddress`. 
+a composite model name, e.g. `UserData`, `BillingAddress`.
 Thanks to [iruca3](https://github.com/iruca3) for the fix.
 
 ## 0.1.0
@@ -25,7 +30,7 @@ Thanks to [iruca3](https://github.com/iruca3) for the fix.
 * Removes dependency to pass in a model name to the generator. This way,
   the developer has more flexibility to implement whatever datatable feature is required.
 * Datatable constructor accepts an optional `options` hash to provide
-  more flexibility. 
+  more flexibility.
   See [README](https://github.com/antillas21/ajax-datatables-rails/blob/master/README.mds#options) for examples.
 * Sets generator inside the `Rails` namespace. To generate an
   `AjaxDatatablesRails` child class, just execute the
