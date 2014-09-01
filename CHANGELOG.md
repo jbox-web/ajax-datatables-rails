@@ -5,6 +5,7 @@
 * Edits to `README` documentation about the `options` hash. Thanks to [Jonathan E Hogue](https://github.com/hoguej) for pointing out that previous documentation was confusing and didn't address its usage properly.
 * Edits to `README` documentation on complex model queries inside the `get_raw_records` method. A round of applause to [Zoltan Paulovics](https://github.com/zpaulovics) for contributing this awesome piece of documentation. :smile:
 * Adds typecast step to `search_condition` method, so now we support having non-text columns inside the `searchable_columns` array.
+* Adds support for multi-column sorting and multi-term search. Thanks to [Zoltan Paulovics](https://github.com/zpaulovics) for contributing this feature.
 
 ## 0.2.0
 * This version works with jQuery dataTables ver. 1.10 and it's new API syntax.
