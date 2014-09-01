@@ -52,12 +52,16 @@ module AjaxDatatablesRails
       records = get_raw_records
       records = sort_records(records)
       records = filter_records(records)
-      records = paginate_records(records)
+      records = paginate_records(records) unless params[:length] == '-1'
       records
     end
 
     def sort_records(records)
-      records.order("#{sort_column} #{sort_direction}")
+      sort_by = []
+      params[:order].each_value do |item|
+        sort_by << "#{sort_column(item)} #{sort_direction(item)}"
+      end
+      records.order(sort_by.join(", "))
     end
 
     def paginate_records(records)
@@ -74,7 +78,7 @@ module AjaxDatatablesRails
     end
 
     def simple_search(records)
-      return records unless (params[:search] && params[:search][:value])
+      return records unless (params[:search].present? && params[:search][:value].present?)
       conditions = build_conditions_for(params[:search][:value])
       records = records.where(conditions) if conditions
       records
@@ -87,7 +91,11 @@ module AjaxDatatablesRails
     end
 
     def build_conditions_for(query)
-      searchable_columns.map { |col| search_condition(col, query) }.reduce(:or)
+      search_for = query.split(' ')
+      criteria = search_for.inject([]) do |criteria, atom|
+        criteria << searchable_columns.map { |col| search_condition(col, atom) }.reduce(:or)
+      end.reduce(:and)
+      criteria
     end
 
     def search_condition(column, value)
@@ -117,13 +125,13 @@ module AjaxDatatablesRails
       params.fetch(:length, 10).to_i
     end
 
-    def sort_column
-      sortable_columns[params[:order]['0'][:column].to_i] if params[:order]
+    def sort_column(item)
+      sortable_columns[item['column'].to_i]
     end
 
-    def sort_direction
+    def sort_direction(item)
       options = %w(desc asc)
-      options.include?(params[:order]['0'][:dir]) ? params[:order]['0'][:dir].upcase : 'ASC' if params[:order]
+      options.include?(item['dir']) ? item['dir'].upcase : 'ASC'
     end
   end
 end
