@@ -106,7 +106,7 @@ module AjaxDatatablesRails
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
 
-      # because particular commit is based on postgre, so that's why use VARCHAR
+      # because postgresql is preferred, so that's why use VARCHAR
       # but we we need to use CHAR typecast on mysql db adapter
       # or maybe it should
       #   if :pg
