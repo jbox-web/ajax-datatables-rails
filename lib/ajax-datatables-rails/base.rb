@@ -112,11 +112,12 @@ module AjaxDatatablesRails
       #   if :pg
       #   elsif :mysql
       #   else
-      if @config.db_adapter == :pg
-        casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as('VARCHAR')])
+      if config.db_adapter == :pg
+        typecast = 'VARCHAR'
       else
-        casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as('CHAR')])
+        typecase = 'CHAR'
       end
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
     end
 
