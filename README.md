@@ -376,6 +376,16 @@ $ rails generate datatable UnrespondedMessages
 
 In the end, it's up to the developer which model(s), scope(s), relationship(s) (or else) to employ inside the datatable class to retrieve records from the database.
 
+## Tutorial
+
+Tutorial for Integrating `ajax-datatable-rails`, on  Rails 4 .
+
+[Part-1  The-Installation](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-1----The-Installation)
+
+[Part 2 The Datatables with ajax functionality](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-2-The-Datatables-with-ajax-functionality)
+
+The complete project code for this tutorial series is available on [github](https://github.com/trkrameshkumar/simple_app).
+
 
 ## Contributing
 
