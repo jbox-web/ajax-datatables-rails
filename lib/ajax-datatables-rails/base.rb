@@ -115,7 +115,7 @@ module AjaxDatatablesRails
       if config.db_adapter == :pg
         typecast = 'VARCHAR'
       else
-        typecase = 'CHAR'
+        typecast = 'CHAR'
       end
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
