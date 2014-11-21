@@ -221,3 +221,38 @@ describe AjaxDatatablesRails::Base do
     end
   end
 end
+
+
+describe AjaxDatatablesRails::Configuration do
+  let(:config) { AjaxDatatablesRails::Configuration.new }
+
+  describe "default config" do
+    it "default db_adapter should :pg (postgresql)" do
+      expect(config.db_adapter).to eq(:pg)
+    end
+  end
+
+  describe "custom config" do
+    it 'should accept db_adapter custom value' do
+      config.db_adapter = :mysql2
+      expect(config.db_adapter).to eq(:mysql2)
+    end
+  end
+end
+
+describe AjaxDatatablesRails do
+  describe "configurations" do
+    context "configurable from outside" do
+      before(:each) do
+        AjaxDatatablesRails.configure do |config|
+          config.db_adapter = :mysql2
+        end
+      end
+
+      it "should have custom value" do
+        expect(AjaxDatatablesRails.config.db_adapter).to eq(:mysql2)
+      end
+    end
+
+  end
+end
