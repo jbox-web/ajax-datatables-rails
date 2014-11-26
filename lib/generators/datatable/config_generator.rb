@@ -1,6 +1,8 @@
-module Rails
+require 'rails/generators'
+
+module Datatable
   module Generators
-    class DatatableInitializerGenerator < ::Rails::Generators::Base
+    class ConfigGenerator < ::Rails::Generators::Base
       source_root File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
       desc <<DESC
 Description:
