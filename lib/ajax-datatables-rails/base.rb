@@ -11,6 +11,10 @@ module AjaxDatatablesRails
       @options = options
     end
 
+    def config
+      @config ||= AjaxDatatablesRails.config
+    end
+
     def sortable_columns
       @sortable_columns ||= []
     end
@@ -101,7 +105,19 @@ module AjaxDatatablesRails
     def search_condition(column, value)
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as('VARCHAR')])
+
+      # because postgresql is preferred, so that's why use VARCHAR
+      # but we we need to use CHAR typecast on mysql db adapter
+      # or maybe it should
+      #   if :pg
+      #   elsif :mysql
+      #   else
+      if config.db_adapter == :pg
+        typecast = 'VARCHAR'
+      else
+        typecast = 'CHAR'
+      end
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
     end
 
