@@ -38,7 +38,7 @@ Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature fo
 
 Add these lines to your application's Gemfile:
 
-    gem 'jquery-datatables-rails', git: 'git://github.com/rweng/jquery-datatables-rails.git', branch: 'master'
+    gem 'jquery-datatables-rails'
     gem 'ajax-datatables-rails'
 
 And then execute:
@@ -50,7 +50,8 @@ jQuery dataTables to your Rails project. You can always add the plugin assets
 manually via the assets pipeline. If you decide to use the `jquery-datatables-rails` gem, please refer to its installation instructions [here](https://github.com/rweng/jquery-datatables-rails).
 
 ## Usage
-*The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model*
+*The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model, and that we are using postgresql as
+our db, because you __should be using it__, if not, please refer to the [Searching on non text-based columns](#searching-on-non-text-based-columns) entry in the Additional Notes section.*
 
 ### Generate
 Run the following command:
@@ -92,6 +93,7 @@ the gems bundled in your project. For example, if your models are using `Kaminar
 * For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
 
 This gives us:
+
 ```ruby
 include AjaxDatatablesRails::Extensions::Kaminari
 
@@ -102,8 +104,9 @@ end
 def searchable_columns
   @searchable_columns ||= ['users.f_name', 'users.l_name']
 end
-
 ```
+
+[See here](#searching-on-non-text-based-columns) for notes regarding database config (if using something different from `postgre`).
 
 ### Map data
 ```ruby
@@ -296,6 +299,40 @@ jQuery(document).ready(function() {
 ```
 
 ### Additional Notes
+
+#### Searching on non text-based columns
+
+It always comes the time when you need to add a non-string/non-text based column to the `@searchable_columns` array, so you can perform searches against these column types (example: numeric, date, time).
+
+We recently added the ability to (automatically) typecast these column types and have this scenario covered. Please note however, if you are using something different from `postgre` (with the `:pg` gem), like `mysql` or `sqlite`, then you need to add an initializer in your application's `config/initializers` directory.
+
+If you don't perform this step (again, if using something different from `postgre`), your database will complain that it does not understand the default typecast used to enable such searches.
+
+You have two options to create this initializer:
+
+* use the provided (and recommended) generator (and then just edit the file);
+* create the file from scratch.
+
+To use the generator, from the terminal execute:
+
+```
+$ bundle exec rails generate datatable:config
+```
+
+Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file with the following content:
+
+```ruby
+AjaxDatatablesRails.configure do |config|
+  # available options for db_adapter are: :pg, :mysql2, :sqlite3
+  # config.db_adapter = :pg
+end
+```
+
+Uncomment the `config.db_adapter` line and set the corresponding value to your
+database and gem. This is all you need.
+
+If you want to make the file from scratch, just copy the above code block into a file inside the `config/initializers` directory.
+
 
 #### Using view helpers
 
