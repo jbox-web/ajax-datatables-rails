@@ -106,17 +106,6 @@ module AjaxDatatablesRails
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
 
-      # because postgresql is preferred, so that's why use VARCHAR
-      # but we we need to use CHAR typecast on mysql db adapter
-      # or maybe it should
-      #   if :pg
-      #   elsif :mysql
-      #   else
-      if config.db_adapter == :pg
-        typecast = 'VARCHAR'
-      else
-        typecast = 'CHAR'
-      end
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
     end
@@ -127,6 +116,14 @@ module AjaxDatatablesRails
         search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
+    end
+
+    def typecast
+      case config.db_adapter
+      when :pg then 'VARCHAR'
+      when :mysql2 then 'CHAR'
+      when :sqlite3 then 'TEXT'
+      end
     end
 
     def offset

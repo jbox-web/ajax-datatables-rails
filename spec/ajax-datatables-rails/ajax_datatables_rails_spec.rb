@@ -238,6 +238,49 @@ describe AjaxDatatablesRails::Configuration do
       expect(config.db_adapter).to eq(:mysql2)
     end
   end
+
+  describe '#typecast' do
+    params = {
+      :draw => '5',
+      :columns => {
+        "0" => {
+          :data => '0',
+          :name => '',
+          :searchable => true,
+          :orderable => true,
+          :search => { :value => '', :regex => false }
+        },
+        "1" => {
+          :data => '1',
+          :name => '',
+          :searchable => true,
+          :orderable => true,
+          :search => { :value => '', :regex => false }
+        }
+      },
+      :order => { "0" => { :column => '1', :dir => 'desc' } },
+      :start => '0',
+      :length => '10',
+      :search => { :value => '', :regex => false },
+      '_' => '1403141483098'
+    }
+    let(:view) { double('view', :params => params) }
+    let(:datatable) { AjaxDatatablesRails::Base.new(view) }
+
+    it 'returns VARCHAR if :db_adapter is :pg' do
+      expect(datatable.send(:typecast)).to eq('VARCHAR')
+    end
+
+    it 'returns CHAR if :db_adapter is :mysql2' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql2 }
+      expect(datatable.send(:typecast)).to eq('CHAR')
+    end
+
+    it 'returns TEXT if :db_adapter is :sqlite3' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite3 }
+      expect(datatable.send(:typecast)).to eq('TEXT')
+    end
+  end
 end
 
 describe AjaxDatatablesRails do
