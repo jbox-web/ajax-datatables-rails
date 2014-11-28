@@ -18,14 +18,14 @@ describe SimplePaginateDatatable do
     let(:records) { users_database.all }
 
     it 'calls #offset on passed record collection' do
-      records.should_receive(:offset)
+      expect(records).to receive(:offset)
       datatable.send(:paginate_records, records)
     end
 
     it 'calls #limit on passed record collection' do
       arry = double('Array', :limit => [])
-      records.stub(:offset).and_return(arry)
-      arry.should_receive(:limit)
+      allow(records).to receive(:offset).and_return(arry)
+      expect(arry).to receive(:limit)
       datatable.send(:paginate_records, records) 
     end
   end
