@@ -19,12 +19,14 @@ Gem::Specification.new do |gem|
   gem.require_path = "lib"
 
   gem.add_dependency 'railties',   '>= 3.1'
-  
+
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "generator_spec"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "rake"
-  
+  gem.add_development_dependency "activerecord", "~> 4.l.6"
+  gem.add_development_dependency "sqlite3"
+
   if RUBY_VERSION == '1.9.2'
     gem.add_development_dependency "rails", "3.1.0"
   else

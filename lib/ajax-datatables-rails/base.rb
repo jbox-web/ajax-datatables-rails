@@ -104,7 +104,11 @@ module AjaxDatatablesRails
 
     def search_condition(column, value)
       model, column = column.split('.')
-      model = model.singularize.titleize.gsub( / /, '' ).constantize
+      if model.scan("_").any?
+        model = model.singularize.titleize.gsub( / /, '::' ).constantize
+      else
+        model = model.singularize.titleize.gsub( / /, '' ).constantize
+      end
 
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
@@ -139,12 +143,12 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      sortable_columns[item['column'].to_i]
+      sortable_columns[item[:column].to_i]
     end
 
     def sort_direction(item)
       options = %w(desc asc)
-      options.include?(item['dir']) ? item['dir'].upcase : 'ASC'
+      options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
     end
   end
 end
