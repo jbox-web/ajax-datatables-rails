@@ -54,9 +54,9 @@ module AjaxDatatablesRails
 
     def fetch_records
       records = get_raw_records
-      records = sort_records(records)
-      records = filter_records(records)
-      records = paginate_records(records) unless params[:length] == '-1'
+      records = sort_records(records) if params[:order].present?
+      records = filter_records(records) if params[:search].present?
+      records = paginate_records(records) unless params[:length].present? && params[:length] == '-1'
       records
     end
 
