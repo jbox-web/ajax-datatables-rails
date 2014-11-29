@@ -21,7 +21,7 @@ module AjaxDatatablesRails
     end
 
     def models
-      @models
+      @models ||= AjaxDatatablesRails::Models.new
     end
 
     def config
@@ -117,8 +117,8 @@ module AjaxDatatablesRails
 
     def search_condition(column, value)
       model, column = column.split('.')
-      model_class = model.singularize.titleize.gsub( / /, '' ).safe_constantize
-      model_class = models[model] if model_class.nil?
+      model_class = models[model]
+      model_class = model.singularize.titleize.gsub( / /, '' ).safe_constantize if model_class.nil?
       raise("Model with class name #{model} not found") if model_class.nil?
 
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model_class.arel_table[column.to_sym].as(typecast)])

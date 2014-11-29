@@ -87,6 +87,7 @@ end
 * For `paginator options`, just uncomment the paginator you would like to use, given
 the gems bundled in your project. For example, if your models are using `Kaminari`, uncomment `AjaxDatatablesRails::Extensions::Kaminari`. You may remove all commented lines.
   * `SimplePaginator` is the most basic of them all, it falls back to passing `offset` and `limit` at the database level (through `ActiveRecord` of course, as that is the only ORM supported for the time being).
+
 * For `sortable_columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns.
 
 * For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
