@@ -18,7 +18,7 @@ describe WillPaginateDatatable do
     let(:records) { users_database.all }
 
     it 'calls #page and #per_page on passed record collection' do
-      records.should_receive(:paginate).with(:page=>1, :per_page=>10)
+      expect(records).to receive(:paginate).with(:page=>1, :per_page=>10)
       datatable.send(:paginate_records, records)
     end
   end

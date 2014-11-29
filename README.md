@@ -230,6 +230,39 @@ So the query using the `.includes()` method is:
   end
 ```
 
+#### NOTE for model class that different from table name 
+currently model class name detected by singularize the table name 
+so if your table name is different, or you have namespaced model, you should set the model name like this 
+
+create the `setup` method (`setup` method will be executed when AjaxDatatablesRails class initialized)
+
+then create `set_model_class` block inside `setup` method
+
+```ruby
+def setup
+  set_model_class do |klass|
+    klass.users = Employee
+  end
+end
+``` 
+now you can use `users.name` at `sortable_columns` and `searchable_columns` methods 
+```ruby
+@sortable_columns ||= [ 'users.name']
+```
+
+##### TIPS, you can use above step to abbreviate long namespaced model 
+```ruby
+def setup
+  set_model_class do |klass|
+    klass.requests = Statistics::Request
+      klass.sessions = Statistics::Session
+  end
+end
+def searchable_columns
+  @sortable_columns ||= [ 'requests.foo', 'sessions.bar']
+end
+```
+
 ### Controller
 Set up the controller to respond to JSON
 

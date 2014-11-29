@@ -18,14 +18,14 @@ describe KaminariDatatable do
     let(:records) { users_database.all }
 
     it 'calls #page on passed record collection' do
-      records.should_receive(:page)
+      expect(records).to receive(:page)
       datatable.send(:paginate_records, records)
     end
 
     it 'calls #per_page on passed record collection' do
       arry = double('Array', :per => [])
-      records.stub(:page).and_return(arry)
-      arry.should_receive(:per)
+      allow(records).to receive(:page).and_return(arry)
+      expect(arry).to receive(:per)
       datatable.send(:paginate_records, records) 
     end
   end

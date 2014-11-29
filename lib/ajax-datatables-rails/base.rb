@@ -9,6 +9,19 @@ module AjaxDatatablesRails
     def initialize(view, options = {})
       @view = view
       @options = options
+      setup
+    end
+
+    def set_model_class
+      @models ||= AjaxDatatablesRails::Models.new
+      yield @models
+    end
+
+    def setup
+    end
+
+    def models
+      @models ||= AjaxDatatablesRails::Models.new
     end
 
     def config
@@ -104,9 +117,11 @@ module AjaxDatatablesRails
 
     def search_condition(column, value)
       model, column = column.split('.')
-      model = model.singularize.titleize.gsub( / /, '' ).constantize
+      model_class = models[model]
+      model_class = model.singularize.titleize.gsub( / /, '' ).safe_constantize if model_class.nil?
+      raise("Model with class name #{model} not found") if model_class.nil?
 
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model_class.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
     end
 
@@ -139,12 +154,16 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      sortable_columns[item['column'].to_i]
+      column = sortable_columns[item[:column].to_i]
+      return nil if column.nil?
+      model, col = column.split(".")
+      return [models[model].table_name.to_s, col].join(".") unless models[model].nil?
+      column
     end
 
     def sort_direction(item)
       options = %w(desc asc)
-      options.include?(item['dir']) ? item['dir'].upcase : 'ASC'
+      options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
     end
   end
 end
