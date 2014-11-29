@@ -24,12 +24,13 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "generator_spec"
   gem.add_development_dependency "pry"
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "activerecord", "~> 4.l.6"
   gem.add_development_dependency "sqlite3"
 
   if RUBY_VERSION == '1.9.2'
     gem.add_development_dependency "rails", "3.1.0"
+    gem.add_development_dependency "activerecord", "3.1.0"
   else
     gem.add_development_dependency "rails", ">= 3.1.0"
+    gem.add_development_dependency "activerecord", ">= 4.1.6"
   end
 end

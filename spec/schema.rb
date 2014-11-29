@@ -13,6 +13,12 @@ ActiveRecord::Schema.define do
     t.timestamps
   end
 
+  create_table :purchased_orders, :force => true do |t|
+    t.string :foo
+    t.string :bar
+
+    t.timestamps
+  end
 
   create_table :statistics_requests, :force => true do |t|
     t.string :baz

@@ -2,6 +2,10 @@ class User < ActiveRecord::Base
 end
 
 class UserData < ActiveRecord::Base
+  self.table_name = "user_data"
+end
+
+class PurchasedOrder < ActiveRecord::Base
 end
 
 module Statistics

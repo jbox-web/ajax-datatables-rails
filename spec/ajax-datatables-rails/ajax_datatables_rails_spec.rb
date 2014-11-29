@@ -120,25 +120,57 @@ describe AjaxDatatablesRails::Base do
       end
     end
 
-    describe "#search_condition" do
-      let(:datatable) { AjaxDatatablesRails::Base.new(view) }
+    describe "#configure" do
+      let(:datatable) do
+        class FooDatatable < AjaxDatatablesRails::Base
+          def setup
+            set_model_class do |klass|
+              klass.users = User
+              klass.requests = Statistics::Request
+              klass.purchased_orders = PurchasedOrder
+              klass.statistics_sessions = Statistics::Session
+            end
+          end
+        end
 
-      context "normal model" do
-        it "should return arel object" do
-          expect(datatable.send(:search_condition, 'users.bar', 'bar').class).to eq(Arel::Nodes::Matches)
+        FooDatatable.new view
+      end
+
+      context "when model class name is regular" do
+        it "should successfully get right model class" do
+          datatable.send(:search_condition, 'users.bar', 'bar')
+          expect(datatable.models.users).to eq(User)
         end
       end
 
-      context "namespaced model" do
-        it "should return arel object" do
-          expect(datatable.send(:search_condition, 'statistics_sessions.bar', 'bar').class).to eq(Arel::Nodes::Matches)
+      context "when custom named model class" do
+        it "should successfully get right model class" do
+          expect(datatable.send(:search_condition, 'requests.bar', 'bar').class)
+          .to eq(Arel::Nodes::Matches)
         end
       end
 
-      it "should raise uninitialized constant if column not exist" do
-        expect {
-          datatable.send(:search_condition, 'asdusers.bar', 'bar').class
-        }.to raise_error(/uninitialized constant/)
+
+      context "when model class name camelcased" do
+        it "should successfully get right model class" do
+          expect(datatable.send(:search_condition, 'purchased_orders.bar', 'bar').class)
+          .to eq(Arel::Nodes::Matches)
+        end
+      end
+
+      context "when model class name is namespaced" do
+        it "should successfully get right model class" do
+          expect(datatable.send(:search_condition, 'statistics_sessions.bar', 'bar').class)
+          .to eq(Arel::Nodes::Matches)
+        end
+      end
+
+      context "when model class defined but not found" do
+        it "raise 'uninitialized constant'" do
+          expect {
+            datatable.send(:search_condition, 'non_existed_model.bar', 'bar')
+          }.to raise_error(RuntimeError, /not found/)
+        end
       end
     end
 

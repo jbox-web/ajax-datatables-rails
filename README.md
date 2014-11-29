@@ -87,7 +87,6 @@ end
 * For `paginator options`, just uncomment the paginator you would like to use, given
 the gems bundled in your project. For example, if your models are using `Kaminari`, uncomment `AjaxDatatablesRails::Extensions::Kaminari`. You may remove all commented lines.
   * `SimplePaginator` is the most basic of them all, it falls back to passing `offset` and `limit` at the database level (through `ActiveRecord` of course, as that is the only ORM supported for the time being).
-
 * For `sortable_columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns.
 
 * For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
@@ -228,6 +227,39 @@ So the query using the `.includes()` method is:
       }
       ).references(:course).distinct
   end
+```
+
+#### NOTE for model class that different from table name 
+currently model class name detected by singularize the table name 
+so if your table name is different, or you have namespaced model, you should set the model name like this 
+
+create the `setup` method (`setup` method will be executed when AjaxDatatablesRails class initialized)
+
+then create `set_model_class` block inside `setup` method
+
+```ruby
+def setup
+  set_model_class do |klass|
+    klass.users = Employee
+  end
+end
+``` 
+now you can use `users.name` at `sortable_columns` and `searchable_columns` methods 
+```ruby
+@sortable_columns ||= [ 'users.name']
+```
+
+##### TIPS, you can use above step to abbreviate long namespaced model 
+```ruby
+def setup
+  set_model_class do |klass|
+    klass.requests = Statistics::Request
+      klass.sessions = Statistics::Session
+  end
+end
+def searchable_columns
+  @sortable_columns ||= [ 'requests.foo', 'sessions.bar']
+end
 ```
 
 ### Controller
