@@ -154,12 +154,11 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      sortable_column = sortable_columns[item[:column].to_i].split(".")
-      model, column = sortable_column
-      unless models[model].nil?
-        sortable_column = [models[model].table_name.to_s, column].join(".")
-      end
-      sortable_column
+      column = sortable_columns[item[:column].to_i]
+      return nil if column.nil?
+      model, col = column.split(".")
+      return [models[model].table_name.to_s, col].join(".") unless models[model].nil?
+      column
     end
 
     def sort_direction(item)
