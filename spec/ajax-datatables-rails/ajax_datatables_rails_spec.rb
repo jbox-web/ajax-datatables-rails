@@ -86,9 +86,9 @@ describe AjaxDatatablesRails::Base do
           }
         )
         datatable = AjaxDatatablesRails::Base.new(sort_view)
-        allow(datatable).to receive(:sortable_columns) { ['foo', 'bar', 'baz'] }
+        allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar', 'User.baz'] }
 
-        expect(datatable.send(:sort_column, sort_view.params[:order]["0"])).to eq('bar')
+        expect(datatable.send(:sort_column, sort_view.params[:order]["0"])).to eq('users.bar')
       end
     end
 
@@ -123,14 +123,6 @@ describe AjaxDatatablesRails::Base do
     describe "#configure" do
       let(:datatable) do
         class FooDatatable < AjaxDatatablesRails::Base
-          def setup
-            set_model_class do |klass|
-              klass.users = User
-              klass.requests = Statistics::Request
-              klass.purchased_orders = PurchasedOrder
-              klass.statistics_sessions = Statistics::Session
-            end
-          end
         end
 
         FooDatatable.new view
@@ -138,38 +130,55 @@ describe AjaxDatatablesRails::Base do
 
       context "when model class name is regular" do
         it "should successfully get right model class" do
-          datatable.send(:search_condition, 'users.bar', 'bar')
-          expect(datatable.models.users).to eq(User)
+          expect(
+            datatable.send(:search_condition, 'User.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
         end
       end
 
       context "when custom named model class" do
         it "should successfully get right model class" do
-          expect(datatable.send(:search_condition, 'requests.bar', 'bar').class)
-          .to eq(Arel::Nodes::Matches)
+          expect(
+            datatable.send(:search_condition, 'Statistics::Request.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
         end
       end
 
 
       context "when model class name camelcased" do
         it "should successfully get right model class" do
-          expect(datatable.send(:search_condition, 'purchased_orders.bar', 'bar').class)
-          .to eq(Arel::Nodes::Matches)
+          expect(
+            datatable.send(:search_condition, 'PurchasedOrder.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
         end
       end
 
       context "when model class name is namespaced" do
         it "should successfully get right model class" do
-          expect(datatable.send(:search_condition, 'statistics_sessions.bar', 'bar').class)
-          .to eq(Arel::Nodes::Matches)
+          expect(
+            datatable.send(:search_condition, 'Statistics::Session.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
         end
       end
 
       context "when model class defined but not found" do
         it "raise 'uninitialized constant'" do
           expect {
-            datatable.send(:search_condition, 'non_existed_model.bar', 'bar')
-          }.to raise_error(RuntimeError, /not found/)
+            datatable.send(:search_condition, 'UnexistentModel.bar', 'bar')
+          }.to raise_error(NameError, /uninitialized constant/)
+        end
+      end
+
+      context 'when using deprecated notation' do
+        it 'should successfully get right model class if exists' do
+          expect(
+            datatable.send(:search_condition, 'users.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+
+        it 'should display a deprecated message' do
+          expect(AjaxDatatablesRails::Base).to receive(:deprecated)
+          datatable.send(:search_condition, 'users.bar', 'bar')
         end
       end
     end
@@ -193,6 +202,10 @@ describe AjaxDatatablesRails::Base do
     let(:results) { double('Collection', :offset => [], :limit => []) }
     let(:view) { double('view', :params => params) }
     let(:datatable) { AjaxDatatablesRails::Base.new(view) }
+
+    before(:each) do
+      allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar'] }
+    end
 
     describe '#paginate_records' do
       it 'raises a MethodNotImplementedError' do

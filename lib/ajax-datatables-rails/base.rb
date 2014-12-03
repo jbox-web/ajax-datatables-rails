@@ -9,19 +9,6 @@ module AjaxDatatablesRails
     def initialize(view, options = {})
       @view = view
       @options = options
-      setup
-    end
-
-    def set_model_class
-      @models ||= AjaxDatatablesRails::Models.new
-      yield @models
-    end
-
-    def setup
-    end
-
-    def models
-      @models ||= AjaxDatatablesRails::Models.new
     end
 
     def config
@@ -57,6 +44,16 @@ module AjaxDatatablesRails
         :recordsFiltered => filter_records(get_raw_records).count(:all),
         :data => data
       }
+    end
+
+    def self.deprecated(message, caller = Kernel.caller[1])
+      warning = caller + ": " + message
+
+      if(respond_to?(:logger) && logger.present?)
+        logger.warn(warning)
+      else
+        warn(warning)
+      end
     end
 
     private
@@ -116,12 +113,26 @@ module AjaxDatatablesRails
     end
 
     def search_condition(column, value)
-      model, column = column.split('.')
-      model_class = models[model]
-      model_class = model.singularize.titleize.gsub( / /, '' ).safe_constantize if model_class.nil?
-      raise("Model with class name #{model} not found") if model_class.nil?
+      if column[0] == column.downcase[0]
+        ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
+        return deprecated_search_condition(column, value)
+      else
+        return new_search_condition(column, value)
+      end
+    end
 
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model_class.arel_table[column.to_sym].as(typecast)])
+    def new_search_condition(column, value)
+      model, column = column.split('.')
+      model = model.constantize
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+      casted_column.matches("%#{value}%")
+    end
+
+    def deprecated_search_condition(column, value)
+      model, column = column.split('.')
+      model = model.singularize.titleize.gsub( / /, '' ).constantize
+
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{value}%")
     end
 
@@ -154,11 +165,19 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      column = sortable_columns[item[:column].to_i]
-      return nil if column.nil?
-      model, col = column.split(".")
-      return [models[model].table_name.to_s, col].join(".") unless models[model].nil?
-      column
+      new_sort_column(item)
+    rescue
+      ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
+      deprecated_sort_column(item)
+    end
+
+    def deprecated_sort_column(item)
+      sortable_columns[item['column'].to_i]
+    end
+
+    def new_sort_column(item)
+      model, column = sortable_columns[item[:column].to_i].split('.')
+      col = [model.constantize.table_name, column].join('.')
     end
 
     def sort_direction(item)

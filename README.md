@@ -72,14 +72,12 @@ Take a look [here](#generator-syntax) for an explanation about the generator syn
 # include AjaxDatatablesRails::Extensions::SimplePaginator
 
 def sortable_columns
-  # list columns inside the Array in string dot notation.
-  # Example: 'users.email'
+  # Declare strings in this format: ModelName.column_name
   @sortable_columns ||= []
 end
 
 def searchable_columns
-  # list columns inside the Array in string dot notation.
-  # Example: 'users.email'
+  # Declare strings in this format: ModelName.column_name
   @searchable_columns ||= []
 end
 ```
@@ -90,7 +88,7 @@ the gems bundled in your project. For example, if your models are using `Kaminar
 
 * For `sortable_columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns.
 
-* For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. For example `[users.f_name, users.l_name]`
+* For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. Suppose we need to sort and search users `:first_name`, `last_name` and `bio`.
 
 This gives us:
 
@@ -98,15 +96,20 @@ This gives us:
 include AjaxDatatablesRails::Extensions::Kaminari
 
 def sortable_columns
-  @sortable_columns ||= ['users.f_name', 'users.l_name', 'users.bio']
+  @sortable_columns ||= %w(User.first_name User.last_name User.bio)
+  # this is equal to:
+  # @sortable_columns ||= ['User.first_name', 'User.last_name', 'User.bio']
 end
 
 def searchable_columns
-  @searchable_columns ||= ['users.f_name', 'users.l_name']
+  @searchable_columns ||= %w(User.first_name User.last_name User.bio)
+  # this is equal to:
+  # @searchable_columns ||= ['User.first_name', 'User.last_name', 'User.bio']
 end
 ```
 
-[See here](#searching-on-non-text-based-columns) for notes regarding database config (if using something different from `postgre`).
+* [See here](#searching-on-non-text-based-columns) for notes about the `searchable_columns` settings (if using something different from `postgre`).
+* [Read these notes](#searchable-and-sortable-columns-syntax) about considerations for the `searchable_columns` and `sortable_columns` methods.
 
 ### Map data
 ```ruby
@@ -126,8 +129,8 @@ This method builds a 2d array that is used by datatables to construct the html t
 def data
   records.map do |record|
     [
-      record.f_name,
-      record.l_name,
+      record.first_name,
+      record.last_name,
       record.bio
     ]
   end
@@ -174,27 +177,27 @@ We want to sort and search on all columns of the list. The related definition wo
 
   def sortable_columns
     @sortable_columns ||= [
-        'coursetypes.name',
-        'courses.name',
-        'events.title',
-        'events.event_start',
-        'events.event_end',
-        'contacts.last_name',
-        'competency_types.name',
-        'events.status'
+        'Coursetype.name',
+        'Course.name',
+        'Event.title',
+        'Event.event_start',
+        'Event.event_end',
+        'Contact.last_name',
+        'CompetencyType.name',
+        'Event.status'
     ]
   end
 
   def searchable_columns
     @searchable_columns ||= [
-        'coursetypes.name',
-        'courses.name',
-        'events.title',
-        'events.event_start',
-        'events.event_end',
-        'contacts.last_name',
-        'competency_types.name',
-        'events.status'
+        'Coursetype.name',
+        'Course.name',
+        'Event.title',
+        'Event.event_start',
+        'Event.event_end',
+        'Contact.last_name',
+        'CompetencyType.name',
+        'Event.status'
     ]
   end
 
@@ -230,38 +233,6 @@ So the query using the `.includes()` method is:
   end
 ```
 
-#### NOTE for model class that different from table name 
-currently model class name detected by singularize the table name 
-so if your table name is different, or you have namespaced model, you should set the model name like this 
-
-create the `setup` method (`setup` method will be executed when AjaxDatatablesRails class initialized)
-
-then create `set_model_class` block inside `setup` method
-
-```ruby
-def setup
-  set_model_class do |klass|
-    klass.users = Employee
-  end
-end
-``` 
-now you can use `users.name` at `sortable_columns` and `searchable_columns` methods 
-```ruby
-@sortable_columns ||= [ 'users.name']
-```
-
-##### TIPS, you can use above step to abbreviate long namespaced model 
-```ruby
-def setup
-  set_model_class do |klass|
-    klass.requests = Statistics::Request
-      klass.sessions = Statistics::Session
-  end
-end
-def searchable_columns
-  @sortable_columns ||= [ 'requests.foo', 'sessions.bar']
-end
-```
 
 ### Controller
 Set up the controller to respond to JSON
@@ -277,7 +248,9 @@ end
 
 Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
+
 ### View
+
 * Set up an html `<table>` with a `<thead>` and `<tbody>`
 * Add in your table headers if desired
 * Don't add any rows to the body of the table, datatables does this automatically
@@ -285,7 +258,7 @@ Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
 The resulting view may look like this:
 
-```erb
+```html
 <table id="users-table", data-source="<%= users_path(format: :json) %>">
   <thead>
     <tr>
@@ -300,9 +273,11 @@ The resulting view may look like this:
 ```
 
 ### Javascript
-Finally, the javascript to tie this all together. In the appropriate `js.coffee` file:
+Finally, the javascript to tie this all together. In the appropriate `coffee` file:
 
 ```coffeescript
+# users.coffee
+
 $ ->
   $('#users-table').dataTable
     processing: true
@@ -332,6 +307,65 @@ jQuery(document).ready(function() {
 ```
 
 ### Additional Notes
+
+#### Searchable and Sortable columns syntax
+
+Starting on version `0.3.0`, we are implementing a pseudo code way of declaring the array of both `searchable_columns` and `sortable_columns` method.
+
+Example. Suppose we have the following models: `User`, `PurchaseOrder`, `Purchase::LineItem` and we need to have several columns from those models available in our datatable to search and sort by.
+
+```ruby
+# we use the ModelName.column_name notation to declare our columns
+
+def searchable_columns
+  @searchable_columns ||= [
+    'User.first_name',
+    'User.last_name',
+    'PurchaseOrder.number',
+    'PurchaseOrder.created_at',
+    'Purchase::LineItem.quantity',
+    'Purchase::LineItem.unit_price',
+    'Purchase::LineItem.item_total'
+  ]
+end
+
+def sortable_columns
+  @sortable_columns ||= [
+    'User.first_name',
+    'User.last_name',
+    'PurchaseOrder.number',
+    'PurchaseOrder.created_at'
+  ]
+end
+```
+
+##### What if the datatable itself is namespaced?
+Example: what if the datatable is namespaced into an `Admin` module?
+
+```ruby
+module Admin
+  class PurchasesDatatable < AjaxDatatablesRails::Base
+  end
+end
+```
+
+Taking the same models and columns, we would define it like this:
+
+```ruby
+def searchable_columns
+  @searchable_columns ||= [
+    '::User.first_name',
+    '::User.last_name',
+    '::PurchaseOrder.number',
+    '::PurchaseOrder.created_at',
+    '::Purchase::LineItem.quantity',
+    '::Purchase::LineItem.unit_price',
+    '::Purchase::LineItem.item_total'
+  ]
+end
+```
+
+Pretty much like you would do it, if you were inside a namespaced controller.
 
 #### Searching on non text-based columns
 
