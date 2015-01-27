@@ -139,12 +139,25 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      sortable_columns[item['column'].to_i]
+      sortable_columns[sortable_diplayed_columns.index(item[:column])]
     end
 
     def sort_direction(item)
       options = %w(desc asc)
       options.include?(item['dir']) ? item['dir'].upcase : 'ASC'
     end
+
+    def sortable_diplayed_columns
+      @sortable_diplayed_columns ||= generate_sortable_diplayed_columns
+    end
+
+    def generate_sortable_diplayed_columns
+      @sortable_diplayed_columns = []
+      params[:columns].each_value do |column|
+        @sortable_diplayed_columns << column[:data] if column[:orderable] == 'true'
+      end
+      @sortable_diplayed_columns
+    end
+
   end
 end
