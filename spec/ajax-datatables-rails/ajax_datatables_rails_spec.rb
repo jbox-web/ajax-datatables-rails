@@ -1,23 +1,6 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
-  class Column
-    def matches(query)
-      []
-    end
-  end
-
-  class User
-    def self.arel_table
-      { :foo => Column.new }
-    end
-  end
-
-  class UserData
-    def self.arel_table
-      { :bar => Column.new }
-    end
-  end
 
   params = {
     :draw => '5',
@@ -95,17 +78,13 @@ describe AjaxDatatablesRails::Base do
     describe '#sort_column' do
       it 'returns a column name from the #sorting_columns array' do
         sort_view = double(
-          'view',
-          :params => {
-            :order => {
-              '0' => { :column => '1' }
-            }
-          }
+          'view', :params => params
         )
         datatable = AjaxDatatablesRails::Base.new(sort_view)
-        datatable.stub(:sortable_columns) { ['foo', 'bar', 'baz'] }
+        allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+        allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar', 'User.baz'] }
 
-        expect(datatable.send(:sort_column)).to eq('bar')
+        expect(datatable.send(:sort_column, sort_view.params[:order]["0"])).to eq('users.bar')
       end
     end
 
@@ -120,7 +99,7 @@ describe AjaxDatatablesRails::Base do
           }
         )
         datatable = AjaxDatatablesRails::Base.new(sorting_view)
-        expect(datatable.send(:sort_direction)).to eq('DESC')
+        expect(datatable.send(:sort_direction, sorting_view.params[:order]["0"])).to eq('DESC')
       end
 
       it 'can only be one option from ASC or DESC' do
@@ -133,7 +112,70 @@ describe AjaxDatatablesRails::Base do
           }
         )
         datatable = AjaxDatatablesRails::Base.new(sorting_view)
-        expect(datatable.send(:sort_direction)).to eq('ASC')
+        expect(datatable.send(:sort_direction, sorting_view.params[:order]["0"])).to eq('ASC')
+      end
+    end
+
+    describe "#configure" do
+      let(:datatable) do
+        class FooDatatable < AjaxDatatablesRails::Base
+        end
+
+        FooDatatable.new view
+      end
+
+      context "when model class name is regular" do
+        it "should successfully get right model class" do
+          expect(
+            datatable.send(:search_condition, 'User.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+      end
+
+      context "when custom named model class" do
+        it "should successfully get right model class" do
+          expect(
+            datatable.send(:search_condition, 'Statistics::Request.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+      end
+
+
+      context "when model class name camelcased" do
+        it "should successfully get right model class" do
+          expect(
+            datatable.send(:search_condition, 'PurchasedOrder.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+      end
+
+      context "when model class name is namespaced" do
+        it "should successfully get right model class" do
+          expect(
+            datatable.send(:search_condition, 'Statistics::Session.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+      end
+
+      context "when model class defined but not found" do
+        it "raise 'uninitialized constant'" do
+          expect {
+            datatable.send(:search_condition, 'UnexistentModel.bar', 'bar')
+          }.to raise_error(NameError, /uninitialized constant/)
+        end
+      end
+
+      context 'when using deprecated notation' do
+        it 'should successfully get right model class if exists' do
+          expect(
+            datatable.send(:search_condition, 'users.bar', 'bar')
+          ).to be_a(Arel::Nodes::Matches)
+        end
+
+        it 'should display a deprecated message' do
+          expect(AjaxDatatablesRails::Base).to receive(:deprecated)
+          datatable.send(:search_condition, 'users.bar', 'bar')
+        end
       end
     end
 
@@ -157,6 +199,11 @@ describe AjaxDatatablesRails::Base do
     let(:view) { double('view', :params => params) }
     let(:datatable) { AjaxDatatablesRails::Base.new(view) }
 
+    before(:each) do
+      allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar'] }
+      allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+    end
+
     describe '#paginate_records' do
       it 'raises a MethodNotImplementedError' do
         expect { datatable.send(:paginate_records, []) }.to raise_error(
@@ -167,20 +214,21 @@ describe AjaxDatatablesRails::Base do
 
     describe '#sort_records' do
       it 'calls #order on a collection' do
-        results.should_receive(:order)
+        expect(results).to receive(:order)
         datatable.send(:sort_records, results)
       end
     end
 
     describe '#filter_records' do
-      let(:records) { double('User', :where => []) }
+      let(:records) {  double('User', :where => []) }
       let(:search_view) { double('view', :params => params) }
 
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
-        datatable.stub(:searchable_columns) { ['users.foo'] }
+        allow(datatable).to receive(:searchable_columns) { ['users.foo'] }
 
-        records.should_receive(:where)
+        expect(records).to receive(:where)
+        records.where
         datatable.send(:filter_records, records)
       end
     end
@@ -191,9 +239,10 @@ describe AjaxDatatablesRails::Base do
 
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
-        datatable.stub(:searchable_columns) { ['user_datas.bar'] }
+        allow(datatable).to receive(:searchable_columns) { ['user_datas.bar'] }
 
-        records.should_receive(:where)
+        expect(records).to receive(:where)
+        records.where
         datatable.send(:filter_records, records)
       end
     end

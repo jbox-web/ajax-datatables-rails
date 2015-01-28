@@ -46,6 +46,16 @@ module AjaxDatatablesRails
       }
     end
 
+    def self.deprecated(message, caller = Kernel.caller[1])
+      warning = caller + ": " + message
+
+      if(respond_to?(:logger) && logger.present?)
+        logger.warn(warning)
+      else
+        warn(warning)
+      end
+    end
+
     private
 
     def records
@@ -103,6 +113,22 @@ module AjaxDatatablesRails
     end
 
     def search_condition(column, value)
+      if column[0] == column.downcase[0]
+        ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
+        return deprecated_search_condition(column, value)
+      else
+        return new_search_condition(column, value)
+      end
+    end
+
+    def new_search_condition(column, value)
+      model, column = column.split('.')
+      model = model.constantize
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+      casted_column.matches("%#{value}%")
+    end
+
+    def deprecated_search_condition(column, value)
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
 
@@ -139,12 +165,24 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
+      new_sort_column(item)
+    rescue
+      ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
+      deprecated_sort_column(item)
+    end
+
+    def deprecated_sort_column(item)
       sortable_columns[sortable_displayed_columns.index(item[:column])]
+    end
+
+    def new_sort_column(item)
+      model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
+      col = [model.constantize.table_name, column].join('.')
     end
 
     def sort_direction(item)
       options = %w(desc asc)
-      options.include?(item['dir']) ? item['dir'].upcase : 'ASC'
+      options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
     end
 
     def sortable_displayed_columns

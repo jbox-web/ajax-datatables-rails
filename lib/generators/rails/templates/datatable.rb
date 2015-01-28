@@ -6,14 +6,12 @@ class <%= @datatable_name %>Datatable < AjaxDatatablesRails::Base
   # include AjaxDatatablesRails::Extensions::SimplePaginator
 
   def sortable_columns
-    # list columns inside the Array in string dot notation.
-    # Example: 'users.email'
+    # Declare strings in this format: ModelName.column_name
     @sortable_columns ||= []
   end
 
   def searchable_columns
-    # list columns inside the Array in string dot notation.
-    # Example: 'users.email'
+    # Declare strings in this format: ModelName.column_name
     @searchable_columns ||= []
   end
 
