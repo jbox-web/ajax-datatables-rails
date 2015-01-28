@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.3.0
+* Changes to the `sortable_columns` and `searchable_columns` syntax as it required us to do unnecessary guessing.
+  Thanks to [M. Saiqul Haq](https://github.com/saiqulhaq) for pointing this.
+* Adds support to discover from received params if a column should be really considered for sorting purposes.
+  Thanks to [Zachariah Clay](https://github.com/mebezac) for this contribution.
+
 ## 0.2.1
 * Fix count method to work with select statements under Rails 4.1. Thanks to [Jason Mitchell](https://github.com/mitchej123) for the contribution.
 * Edits to `README` documentation about the `options` hash. Thanks to [Jonathan E Hogue](https://github.com/hoguej) for pointing out that previous documentation was confusing and didn't address its usage properly.
