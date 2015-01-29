@@ -1,10 +1,13 @@
 require 'spec_helper'
 
 class KaminariDatatable < AjaxDatatablesRails::Base
-  include AjaxDatatablesRails::Extensions::Kaminari
 end
 
 describe KaminariDatatable do
+  before(:each) do
+    allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:paginator) { :kaminari }
+  end
+
   describe '#paginate_records' do
     let(:users_database) do
       double('User',

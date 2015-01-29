@@ -1,10 +1,13 @@
 require 'spec_helper'
 
 class WillPaginateDatatable < AjaxDatatablesRails::Base
-  include AjaxDatatablesRails::Extensions::WillPaginate
 end
 
 describe WillPaginateDatatable do
+  before(:each) do
+    allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:paginator) { :will_paginate }
+  end
+
   describe '#paginate_records' do
     let(:users_database) do
       double('User',

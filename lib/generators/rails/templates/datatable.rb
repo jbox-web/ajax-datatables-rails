@@ -1,9 +1,4 @@
 class <%= @datatable_name %>Datatable < AjaxDatatablesRails::Base
-  # uncomment the appropriate paginator module,
-  # depending on gems available in your project.
-  # include AjaxDatatablesRails::Extensions::Kaminari
-  # include AjaxDatatablesRails::Extensions::WillPaginate
-  # include AjaxDatatablesRails::Extensions::SimplePaginator
 
   def sortable_columns
     # Declare strings in this format: ModelName.column_name

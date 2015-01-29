@@ -198,6 +198,7 @@ describe AjaxDatatablesRails::Base do
     let(:results) { double('Collection', :offset => [], :limit => []) }
     let(:view) { double('view', :params => params) }
     let(:datatable) { AjaxDatatablesRails::Base.new(view) }
+    let(:records) { double('Array').as_null_object }
 
     before(:each) do
       allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar'] }
@@ -205,10 +206,10 @@ describe AjaxDatatablesRails::Base do
     end
 
     describe '#paginate_records' do
-      it 'raises a MethodNotImplementedError' do
-        expect { datatable.send(:paginate_records, []) }.to raise_error(
-          AjaxDatatablesRails::Base::MethodNotImplementedError
-        )
+      it 'defaults to Extensions::SimplePaginator#paginate_records' do
+        allow(records).to receive_message_chain(:offset, :limit)
+
+        expect { datatable.send(:paginate_records, records) }.not_to raise_error
       end
     end
 

@@ -20,5 +20,6 @@ module AjaxDatatablesRails
 
     # default db_adapter is pg (postgresql)
     config_accessor(:db_adapter) { :pg }
+    config_accessor(:paginator) { :simple_paginator }
   end
 end

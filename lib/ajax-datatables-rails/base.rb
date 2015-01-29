@@ -9,6 +9,7 @@ module AjaxDatatablesRails
     def initialize(view, options = {})
       @view = view
       @options = options
+      load_paginator
     end
 
     def config
@@ -197,5 +198,16 @@ module AjaxDatatablesRails
       @sortable_displayed_columns
     end
 
+    def load_paginator
+      case config.paginator
+      when :kaminari
+        extend Extensions::Kaminari
+      when :will_paginate
+        extend Extensions::WillPaginate
+      else
+        extend Extensions::SimplePaginator
+      end
+      self
+    end
   end
 end
