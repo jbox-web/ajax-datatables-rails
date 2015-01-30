@@ -6,9 +6,11 @@
 
 ### Versions
 
-[Datatables](http://datatables.net) recently released version 1.10 and deprecated version 1.9 which includes a new API and features.
+[Datatables](http://datatables.net) recently released version 1.10 (which
+includes a new API and features) and deprecated version 1.9.
 
-If you have dataTables 1.9 in your project and want to keep using it, please use this gem's version `0.1.x` in your `Gemfile`:
+If you have dataTables 1.9 in your project and want to keep using it, please
+use this gem's version `0.1.x` in your `Gemfile`:
 
 ```ruby
 # specific version number
@@ -18,21 +20,33 @@ gem 'ajax-datatables-rails', '0.1.2'
 gem 'ajax-datatables-rails', git: 'git://github.com/antillas21/ajax-datatables-rails.git', branch: 'legacy'
 ```
 
-If you have dataTables 1.10 in your project, then use the gem's latest version, or point to the `master` branch.
-
+If you have dataTables 1.10 in your project, then use the gem's latest version,
+or point to the `master` branch.
 
 
 ## Description
 
-Datatables is a nifty jquery plugin that adds the ability to paginate, sort, and search your html tables. When dealing with large tables (more than a couple hundred rows) however, we run into performance issues. These can be fixed by using server-side pagination, but this breaks some datatables functionality.
+Datatables is a nifty jquery plugin that adds the ability to paginate, sort,
+and search your html tables. When dealing with large tables
+(more than a couple hundred rows) however, we run into performance issues.
+These can be fixed by using server-side pagination, but this breaks some
+datatables functionality.
 
-`ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app. It was inspired by this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to implement a similar solution in a couple projects I was working on so I extracted it out into a gem.
+`ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow
+synchronization with server-side pagination in a rails app. It was inspired by
+this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to
+implement a similar solution in a couple projects I was working on, so I
+extracted a solution into a gem.
 
 ## ORM support
 
-Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
+Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for
+performing database queries.
 
-Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature for this gem. If you'd be interested in contributing to speed development, please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new) and get in touch.
+Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature
+for this gem. If you'd be interested in contributing to speed development, 
+please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new)
+and get in touch.
 
 ## Installation
 
@@ -47,11 +61,16 @@ And then execute:
 
 The `jquery-datatables-rails` gem is listed as a convenience, to ease adding
 jQuery dataTables to your Rails project. You can always add the plugin assets
-manually via the assets pipeline. If you decide to use the `jquery-datatables-rails` gem, please refer to its installation instructions [here](https://github.com/rweng/jquery-datatables-rails).
+manually via the assets pipeline. If you decide to use the
+`jquery-datatables-rails` gem, please refer to its installation instructions
+[here](https://github.com/rweng/jquery-datatables-rails).
 
 ## Usage
-*The following examples assume that we are setting up ajax-datatables-rails for an index of users from a `User` model, and that we are using postgresql as
-our db, because you __should be using it__, if not, please refer to the [Searching on non text-based columns](#searching-on-non-text-based-columns) entry in the Additional Notes section.*
+*The following examples assume that we are setting up ajax-datatables-rails for
+an index of users from a `User` model, and that we are using postgresql as
+our db, because you __should be using it__, if not, please refer to the
+[Searching on non text-based columns](#searching-on-non-text-based-columns)
+entry in the Additional Notes section.*
 
 ### Generate
 Run the following command:
@@ -59,18 +78,13 @@ Run the following command:
     $ rails generate datatable User
 
 
-This will generate a file named `user_datatable.rb` in `app/datatables`. Open the file and customize in the functions as directed by the comments.
+This will generate a file named `user_datatable.rb` in `app/datatables`.
+Open the file and customize in the functions as directed by the comments.
 
 Take a look [here](#generator-syntax) for an explanation about the generator syntax.
 
 ### Customize
 ```ruby
-# uncomment the appropriate paginator module,
-# depending on gems available in your project.
-# include AjaxDatatablesRails::Extensions::Kaminari
-# include AjaxDatatablesRails::Extensions::WillPaginate
-# include AjaxDatatablesRails::Extensions::SimplePaginator
-
 def sortable_columns
   # Declare strings in this format: ModelName.column_name
   @sortable_columns ||= []
@@ -82,13 +96,14 @@ def searchable_columns
 end
 ```
 
-* For `paginator options`, just uncomment the paginator you would like to use, given
-the gems bundled in your project. For example, if your models are using `Kaminari`, uncomment `AjaxDatatablesRails::Extensions::Kaminari`. You may remove all commented lines.
-  * `SimplePaginator` is the most basic of them all, it falls back to passing `offset` and `limit` at the database level (through `ActiveRecord` of course, as that is the only ORM supported for the time being).
+* For `sortable_columns`, assign an array of the database columns that
+correspond to the columns in our view table. For example
+`[users.f_name, users.l_name, users.bio]`. This array is used for sorting by
+various columns.
 
-* For `sortable_columns`, assign an array of the database columns that correspond to the columns in our view table. For example `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by various columns.
-
-* For `searchable_columns`, assign an array of the database columns that you want searchable by datatables. Suppose we need to sort and search users `:first_name`, `last_name` and `bio`.
+* For `searchable_columns`, assign an array of the database columns that you
+want searchable by datatables. Suppose we need to sort and search users
+`:first_name`, `last_name` and `bio`.
 
 This gives us:
 
@@ -108,8 +123,10 @@ def searchable_columns
 end
 ```
 
-* [See here](#searching-on-non-text-based-columns) for notes about the `searchable_columns` settings (if using something different from `postgre`).
-* [Read these notes](#searchable-and-sortable-columns-syntax) about considerations for the `searchable_columns` and `sortable_columns` methods.
+* [See here](#searching-on-non-text-based-columns) for notes about the
+`searchable_columns` settings (if using something different from `postgre`).
+* [Read these notes](#searchable-and-sortable-columns-syntax) about
+considerations for the `searchable_columns` and `sortable_columns` methods.
 
 ### Map data
 ```ruby
@@ -123,7 +140,8 @@ def data
 end
 ```
 
-This method builds a 2d array that is used by datatables to construct the html table. Insert the values you want on each column.
+This method builds a 2d array that is used by datatables to construct the html
+table. Insert the values you want on each column.
 
 ```ruby
 def data
@@ -137,7 +155,8 @@ def data
 end
 ```
 
-[See here](#using-view-helpers) if you need to use view helpers in the returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
+[See here](#using-view-helpers) if you need to use view helpers in the
+returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
 
 #### Get Raw Records
 ```ruby
@@ -150,18 +169,31 @@ This is where your query goes.
 
 ```ruby
 def get_raw_records
+  # suppose we need all User records
+  # Rails 4+
   User.all
+  # Rails 3.x
+  # User.scoped
 end
 ```
 
-Obviously, you can construct your query as required for the use case the datatable is used. Example: `User.active.with_recent_messages`.
-__IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object as the end product of this method. Why? Because the result from
-this method, will be chained (for now) to `ActiveRecord` methods for sorting, filtering and pagination.
+Obviously, you can construct your query as required for the use case the
+datatable is used. Example: `User.active.with_recent_messages`.
+
+__IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object as the
+end product of this method. Why? Because the result from this method, will
+be chained (for now) to `ActiveRecord` methods for sorting, filtering
+and pagination.
 
 #### Associated and nested models
-The previous example has only one single model. But what about if you have some associated nested models and in a report you want to show fields from these tables.
+The previous example has only one single model. But what about if you have
+some associated nested models and in a report you want to show fields from
+these tables.
 
-Take an example that has an `Event, Course, Coursetype, Allocation, Teacher, Contact, Competency and CompetencyType` models. We want to have a datatables report which has the following column:
+Take an example that has an `Event, Course, Coursetype, Allocation, Teacher,
+Contact, Competency and CompetencyType` models. We want to have a datatables
+report which has the following column:
+
 ```ruby
         'coursetypes.name',
         'courses.name',
@@ -172,7 +204,10 @@ Take an example that has an `Event, Course, Coursetype, Allocation, Teacher, Con
         'competency_types.name',
         'events.status'
 ```
-We want to sort and search on all columns of the list. The related definition would be:
+
+We want to sort and search on all columns of the list. The related definition
+would be:
+
 ```ruby
 
   def sortable_columns
@@ -213,11 +248,29 @@ We want to sort and search on all columns of the list. The related definition wo
 
 __Some comments for the above code:__
 
-1. In the list we show `full_name`, but in `sortable_columns` and `searchable_columns` we use `last_name` from the `Contact` model. The reason is we can use only database columns as sort or search fields and the full_name is not a database field.
+1. In the list we show `full_name`, but in `sortable_columns` and
+`searchable_columns` we use `last_name` from the `Contact` model. The reason
+is we can use only database columns as sort or search fields and the full_name
+is not a database field.
 
-2. In the `get_raw_records` method we have quite a complex query having one to many and may to many associations using the joins ActiveRecord method. The joins will generate INNER JOIN relations in the SQL query. In this case we do not include all event in the report if we have events which is not associated with any model record from the relation.
+2. In the `get_raw_records` method we have quite a complex query having one to
+many and may to many associations using the joins ActiveRecord method.
+The joins will generate INNER JOIN relations in the SQL query. In this case,
+we do not include all event in the report if we have events which is not
+associated with any model record from the relation.
 
-3. To have all event records in the list we should use the `.includes` method, which generate LEFT OUTER JOIN relation of the SQL query. __IMPORTANT:__ Make sure to append `.references(:related_model)` with any associated model. That forces the eager loading of all the associated models by one SQL query, and the search condition for any column works fine. Otherwise the `:recordsFiltered => filter_records(get_raw_records).count(:all)` will generate 2 SQL queries (one for the Event model, and then another for the associated tables). The `:recordsFiltered => filter_records(get_raw_records).count(:all)` will use only the first one to return from the ActiveRecord::Relation object in `get_raw_records` and you will get an error message of __Unknown column 'yourtable.yourfield' in 'where clause'__ in case the search field value is not empty.
+3. To have all event records in the list we should use the `.includes` method,
+which generate LEFT OUTER JOIN relation of the SQL query.
+__IMPORTANT:__ Make sure to append `.references(:related_model)` with any
+associated model. That forces the eager loading of all the associated models
+by one SQL query, and the search condition for any column works fine.
+Otherwise the `:recordsFiltered => filter_records(get_raw_records).count(:all)`
+will generate 2 SQL queries (one for the Event model, and then another for the
+associated tables). The `:recordsFiltered => filter_records(get_raw_records).count(:all)`
+will use only the first one to return from the ActiveRecord::Relation object
+in `get_raw_records` and you will get an error message of __Unknown column
+'yourtable.yourfield' in 'where clause'__ in case the search field value
+is not empty.
 
 So the query using the `.includes()` method is:
 
@@ -310,9 +363,12 @@ jQuery(document).ready(function() {
 
 #### Searchable and Sortable columns syntax
 
-Starting on version `0.3.0`, we are implementing a pseudo code way of declaring the array of both `searchable_columns` and `sortable_columns` method.
+Starting on version `0.3.0`, we are implementing a pseudo code way of declaring
+the array of both `searchable_columns` and `sortable_columns` method.
 
-Example. Suppose we have the following models: `User`, `PurchaseOrder`, `Purchase::LineItem` and we need to have several columns from those models available in our datatable to search and sort by.
+Example. Suppose we have the following models: `User`, `PurchaseOrder`,
+`Purchase::LineItem` and we need to have several columns from those models
+available in our datatable to search and sort by.
 
 ```ruby
 # we use the ModelName.column_name notation to declare our columns
@@ -369,11 +425,22 @@ Pretty much like you would do it, if you were inside a namespaced controller.
 
 #### Searching on non text-based columns
 
-It always comes the time when you need to add a non-string/non-text based column to the `@searchable_columns` array, so you can perform searches against these column types (example: numeric, date, time).
+It always comes the time when you need to add a non-string/non-text based
+column to the `@searchable_columns` array, so you can perform searches against
+these column types (example: numeric, date, time).
 
-We recently added the ability to (automatically) typecast these column types and have this scenario covered. Please note however, if you are using something different from `postgre` (with the `:pg` gem), like `mysql` or `sqlite`, then you need to add an initializer in your application's `config/initializers` directory.
+We recently added the ability to (automatically) typecast these column types
+and have this scenario covered. Please note however, if you are using
+something different from `postgresql` (with the `:pg` gem), like `mysql` or
+`sqlite`, then you need to add an initializer in your application's
+`config/initializers` directory.
 
-If you don't perform this step (again, if using something different from `postgre`), your database will complain that it does not understand the default typecast used to enable such searches.
+If you don't perform this step (again, if using something different from
+`postgresql`), your database will complain that it does not understand the
+default typecast used to enable such searches.
+
+
+#### Configuration initializer
 
 You have two options to create this initializer:
 
@@ -386,24 +453,36 @@ To use the generator, from the terminal execute:
 $ bundle exec rails generate datatable:config
 ```
 
-Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file with the following content:
+Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file
+with the following content:
 
 ```ruby
 AjaxDatatablesRails.configure do |config|
   # available options for db_adapter are: :pg, :mysql2, :sqlite3
   # config.db_adapter = :pg
+
+  # available options for paginator are: :simple_paginator, :kaminari, :will_paginate
+  # config.paginator = :simple_paginator
 end
 ```
 
 Uncomment the `config.db_adapter` line and set the corresponding value to your
 database and gem. This is all you need.
 
-If you want to make the file from scratch, just copy the above code block into a file inside the `config/initializers` directory.
+Uncomment the `config.paginator` line to set `kaminari or will_paginate` if
+included in your project. It defaults to `simple_paginator`, it falls back to
+passing `offset` and `limit` at the database level (through `ActiveRecord`
+of course).
+
+If you want to make the file from scratch, just copy the above code block into
+a file inside the `config/initializers` directory.
 
 
 #### Using view helpers
 
-Sometimes you'll need to use view helper methods like `link_to`, `h`, `mailto`, `edit_resource_path` in the returned JSON representation returned by the `data` method.
+Sometimes you'll need to use view helper methods like `link_to`, `h`, `mailto`,
+`edit_resource_path` in the returned JSON representation returned by the `data`
+method.
 
 To have these methods available to be used, this is the way to go:
 
@@ -433,7 +512,8 @@ end
 
 #### Options
 
-An `AjaxDatatablesRails::Base` inherited class can accept an options hash at initialization. This provides room for flexibility when required. Example:
+An `AjaxDatatablesRails::Base` inherited class can accept an options hash at
+initialization. This provides room for flexibility when required. Example:
 
 ```ruby
 class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
@@ -464,7 +544,9 @@ end
 
 #### Generator Syntax
 
-Also, a class that inherits from `AjaxDatatablesRails::Base` is not tied to an existing model, module, constant or any type of class in your Rails app. You can pass a name to your datatable class like this:
+Also, a class that inherits from `AjaxDatatablesRails::Base` is not tied to an
+existing model, module, constant or any type of class in your Rails app.
+You can pass a name to your datatable class like this:
 
 
 ```
@@ -479,7 +561,9 @@ $ rails generate datatable UnrespondedMessages
 ```
 
 
-In the end, it's up to the developer which model(s), scope(s), relationship(s) (or else) to employ inside the datatable class to retrieve records from the database.
+In the end, it's up to the developer which model(s), scope(s), relationship(s)
+(or else) to employ inside the datatable class to retrieve records from the
+database.
 
 ## Tutorial
 
