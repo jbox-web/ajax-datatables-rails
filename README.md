@@ -44,7 +44,7 @@ Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for
 performing database queries.
 
 Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature
-for this gem. If you'd be interested in contributing to speed development, 
+for this gem. If you'd be interested in contributing to speed development,
 please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new)
 and get in touch.
 
@@ -65,7 +65,7 @@ manually via the assets pipeline. If you decide to use the
 `jquery-datatables-rails` gem, please refer to its installation instructions
 [here](https://github.com/rweng/jquery-datatables-rails).
 
-## Usage
+## Usage (0.3.0)
 *The following examples assume that we are setting up ajax-datatables-rails for
 an index of users from a `User` model, and that we are using postgresql as
 our db, because you __should be using it__, if not, please refer to the
@@ -99,7 +99,9 @@ end
 * For `sortable_columns`, assign an array of the database columns that
 correspond to the columns in our view table. For example
 `[users.f_name, users.l_name, users.bio]`. This array is used for sorting by
-various columns.
+various columns. The sequence of these 3 columns must mirror the order of
+declarations in the `data` method below. You cannot leave this array empty as of
+0.3.0.
 
 * For `searchable_columns`, assign an array of the database columns that you
 want searchable by datatables. Suppose we need to sort and search users
@@ -154,6 +156,11 @@ def data
   end
 end
 ```
+
+In the example above, we use the same sequence of column declarations as in
+`sortable_columns`. This ordering is important! And as of 0.3.0, the first
+column must be a sortable column. For more, see
+[this issue](https://github.com/antillas21/ajax-datatables-rails/issues/83).
 
 [See here](#using-view-helpers) if you need to use view helpers in the
 returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
@@ -286,6 +293,9 @@ So the query using the `.includes()` method is:
   end
 ```
 
+For more examples of 0.3.0 syntax for complex associations (and an example of
+the `data` method), read
+[this](https://github.com/antillas21/ajax-datatables-rails/issues/77).
 
 ### Controller
 Set up the controller to respond to JSON
