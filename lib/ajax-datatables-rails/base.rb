@@ -1,7 +1,8 @@
 module AjaxDatatablesRails
+  class NotImplemented < StandardError; end
+
   class Base
     extend Forwardable
-    class MethodNotImplementedError < StandardError; end
 
     attr_reader :view, :options, :sortable_columns, :searchable_columns
     def_delegator :@view, :params, :params
@@ -16,26 +17,16 @@ module AjaxDatatablesRails
       @config ||= AjaxDatatablesRails.config
     end
 
-    def sortable_columns
-      @sortable_columns ||= []
-    end
-
-    def searchable_columns
-      @searchable_columns ||= []
+    def view_columns
+      raise(NotImplemented, view_columns_error_text)
     end
 
     def data
-      fail(
-        MethodNotImplementedError,
-        'Please implement this method in your class.'
-      )
+      fail(NotImplemented, data_error_text)
     end
 
     def get_raw_records
-      fail(
-        MethodNotImplementedError,
-        'Please implement this method in your class.'
-      )
+      fail(NotImplemented, raw_records_error_text)
     end
 
     def as_json(options = {})
@@ -81,7 +72,7 @@ module AjaxDatatablesRails
 
     def paginate_records(records)
       fail(
-        MethodNotImplementedError,
+        NotImplemented,
         'Please mixin a pagination extension.'
       )
     end
@@ -208,6 +199,33 @@ module AjaxDatatablesRails
         extend Extensions::SimplePaginator
       end
       self
+    end
+
+    def raw_records_error_text
+      return <<-eos
+
+        You should implement this method in your class and specify
+        how records are going to be retrieved from the database.
+      eos
+    end
+
+    def data_error_text
+      return <<-eos
+
+        You should implement this method in your class and return an array
+        of arrays, or an array of hashes, as defined in the jQuery.dataTables
+        plugin documentation.
+      eos
+    end
+
+    def view_columns_error_text
+      return <<-eos
+
+        You should implement this method in your class and return an array
+        of database columns based on the columns displayed in the HTML view.
+        These columns should be represented in the ModelName.column_name,
+        or aliased_join_table.column_name notation.
+      eos
     end
   end
 end
