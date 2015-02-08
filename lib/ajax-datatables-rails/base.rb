@@ -172,12 +172,16 @@ module AjaxDatatablesRails
       deprecated_sort_column(item)
     end
 
+    def sortable_columns_hash
+      ( sortable_columns.is_a? Array) ? Hash[sortable_columns.map.with_index { |i, x| [x.to_s, i] }] : sortable_columns
+    end
+
     def deprecated_sort_column(item)
-      sortable_columns[sortable_displayed_columns.index(item[:column])]
+      sortable_columns_hash[sortable_displayed_columns[item[:column]]]
     end
 
     def new_sort_column(item)
-      model, column =  sortable_columns[item[:column].to_i].split('.')
+      model, column = sortable_columns_hash[sortable_displayed_columns[item[:column]]].split('.')
       col = [model.constantize.table_name, column].join('.')
     end
 
@@ -191,9 +195,9 @@ module AjaxDatatablesRails
     end
 
     def generate_sortable_displayed_columns
-      @sortable_displayed_columns = []
-      params[:columns].each_value do |column|
-        @sortable_displayed_columns << column[:data] if column[:orderable] == 'true'
+      @sortable_displayed_columns = {}
+      params[:columns].each do |key,column|
+        @sortable_displayed_columns[key] = column[:data] if column[:orderable] == 'true'
       end
       @sortable_displayed_columns
     end

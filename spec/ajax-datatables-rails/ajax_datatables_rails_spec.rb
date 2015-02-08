@@ -76,17 +76,40 @@ describe AjaxDatatablesRails::Base do
     end
 
     describe '#sort_column' do
-      it 'returns a column name from the #sorting_columns array' do
+      it 'returns a column name from the #sorting_columns hash' do
         sort_view = double(
           'view', :params => params
         )
         datatable = AjaxDatatablesRails::Base.new(sort_view)
-        allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+        allow(datatable).to receive(:sortable_displayed_columns) { {"0"=>"0", "1"=> "1"} }
         allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar', 'User.baz'] }
-
         expect(datatable.send(:sort_column, sort_view.params[:order]["0"])).to eq('users.bar')
       end
+      it 'returns correct column name from the #sorting_columns hash when multiple ordering is performed'  do
+        order_by_two_columns = params.merge(
+            :order => {
+                "0" => {
+                    :column => "1",
+                    :dir => "asc"
+                },
+                "1" => {
+                    :column => "0",
+                    :dir => "asc"
+                }
+            }
+
+        )
+        sort_view = double(
+            'view', :params => order_by_two_columns
+        )
+        datatable = AjaxDatatablesRails::Base.new(sort_view)
+        allow(datatable).to receive(:sortable_displayed_columns) { {"0"=>"0", "1"=> "1"} }
+        allow(datatable).to receive(:sortable_columns) { {"0"=>"User.foo", "1"=>"User.bar", "2"=>"User.baz"} }
+        expect(datatable.send(:sort_column, sort_view.params[:order]["1"])).to eq('users.foo')
+      end
+
     end
+
 
     describe '#sort_direction' do
       it 'matches value of params[:sSortDir_0]' do
@@ -202,7 +225,7 @@ describe AjaxDatatablesRails::Base do
 
     before(:each) do
       allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar'] }
-      allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+      allow(datatable).to receive(:sortable_displayed_columns) { {"0"=>"0", "1"=> "1"} }
     end
 
     describe '#paginate_records' do
