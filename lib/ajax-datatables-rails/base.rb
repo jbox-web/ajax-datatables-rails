@@ -108,7 +108,7 @@ module AjaxDatatablesRails
     def build_conditions_for(query)
       search_for = query.split(' ')
       criteria = search_for.inject([]) do |criteria, atom|
-        criteria << searchable_columns.map { |col| search_condition(col, atom) }.reduce(:or)
+        criteria << searchable_columns_hash.values.map { |col| search_condition(col, atom) }.reduce(:or)
       end.reduce(:and)
       criteria
     end
@@ -137,12 +137,31 @@ module AjaxDatatablesRails
       casted_column.matches("%#{value}%")
     end
 
+    def searchable_columns_hash
+      ( searchable_columns.is_a? Array) ? Hash[searchable_columns.map.with_index { |i, x| [x.to_s, i] }] : searchable_columns
+    end
+
+
     def aggregate_query
-      conditions = searchable_columns.each_with_index.map do |column, index|
-        value = params[:columns]["#{index}"][:search][:value] if params[:columns]
+      conditions = search_columns_from_dt_view.each.map do |index, column_key|
+        value = params[:columns][index][:search][:value] if params[:columns]
+        column = searchable_columns_hash[column_key]
         search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
+    end
+
+
+    def search_columns_from_dt_view
+      @search_columns_from_dt_view ||= generate_searchable_columns
+    end
+
+    def generate_searchable_columns
+      @searchable_columns_from_dt_view = {}
+      params[:columns].each do |index, column|
+        @searchable_columns_from_dt_view[index] = column[:data] unless column[:search][:value].blank?
+      end
+      @searchable_columns_from_dt_view
     end
 
     def typecast
