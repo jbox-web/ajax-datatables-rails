@@ -3,12 +3,20 @@ ActiveRecord::Schema.define do
 
   create_table :users, :force => true do |t|
     t.string :username
+    t.string :email
+    t.string :first_name
+    t.string :last_name
 
     t.timestamps
   end
 
-  create_table :user_data, :force => true do |t|
-    t.string :address
+  create_table :addresses, :force => true do |t|
+    t.string :address_line1
+    t.string :address_line2
+    t.string :city
+    t.string :zip_code
+    t.string :state
+    t.string :country
 
     t.timestamps
   end

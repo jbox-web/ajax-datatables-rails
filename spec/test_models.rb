@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
 end
 
-class UserData < ActiveRecord::Base
-  self.table_name = "user_data"
+class Address < ActiveRecord::Base
 end
 
 class PurchasedOrder < ActiveRecord::Base
