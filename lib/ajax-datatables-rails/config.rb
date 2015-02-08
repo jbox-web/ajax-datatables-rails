@@ -18,8 +18,7 @@ module AjaxDatatablesRails
   class Configuration
     include ActiveSupport::Configurable
 
-    # default db_adapter is pg (postgresql)
+    config_accessor(:orm) { :active_record }
     config_accessor(:db_adapter) { :pg }
-    config_accessor(:paginator) { :simple_paginator }
   end
 end
