@@ -40,40 +40,5 @@ describe AjaxDatatablesRails::Configuration do
       expect(config.orm).to eq(:mongoid)
     end
   end
-
-  describe '#typecast' do
-    let(:view) { double('view', :params => sample_params) }
-    let(:datatable) { AjaxDatatablesRails::Base.new(view) }
-
-    it 'returns VARCHAR if :db_adapter is :pg' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :pg }
-      expect(datatable.send(:typecast)).to eq('VARCHAR')
-    end
-
-    it 'returns VARCHAR if :db_adapter is :postgre' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgre }
-      expect(datatable.send(:typecast)).to eq('VARCHAR')
-    end
-
-    it 'returns CHAR if :db_adapter is :mysql2' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql2 }
-      expect(datatable.send(:typecast)).to eq('CHAR')
-    end
-
-    it 'returns CHAR if :db_adapter is :mysql' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql }
-      expect(datatable.send(:typecast)).to eq('CHAR')
-    end
-
-    it 'returns TEXT if :db_adapter is :sqlite' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite }
-      expect(datatable.send(:typecast)).to eq('TEXT')
-    end
-
-    it 'returns TEXT if :db_adapter is :sqlite3' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite3 }
-      expect(datatable.send(:typecast)).to eq('TEXT')
-    end
-  end
 end
 
