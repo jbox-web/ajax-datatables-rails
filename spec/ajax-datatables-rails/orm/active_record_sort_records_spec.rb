@@ -36,7 +36,7 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       params = datatable.params
       expect(datatable.send(:sort_records, records).to_sql).to eq(
-        "SELECT \"users\".* FROM \"users\"   ORDER BY users.username ASC, users.email DESC"
+        "SELECT \"users\".* FROM \"users\"  ORDER BY users.username ASC, users.email DESC"
       )
     end
 
