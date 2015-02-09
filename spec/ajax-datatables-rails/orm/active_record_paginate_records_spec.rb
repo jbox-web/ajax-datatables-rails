@@ -27,13 +27,13 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#paginate_records' do
 
     it 'paginates records properly' do
       expect(datatable.send(:paginate_records, records).to_sql).to eq(
-        "SELECT  \"users\".* FROM \"users\"  LIMIT 10 OFFSET 0"
+        "SELECT  \"users\".* FROM \"users\" LIMIT 10 OFFSET 0"
       )
 
       datatable.params[:start] = "26"
       datatable.params[:length] = "25"
       expect(datatable.send(:paginate_records, records).to_sql).to eq(
-        "SELECT  \"users\".* FROM \"users\"  LIMIT 25 OFFSET 25"
+        "SELECT  \"users\".* FROM \"users\" LIMIT 25 OFFSET 25"
       )
     end
 
