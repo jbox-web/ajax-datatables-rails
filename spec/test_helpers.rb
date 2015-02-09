@@ -4,13 +4,13 @@ def sample_params
       "draw"=>"1",
       "columns"=> {
         "0"=> {
-          "data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+          "data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
         },
         "1"=> {
-          "data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+          "data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
@@ -22,25 +22,21 @@ def sample_params
           }
         },
         "3"=> {
-          "data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+          "data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
         },
-        "4"=> {
-          "data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-          "search"=> {
-            "value"=>"", "regex"=>"false"
-          }
-        }
-    },
-    "order"=> {
-      "0"=> {"column"=>"0", "dir"=>"asc"}
-    },
-    "start"=>"0", "length"=>"10", "search"=>{
-      "value"=>"", "regex"=>"false"
-    }, "_"=>"1423364387185"
-  })
+      },
+      "order"=> {
+        "0"=> {"column"=>"0", "dir"=>"asc"}
+      },
+      "start"=>"0", "length"=>"10", "search"=>{
+        "value"=>"", "regex"=>"false"
+      },
+      "_"=>"1423364387185"
+    }
+  )
 end
 
 class SampleDatatable < AjaxDatatablesRails::Base

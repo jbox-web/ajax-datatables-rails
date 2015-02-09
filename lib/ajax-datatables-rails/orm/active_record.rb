@@ -20,13 +20,10 @@ module AjaxDatatablesRails
       end
 
       def paginate_records(records)
-        # fail(
-        #   NotImplemented,
-        #   'Please mixin a pagination extension.'
-        # )
+        records.offset(offset).limit(per_page)
       end
 
-      # ----------------- SEARCH METHODS --------------------
+      # ----------------- SEARCH HELPER METHODS --------------------
 
       def simple_search(records)
         return records unless search_query_present?
@@ -89,36 +86,12 @@ module AjaxDatatablesRails
         end
       end
 
-      # ----------------- PAGINATION METHODS --------------------
-
-      def offset
-        (page - 1) * per_page
-      end
-
-      def page
-        (params[:start].to_i / per_page) + 1
-      end
-
-      def per_page
-        params.fetch(:length, 10).to_i
-      end
-
-      # ----------------- SORT METHODS --------------------
+      # ----------------- SORT HELPER METHODS --------------------
 
       def sort_column(item)
-        new_sort_column(item)
-      rescue
-        ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
-        deprecated_sort_column(item)
-      end
-
-      def deprecated_sort_column(item)
-        sortable_columns[sortable_displayed_columns.index(item[:column])]
-      end
-
-      def new_sort_column(item)
-        model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
-        col = [model.constantize.table_name, column].join('.')
+        model, column = view_columns[item[:column].to_i].split('.')
+        table = get_table(model)
+        [table.name, column].join('.')
       end
 
       def sort_direction(item)

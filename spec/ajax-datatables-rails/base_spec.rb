@@ -95,5 +95,42 @@ describe AjaxDatatablesRails::Base do
         expect { datatable.send(:paginate_records) }.to raise_error
       end
     end
+
+    describe 'helper methods' do
+      describe '#offset' do
+        it 'defaults to 0' do
+          default_view = double('view', :params => {})
+          datatable = AjaxDatatablesRails::Base.new(default_view)
+          expect(datatable.send(:offset)).to eq(0)
+        end
+
+        it 'matches the value on view params[:start] minus 1' do
+          paginated_view = double('view', :params => { :start => '11' })
+          datatable = AjaxDatatablesRails::Base.new(paginated_view)
+          expect(datatable.send(:offset)).to eq(10)
+        end
+      end
+
+      describe '#page' do
+        it 'calculates page number from params[:start] and #per_page' do
+          paginated_view = double('view', :params => { :start => '11' })
+          datatable = AjaxDatatablesRails::Base.new(paginated_view)
+          expect(datatable.send(:page)).to eq(2)
+        end
+      end
+
+      describe '#per_page' do
+        it 'defaults to 10' do
+          datatable = AjaxDatatablesRails::Base.new(view)
+          expect(datatable.send(:per_page)).to eq(10)
+        end
+
+        it 'matches the value on view params[:length]' do
+          other_view = double('view', :params => { :length => 20 })
+          datatable = AjaxDatatablesRails::Base.new(other_view)
+          expect(datatable.send(:per_page)).to eq(20)
+        end
+      end
+    end
   end
 end

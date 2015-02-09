@@ -38,16 +38,6 @@ module AjaxDatatablesRails
       }
     end
 
-    def self.deprecated(message, caller = Kernel.caller[1])
-      warning = caller + ": " + message
-
-      if(respond_to?(:logger) && logger.present?)
-        logger.warn(warning)
-      else
-        warn(warning)
-      end
-    end
-
     def records
       @records ||= retrieve_records
     end
@@ -92,6 +82,20 @@ module AjaxDatatablesRails
     # Private helper methods
     def search_query_present?
       params[:search].present? && params[:search][:value].present?
+    end
+
+    # ----------------- PAGINATION HELPER METHODS --------------------
+
+    def offset
+      (page - 1) * per_page
+    end
+
+    def page
+      (params[:start].to_i / per_page) + 1
+    end
+
+    def per_page
+      params.fetch(:length, 10).to_i
     end
 
     def sortable_displayed_columns
