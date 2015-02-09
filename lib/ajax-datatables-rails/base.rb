@@ -4,7 +4,7 @@ module AjaxDatatablesRails
   class Base
     extend Forwardable
 
-    attr_reader :view, :options, :sortable_columns, :searchable_columns
+    attr_reader :view, :options, :searchable_columns
     def_delegator :@view, :params, :params
 
     def initialize(view, options = {})
@@ -23,10 +23,6 @@ module AjaxDatatablesRails
 
     def data
       fail(NotImplemented, data_error_text)
-    end
-
-    def get_raw_records
-      fail(NotImplemented, raw_records_error_text)
     end
 
     def as_json(options = {})
@@ -60,6 +56,10 @@ module AjaxDatatablesRails
       records
     end
 
+    def get_raw_records
+      fail(NotImplemented, raw_records_error_text)
+    end
+
     # These methods represent the basic operations to perform on records
     # and should be implemented in each ORM::Extension
 
@@ -84,8 +84,6 @@ module AjaxDatatablesRails
       params[:search].present? && params[:search][:value].present?
     end
 
-    # ----------------- PAGINATION HELPER METHODS --------------------
-
     def offset
       (page - 1) * per_page
     end
@@ -96,30 +94,6 @@ module AjaxDatatablesRails
 
     def per_page
       params.fetch(:length, 10).to_i
-    end
-
-    def sortable_displayed_columns
-      @sortable_displayed_columns ||= generate_sortable_displayed_columns
-    end
-
-    def generate_sortable_displayed_columns
-      @sortable_displayed_columns = []
-      params[:columns].each_value do |column|
-        @sortable_displayed_columns << column[:data] if column[:orderable] == 'true'
-      end
-      @sortable_displayed_columns
-    end
-
-    def load_paginator
-      case config.paginator
-      when :kaminari
-        extend Extensions::Kaminari
-      when :will_paginate
-        extend Extensions::WillPaginate
-      else
-        extend Extensions::SimplePaginator
-      end
-      self
     end
 
     def load_orm_extension

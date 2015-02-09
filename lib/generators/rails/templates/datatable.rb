@@ -1,16 +1,10 @@
 class <%= @datatable_name %>Datatable < AjaxDatatablesRails::Base
 
-  def sortable_columns
+  def view_columns
     # Declare strings in this format: ModelName.column_name
-    @sortable_columns ||= []
+    # or in aliased_join_table.column_name format
+    @view_columns ||= []
   end
-
-  def searchable_columns
-    # Declare strings in this format: ModelName.column_name
-    @searchable_columns ||= []
-  end
-
-  private
 
   def data
     records.map do |record|
@@ -20,6 +14,8 @@ class <%= @datatable_name %>Datatable < AjaxDatatablesRails::Base
       ]
     end
   end
+
+  private
 
   def get_raw_records
     # insert query here
