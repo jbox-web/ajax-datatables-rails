@@ -158,7 +158,7 @@ module AjaxDatatablesRails
 
     def generate_searchable_columns
       @searchable_columns_from_dt_view = {}
-      params[:columns].each do |index, column|
+      params[:columns].to_a.each do |index, column|
         @searchable_columns_from_dt_view[index] = column[:data] unless column[:search][:value].blank?
       end
       @searchable_columns_from_dt_view
@@ -215,7 +215,7 @@ module AjaxDatatablesRails
 
     def generate_sortable_displayed_columns
       @sortable_displayed_columns = {}
-      params[:columns].each do |key,column|
+      params[:columns].to_a.each do |key,column|
         @sortable_displayed_columns[key] = column[:data] if column[:orderable] == 'true'
       end
       @sortable_displayed_columns
