@@ -165,6 +165,41 @@ column must be a sortable column. For more, see
 [See here](#using-view-helpers) if you need to use view helpers in the
 returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
 
+#### Automatic addition of ID
+If you want the gem inserts automatically the ID of the record in the tr element
+as shown in this [DataTable axample](http://www.datatables.net/examples/server_side/ids.html),
+you have to perform some modifications in both SomeNameDatatable.rb file and in your javascript.
+
+Here is an example:
+```ruby
+def data
+  records.map do |record|
+    {
+      '0' => record.first_name,
+      '1' => record.last_name,
+      '2' => record.email,
+      'DT_RowId' => record.id
+    }
+  end
+end
+```
+
+and in your javascript file:
+```javascript
+$(function() {
+  return $('#table_id').dataTable({
+    processing: true,
+    serverSide: true,
+    ajax: 'ajax_url',
+    columns: [
+      {data: '0' },
+      {data: '1' },
+      {data: '2' }
+    ]
+  });
+});
+```
+
 #### Get Raw Records
 ```ruby
 def get_raw_records
