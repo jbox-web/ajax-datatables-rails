@@ -128,7 +128,6 @@ module AjaxDatatablesRails
 
       if regex
         node = ::Arel::Nodes::Regexp.new(model.arel_table[column.to_sym], ::Arel::Nodes.build_quoted(value))
-        node.to_sql
       else
         casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
         casted_column.matches("%#{value}%")
@@ -141,7 +140,6 @@ module AjaxDatatablesRails
 
       if regex
         node = ::Arel::Nodes::Regexp.new(model.arel_table[column.to_sym], ::Arel::Nodes.build_quoted(value))
-        node.to_sql
       else
         casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
         casted_column.matches("%#{value}%")
@@ -200,11 +198,11 @@ module AjaxDatatablesRails
     end
 
     def sortable_displayed_column_indexes
-      @sortable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:orderable] == 'true' }.reject(&:nil?)
+      @sortable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:orderable] == 'true' }.compact
     end
 
     def searchable_displayed_column_indexes
-      @searchable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:searchable] == 'true' }.reject(&:nil?)
+      @searchable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:searchable] == 'true' }.compact
     end
 
     def load_paginator
