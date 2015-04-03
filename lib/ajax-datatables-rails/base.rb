@@ -139,6 +139,7 @@ module AjaxDatatablesRails
 
     def aggregate_query
       conditions = searchable_columns.each_with_index.map do |column, index|
+        index = searchable_displayed_column_indexes[index]
         value = params[:columns]["#{index}"][:search][:value] if params[:columns]
         search_condition(column, value) unless value.blank?
       end
@@ -173,11 +174,11 @@ module AjaxDatatablesRails
     end
 
     def deprecated_sort_column(item)
-      sortable_columns[sortable_displayed_columns.index(item[:column])]
+      sortable_columns[sortable_displayed_column_indexes.index(item[:column])]
     end
 
     def new_sort_column(item)
-      model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
+      model, column = sortable_columns[sortable_displayed_column_indexes.index(item[:column])].split('.')
       col = [model.constantize.table_name, column].join('.')
     end
 
@@ -186,16 +187,12 @@ module AjaxDatatablesRails
       options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
     end
 
-    def sortable_displayed_columns
-      @sortable_displayed_columns ||= generate_sortable_displayed_columns
+    def sortable_displayed_column_indexes
+      @sortable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:orderable] == 'true' }.reject(&:nil?)
     end
 
-    def generate_sortable_displayed_columns
-      @sortable_displayed_columns = []
-      params[:columns].each_value do |column|
-        @sortable_displayed_columns << column[:data] if column[:orderable] == 'true'
-      end
-      @sortable_displayed_columns
+    def searchable_displayed_column_indexes
+      @searchable_displayed_column_indexes ||= params[:columns].map {|k, v| k if v[:searchable] == 'true' }.reject(&:nil?)
     end
 
     def load_paginator
