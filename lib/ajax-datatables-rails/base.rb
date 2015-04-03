@@ -113,35 +113,47 @@ module AjaxDatatablesRails
       criteria
     end
 
-    def search_condition(column, value)
+    def search_condition(column, value, regex=false)
       if column[0] == column.downcase[0]
         ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
-        return deprecated_search_condition(column, value)
+        return deprecated_search_condition(column, value, regex)
       else
-        return new_search_condition(column, value)
+        return new_search_condition(column, value, regex)
       end
     end
 
-    def new_search_condition(column, value)
+    def new_search_condition(column, value, regex)
       model, column = column.split('.')
       model = model.constantize
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
+
+      if regex
+        node = ::Arel::Nodes::Regexp.new(model.arel_table[column.to_sym], ::Arel::Nodes.build_quoted(value))
+        node.to_sql
+      else
+        casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+        casted_column.matches("%#{value}%")
+      end
     end
 
-    def deprecated_search_condition(column, value)
+    def deprecated_search_condition(column, value, regex)
       model, column = column.split('.')
       model = model.singularize.titleize.gsub( / /, '' ).constantize
 
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
+      if regex
+        node = ::Arel::Nodes::Regexp.new(model.arel_table[column.to_sym], ::Arel::Nodes.build_quoted(value))
+        node.to_sql
+      else
+        casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+        casted_column.matches("%#{value}%")
+      end
     end
 
     def aggregate_query
       conditions = searchable_columns.each_with_index.map do |column, index|
         index = searchable_displayed_column_indexes[index]
         value = params[:columns]["#{index}"][:search][:value] if params[:columns]
-        search_condition(column, value) unless value.blank?
+        regex = params[:columns]["#{index}"][:search][:regex] == 'true' if params[:columns]
+        search_condition(column, value, regex) unless value.blank?
       end
       conditions.compact.reduce(:and)
     end
