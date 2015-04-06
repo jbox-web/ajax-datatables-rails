@@ -27,7 +27,7 @@ module AjaxDatatablesRails
 
       def simple_search(records)
         return records unless search_query_present?
-        conditions = build_conditions_for(params[:search][:value])
+        conditions = build_conditions_for(params[:search][:value], params[:search][:regex])
         records = records.where(conditions) if conditions
         records
       end
@@ -38,10 +38,10 @@ module AjaxDatatablesRails
         records
       end
 
-      def build_conditions_for(query)
+      def build_conditions_for(query, regex)
         search_for = query.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |col| search_condition(col, atom) }
+          criteria << searchable_columns.map { |col| search_condition(col, atom, regex == 'true') }
             .reduce(:or)
         end.reduce(:and)
         criteria
