@@ -50,10 +50,11 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#filter_records' do
       context 'with search query' do
         before(:each) do
           datatable.params[:search][:value] = "John"
+          datatable.params[:search][:regex] = "false"
         end
 
         it 'builds search conditions for query' do
-          expect(datatable).to receive(:build_conditions_for).with('John')
+          expect(datatable).to receive(:build_conditions_for).with('John', 'false')
           datatable.send(:simple_search, records)
         end
 
@@ -71,18 +72,18 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#filter_records' do
 
         it 'calls #search_condition helper for each searchable_column' do
           allow(datatable).to receive(:search_condition) { Arel::Nodes::Grouping.new(:users) }
-          datatable.send(:build_conditions_for, "John")
+          datatable.send(:build_conditions_for, "John", "false")
           expect(datatable).to have_received(:search_condition).twice
         end
 
         it 'returns an Arel object' do
-          expect(datatable.send(:build_conditions_for, 'John')).to be_a(
+          expect(datatable.send(:build_conditions_for, 'John', 'false')).to be_a(
             Arel::Nodes::Grouping
           )
         end
 
         it 'can call #to_sql on returned object' do
-          result = datatable.send(:build_conditions_for, "John")
+          result = datatable.send(:build_conditions_for, "John", 'false')
           expect(result).to respond_to(:to_sql)
           expect(result.to_sql).to eq(
             "(CAST(\"users\".\"username\" AS TEXT) LIKE '%John%' OR CAST(\"users\".\"email\" AS TEXT) LIKE '%John%')"
