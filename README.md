@@ -414,7 +414,7 @@ with the following content:
 
 ```ruby
 AjaxDatatablesRails.configure do |config|
-  # available options for db_adapter are: :pg, :mysql2, :sqlite3
+  # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
   # config.db_adapter = :pg
 
   # available options for orm are: :active_record, :mongoid
