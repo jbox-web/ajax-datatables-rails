@@ -27,7 +27,7 @@ module AjaxDatatablesRails
 
       def simple_search(records)
         return records unless search_query_present?
-        conditions = build_conditions_for(params[:search][:value])
+        conditions = build_conditions_for(params[:search][:value], params[:search][:regex])
         records = records.where(conditions) if conditions
         records
       end
@@ -38,31 +38,28 @@ module AjaxDatatablesRails
         records
       end
 
-      def build_conditions_for(query)
+      def build_conditions_for(query, regex)
         search_for = query.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |col| search_condition(col, atom) }
+          criteria << searchable_columns.map { |col| search_condition(col, atom, regex == 'true') }
             .reduce(:or)
         end.reduce(:and)
         criteria
       end
 
       def aggregate_query
-        conditions = searchable_columns.each_with_index.map do |column, index|
+        conditions = view_columns.each_with_index.map do |column, index|
           value = params[:columns]["#{index}"][:search][:value] if params[:columns]
-          search_condition(column, value) unless value.blank?
+          regex = params[:columns]["#{index}"][:search][:regex] == 'true' if params[:columns]
+          search_condition(column, value, regex) unless value.blank?
         end
         conditions.compact.reduce(:and)
       end
 
-      def search_condition(column, value)
+      def search_condition(column, value, regex=false)
         model, column = column.split('.')
         table = get_table(model)
-        casted_column = ::Arel::Nodes::NamedFunction.new(
-          'CAST', [table[column.to_sym].as(typecast)]
-        )
-
-        casted_column.matches("%#{value}%")
+        regex ? regex_search(table, column, value) : non_regex_search(table, column, value)
       end
 
       def get_table(model)
@@ -84,6 +81,17 @@ module AjaxDatatablesRails
         else
           'VARCHAR'
         end
+      end
+
+      def regex_search(table, column, value)
+        ::Arel::Nodes::Regexp.new(table[column.to_sym], ::Arel::Nodes.build_quoted(value))
+      end
+
+      def non_regex_search(table, column, value)
+        casted_column = ::Arel::Nodes::NamedFunction.new(
+          'CAST', [table[column.to_sym].as(typecast)]
+        )
+        casted_column.matches("%#{value}%")
       end
 
       # ----------------- SORT HELPER METHODS --------------------
