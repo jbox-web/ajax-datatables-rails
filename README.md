@@ -31,7 +31,7 @@ Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for
 performing database queries.
 
 Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature
-for this gem. If you'd be interested in contributing to speed development, 
+for this gem. If you'd be interested in contributing to speed development,
 please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new)
 and get in touch.
 
@@ -110,7 +110,7 @@ Something like this:
 def view_columns
   # Declare strings in this format: ModelName.column_name
   # or in aliased_join_table.column_name format
-  @view_columns ||= []
+  @view_columns ||= {}
 end
 ```
 
@@ -120,9 +120,11 @@ This gives us:
 
 ```ruby
 def view_columns
-  @view_columns ||= %w(User.first_name User.last_name User.bio)
-  # this is equal to:
-  # @view_columns ||= ['User.first_name', 'User.last_name', 'User.bio']
+  @view_columns ||= {
+    'first_name' => 'User.first_name',
+    'last_name' => 'User.last_name',
+    'bio' => 'User.bio'
+  }
 end
 ```
 
@@ -183,7 +185,7 @@ end
 Obviously, you can construct your query as required for the use case the
 datatable is used. Example: `User.active.with_recent_messages`.
 
-> __IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object 
+> __IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object
 > as the end product of this method.
 >
 > Why? Because the result from this method, will be chained (for now)

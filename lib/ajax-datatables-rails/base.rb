@@ -40,8 +40,9 @@ module AjaxDatatablesRails
 
     # helper methods
     def searchable_columns
-      searchable_indexes = params[:columns].map {|k, v| k.to_i if v[:searchable] == 'true' }.compact
-      @searchable_columns ||= view_columns.values_at(*searchable_indexes)
+      @searchable_columns ||= view_columns.each_with_object([]) do |(k, v), columns|
+        columns << v if params[:columns].any? { |ind, col| col[:data] == k && col[:searchable] == 'true' }
+      end
     end
 
     private

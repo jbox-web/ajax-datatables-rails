@@ -48,9 +48,10 @@ module AjaxDatatablesRails
       end
 
       def aggregate_query
-        conditions = view_columns.each_with_index.map do |column, index|
-          value = params[:columns]["#{index}"][:search][:value] if params[:columns]
-          regex = params[:columns]["#{index}"][:search][:regex] == 'true' if params[:columns]
+        conditions = view_columns.map do |data_attr, column|
+          searching_column = params[:columns].values.find { |col| col[:data] == data_attr }
+          value = searching_column[:search][:value]           if searching_column
+          regex = searching_column[:search][:regex] == 'true' if searching_column
           search_condition(column, value, regex) unless value.blank?
         end
         conditions.compact.reduce(:and)
@@ -97,7 +98,7 @@ module AjaxDatatablesRails
       # ----------------- SORT HELPER METHODS --------------------
 
       def sort_column(item)
-        model, column = view_columns[item[:column].to_i].split('.')
+        model, column = view_columns[params[:columns][item[:column]][:data]].split('.')
         table = get_table(model)
         [table.name, column].join('.')
       end
