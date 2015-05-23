@@ -17,6 +17,10 @@ module AjaxDatatablesRails
       @config ||= AjaxDatatablesRails.config
     end
 
+    def datatable
+      @datatable ||= Datatable::Datatable.new params
+    end
+
     def view_columns
       fail(NotImplemented, view_columns_error_text)
     end
@@ -41,7 +45,7 @@ module AjaxDatatablesRails
     # helper methods
     def searchable_columns
       @searchable_columns ||= view_columns.each_with_object([]) do |(k, v), columns|
-        columns << v if params[:columns].any? { |ind, col| col[:data] == k && col[:searchable] == 'true' }
+        columns << v if datatable.columns.any? { |column| column.data == k && column.searchable? }
       end
     end
 
@@ -49,9 +53,9 @@ module AjaxDatatablesRails
 
     def retrieve_records
       records = fetch_records
-      records = filter_records(records) if params[:search].present?
-      records = sort_records(records) if params[:order].present?
-      records = paginate_records(records) unless params[:length].present? && params[:length] == '-1'
+      records = filter_records(records)   if datatable.searchable?
+      records = sort_records(records)     if datatable.orderable?
+      records = paginate_records(records) if datatable.paginate?
       records
     end
 
@@ -79,22 +83,6 @@ module AjaxDatatablesRails
     end
 
     # Private helper methods
-    def search_query_present?
-      params[:search].present? && params[:search][:value].present?
-    end
-
-    def offset
-      (page - 1) * per_page
-    end
-
-    def page
-      (params[:start].to_i / per_page) + 1
-    end
-
-    def per_page
-      params.fetch(:length, 10).to_i
-    end
-
     def load_orm_extension
       case config.orm
       when :mongoid then nil

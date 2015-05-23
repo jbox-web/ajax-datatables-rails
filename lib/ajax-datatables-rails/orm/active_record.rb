@@ -6,42 +6,39 @@ module AjaxDatatablesRails
       end
 
       def filter_records(records)
-        records = simple_search(records)
+        records = simple_search(records) if datatable.searchable?
         records = composite_search(records)
         records
       end
 
       def sort_records(records)
-        sort_by = []
-        params[:order].each_value do |item|
-          sort_by << "#{sort_column(item)} #{sort_direction(item)}"
+        sort_by = datatable.orders.each_with_object([]) do |order, queries|
+          column = sort_column(order)
+          queries << order.query(column) if column
         end
         records.order(sort_by.join(", "))
       end
 
       def paginate_records(records)
-        records.offset(offset).limit(per_page)
+        records.offset(datatable.offset).limit(datatable.per_page)
       end
 
       # ----------------- SEARCH HELPER METHODS --------------------
 
       def simple_search(records)
-        return records unless search_query_present?
-        conditions = build_conditions_for(params[:search][:value], params[:search][:regex])
-        records = records.where(conditions) if conditions
-        records
+        conditions = build_conditions_for_datatable
+        conditions ? records.where(conditions) : records
       end
 
       def composite_search(records)
         conditions = aggregate_query
-        records = records.where(conditions) if conditions
-        records
+        conditions ? records.where(conditions) : records
       end
 
-      def build_conditions_for(query, regex)
-        search_for = query.split(' ')
+      def build_conditions_for_datatable
+        search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |col| search_condition(col, atom, regex == 'true') }
+          criteria << searchable_columns.map { |col| search_condition(col, atom, datatable.search.regexp?) }
             .reduce(:or)
         end.reduce(:and)
         criteria
@@ -49,10 +46,10 @@ module AjaxDatatablesRails
 
       def aggregate_query
         conditions = view_columns.map do |data_attr, column|
-          searching_column = params[:columns].values.find { |col| col[:data] == data_attr }
-          value = searching_column[:search][:value]           if searching_column
-          regex = searching_column[:search][:regex] == 'true' if searching_column
-          search_condition(column, value, regex) unless value.blank?
+          simple_column = datatable.column(:data, data_attr)
+          if simple_column && simple_column.searchable? && simple_column.search.value.present?
+            search_condition(column, simple_column.search.value, simple_column.search.regexp?)
+          end
         end
         conditions.compact.reduce(:and)
       end
@@ -97,15 +94,13 @@ module AjaxDatatablesRails
 
       # ----------------- SORT HELPER METHODS --------------------
 
-      def sort_column(item)
-        model, column = view_columns[params[:columns][item[:column]][:data]].split('.')
-        table = get_table(model)
-        [table.name, column].join('.')
-      end
-
-      def sort_direction(item)
-        options = %w(desc asc)
-        options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
+      def sort_column(order)
+        column = view_columns[order.column.data]
+        if column
+          model, column = column.split('.')
+          table = get_table(model)
+          [table.name, column].join('.')
+        end
       end
     end
   end

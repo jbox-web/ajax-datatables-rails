@@ -1,0 +1,29 @@
+module AjaxDatatablesRails
+  module Datatable
+    class SimpleOrder
+      attr_reader :options, :index, :datatable
+
+      DIRECTIONS = %w(desc asc)
+
+      def initialize(datatable, index, options = {})
+        @index, @options, @datatable = index, options, datatable
+      end
+
+      def dir
+        DIRECTIONS.include?(options[:dir]) ? options[:dir].upcase : 'ASC'
+      end
+
+      def query(sort_column)
+        "#{ sort_column } #{ dir }"
+      end
+
+      def column
+        datatable.column(:index, column_index)
+      end
+
+      def column_index
+        options[:column]
+      end
+    end
+  end
+end
