@@ -44,8 +44,27 @@ module AjaxDatatablesRails
 
     # helper methods
     def searchable_columns
-      @searchable_columns ||= view_columns.each_with_object([]) do |(k, v), columns|
-        columns << v if datatable.columns.any? { |column| column.data == k && column.searchable? }
+      @searchable_columns ||= begin
+        connected_columns.each_with_object({}) do |(column, column_def), cols|
+          cols[column] = column_def if column.searchable?
+        end
+      end
+    end
+
+    def search_columns
+      @search_columns ||= begin
+        searchable_columns.each_with_object({}) do |(column, column_def), cols|
+          cols[column] = column_def if column.search.value.present?
+        end
+      end
+    end
+
+    def connected_columns
+      @connected_columns ||= begin
+        view_columns.each_with_object({}) do |(k, v), cols|
+          column = datatable.column(:data, k)
+          cols[column] = v if column
+        end
       end
     end
 

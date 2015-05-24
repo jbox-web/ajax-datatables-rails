@@ -12,9 +12,9 @@ module AjaxDatatablesRails
       end
 
       def sort_records(records)
-        sort_by = datatable.orders.each_with_object([]) do |order, queries|
-          column = sort_column(order)
-          queries << order.query(column) if column
+        sort_by = connected_columns.each_with_object([]) do |(column, column_def), queries|
+          order = datatable.order(:column_index, column.index)
+          queries << order.query(sort_column(column_def)) if order
         end
         records.order(sort_by.join(", "))
       end
@@ -38,25 +38,20 @@ module AjaxDatatablesRails
       def build_conditions_for_datatable
         search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |col| search_condition(col, atom, datatable.search.regexp?) }
+          criteria << searchable_columns.map { |_, column_def| search_condition(column_def, atom, datatable.search.regexp?) }
             .reduce(:or)
         end.reduce(:and)
         criteria
       end
 
       def aggregate_query
-        conditions = view_columns.map do |data_attr, column|
-          simple_column = datatable.column(:data, data_attr)
-          if simple_column && simple_column.searchable? && simple_column.search.value.present?
-            search_condition(column, simple_column.search.value, simple_column.search.regexp?)
-          end
-        end
-        conditions.compact.reduce(:and)
+        search_columns.map do |simple_column, column_def|
+          search_condition(column_def, simple_column.search.value, simple_column.search.regexp?)
+        end.reduce(:and)
       end
 
-      def search_condition(column, value, regex=false)
-        model, column = column.split('.')
-        table = get_table(model)
+      def search_condition(column_def, value, regex=false)
+        table, column = table_column_for column_def
         regex ? regex_search(table, column, value) : non_regex_search(table, column, value)
       end
 
@@ -94,13 +89,15 @@ module AjaxDatatablesRails
 
       # ----------------- SORT HELPER METHODS --------------------
 
-      def sort_column(order)
-        column = view_columns[order.column.data]
-        if column
-          model, column = column.split('.')
-          table = get_table(model)
-          [table.name, column].join('.')
-        end
+      def sort_column(column_def)
+        table, column = table_column_for(column_def)
+        [table.name, column].join('.')
+      end
+
+      def table_column_for column_def
+        model, column = column_def.split('.')
+        table = get_table(model)
+        [table, column]
       end
     end
   end

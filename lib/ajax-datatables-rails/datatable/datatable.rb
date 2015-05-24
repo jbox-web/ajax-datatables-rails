@@ -7,7 +7,8 @@ module AjaxDatatablesRails
         @options = options
       end
 
-      #ORDER
+      # ----------------- ORDER METHODS --------------------
+
       def orderable?
         options[:order].present?
       end
@@ -16,7 +17,11 @@ module AjaxDatatablesRails
         @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, index, order_options) }
       end
 
-      # SEARCH
+      def order key, value
+        orders.find { |o| o.send(key) == value }
+      end
+      # ----------------- SEARCH METHODS --------------------
+
       def searchable?
         options[:search].present? && options[:search][:value].present?
       end
@@ -25,7 +30,8 @@ module AjaxDatatablesRails
         @search ||= SimpleSearch.new(options[:search])
       end
 
-      # OPTIONS
+      # ----------------- COLUMN METHODS --------------------
+
       def columns
         @columns ||= options[:columns].map { |index, col| Column.new(index, col) }
       end
@@ -34,6 +40,7 @@ module AjaxDatatablesRails
         columns.find { |col| col.send(key) == value }
       end
 
+      # ----------------- OPTIONS METHODS --------------------
       def paginate?
         per_page != -1
       end
