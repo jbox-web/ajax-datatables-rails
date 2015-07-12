@@ -18,7 +18,7 @@ module AjaxDatatablesRails
     end
 
     def datatable
-      @datatable ||= Datatable::Datatable.new params
+      @datatable ||= Datatable::Datatable.new params, view_columns
     end
 
     def view_columns
@@ -31,10 +31,10 @@ module AjaxDatatablesRails
 
     def as_json(options = {})
       {
-        :draw => params[:draw].to_i,
-        :recordsTotal =>  get_raw_records.count(:all),
-        :recordsFiltered => filter_records(get_raw_records).count(:all),
-        :data => data
+        draw: params[:draw].to_i,
+        recordsTotal: get_raw_records.count(:all),
+        recordsFiltered: filter_records(get_raw_records).count(:all),
+        data: data
       }
     end
 
@@ -62,8 +62,8 @@ module AjaxDatatablesRails
     def connected_columns
       @connected_columns ||= begin
         view_columns.each_with_object({}) do |(k, v), cols|
-          column = datatable.column(:data, k)
-          cols[column] = v if column
+          column = datatable.column(:data, k.to_s)
+          cols[column] = v[:source] if column
         end
       end
     end
@@ -72,7 +72,7 @@ module AjaxDatatablesRails
 
     def retrieve_records
       records = fetch_records
-      records = filter_records(records)   if datatable.searchable?
+      records = filter_records(records)   #if datatable.searchable?
       records = sort_records(records)     if datatable.orderable?
       records = paginate_records(records) if datatable.paginate?
       records

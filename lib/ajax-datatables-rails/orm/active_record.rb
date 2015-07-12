@@ -14,7 +14,7 @@ module AjaxDatatablesRails
       def sort_records(records)
         sort_by = connected_columns.each_with_object([]) do |(column, column_def), queries|
           order = datatable.order(:column_index, column.index)
-          queries << order.query(sort_column(column_def)) if order
+          queries << order.query(column.sort_query) if order
         end
         records.order(sort_by.join(", "))
       end
@@ -38,66 +38,19 @@ module AjaxDatatablesRails
       def build_conditions_for_datatable
         search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |_, column_def| search_condition(column_def, atom, datatable.search.regexp?) }
-            .reduce(:or)
+          criteria << searchable_columns.map do |simple_column, column_def|
+            simple_search = Datatable::SimpleSearch.new({ value: atom, regexp: datatable.search.regexp? })
+            simple_column.instance_variable_set("@search", simple_search)
+            simple_column.search_query
+          end.reduce(:or)
         end.reduce(:and)
         criteria
       end
 
       def aggregate_query
         search_columns.map do |simple_column, column_def|
-          search_condition(column_def, simple_column.search.value, simple_column.search.regexp?)
+          simple_column.search_query
         end.reduce(:and)
-      end
-
-      def search_condition(column_def, value, regex=false)
-        table, column = table_column_for column_def
-        regex ? regex_search(table, column, value) : non_regex_search(table, column, value)
-      end
-
-      def get_table(model)
-        model.constantize.arel_table
-      rescue
-        table_from_downcased(model)
-      end
-
-      def table_from_downcased(model)
-        model.singularize.titleize.gsub( / /, '' ).constantize.arel_table
-      rescue
-        ::Arel::Table.new(model.to_sym, ::ActiveRecord::Base)
-      end
-
-      def typecast
-        case config.db_adapter
-        when :mysql, :mysql2 then 'CHAR'
-        when :sqlite, :sqlite3 then 'TEXT'
-        else
-          'VARCHAR'
-        end
-      end
-
-      def regex_search(table, column, value)
-        ::Arel::Nodes::Regexp.new(table[column.to_sym], ::Arel::Nodes.build_quoted(value))
-      end
-
-      def non_regex_search(table, column, value)
-        casted_column = ::Arel::Nodes::NamedFunction.new(
-          'CAST', [table[column.to_sym].as(typecast)]
-        )
-        casted_column.matches("%#{value}%")
-      end
-
-      # ----------------- SORT HELPER METHODS --------------------
-
-      def sort_column(column_def)
-        table, column = table_column_for(column_def)
-        [table.name, column].join('.')
-      end
-
-      def table_column_for column_def
-        model, column = column_def.split('.')
-        table = get_table(model)
-        [table, column]
       end
     end
   end

@@ -1,10 +1,11 @@
 module AjaxDatatablesRails
   module Datatable
     class Datatable
-      attr_reader :options
+      attr_reader :options, :view_columns
 
-      def initialize(options)
+      def initialize(options, view_columns)
         @options = options
+        @view_columns = view_columns
       end
 
       # ----------------- ORDER METHODS --------------------
@@ -20,6 +21,7 @@ module AjaxDatatablesRails
       def order key, value
         orders.find { |o| o.send(key) == value }
       end
+
       # ----------------- SEARCH METHODS --------------------
 
       def searchable?
@@ -33,7 +35,9 @@ module AjaxDatatablesRails
       # ----------------- COLUMN METHODS --------------------
 
       def columns
-        @columns ||= options[:columns].map { |index, col| Column.new(index, col) }
+        @columns ||= options[:columns].map do |index, col|
+          Column.new(index, col, view_columns[col["data"].to_sym])
+        end
       end
 
       def column key, value
@@ -41,6 +45,7 @@ module AjaxDatatablesRails
       end
 
       # ----------------- OPTIONS METHODS --------------------
+
       def paginate?
         per_page != -1
       end
