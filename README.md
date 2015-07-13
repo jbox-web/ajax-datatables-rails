@@ -65,7 +65,7 @@ manually via the assets pipeline. If you decide to use the
 `jquery-datatables-rails` gem, please refer to its installation instructions
 [here](https://github.com/rweng/jquery-datatables-rails).
 
-## Usage (0.3.0)
+## Usage (0.3.x)
 *The following examples assume that we are setting up ajax-datatables-rails for
 an index of users from a `User` model, and that we are using postgresql as
 our db, because you __should be using it__, if not, please refer to the
@@ -142,7 +142,7 @@ def data
 end
 ```
 
-This method builds a 2d array that is used by datatables to construct the html
+This method builds a 2D array that is used by datatables to construct the html
 table. Insert the values you want on each column.
 
 ```ruby
@@ -163,12 +163,12 @@ column must be a sortable column. For more, see
 [this issue](https://github.com/antillas21/ajax-datatables-rails/issues/83).
 
 [See here](#using-view-helpers) if you need to use view helpers in the
-returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
+returned 2D array, like `link_to`, `mail_to`, `resource_path`, etc.
 
 #### Automatic addition of ID
-If you want the gem inserts automatically the ID of the record in the tr element
+If you want the gem inserts automatically the ID of the record in the `<tr>` element
 as shown in this [DataTable axample](http://www.datatables.net/examples/server_side/ids.html),
-you have to perform some modifications in both SomeNameDatatable.rb file and in your javascript.
+you have to perform some modifications in both `some_datatable.rb` file and in your javascript.
 
 Here is an example:
 ```ruby
@@ -468,6 +468,10 @@ end
 
 Pretty much like you would do it, if you were inside a namespaced controller.
 
+#### What if I'm using Oracle?
+
+We have recently merged and released a contribution from [lutechspa](https://github.com/lutechspa) that makes this gem work with Oracle (tested in version 11g). You can [take a look at this sample repo](https://github.com/paoloripamonti/oracle-ajax-datatable) to get an idea on how to set things up.
+
 #### Searching on non text-based columns
 
 It always comes the time when you need to add a non-string/non-text based
@@ -476,8 +480,8 @@ these column types (example: numeric, date, time).
 
 We recently added the ability to (automatically) typecast these column types
 and have this scenario covered. Please note however, if you are using
-something different from `postgresql` (with the `:pg` gem), like `mysql` or
-`sqlite`, then you need to add an initializer in your application's
+something different from `postgresql` (with the `:pg` gem), like `oracle`,
+`mysql` or `sqlite`, then you need to add an initializer in your application's
 `config/initializers` directory.
 
 If you don't perform this step (again, if using something different from
@@ -503,7 +507,7 @@ with the following content:
 
 ```ruby
 AjaxDatatablesRails.configure do |config|
-  # available options for db_adapter are: :pg, :mysql2, :sqlite3
+  # available options for db_adapter are: :oracle, :pg, :mysql2, :sqlite3
   # config.db_adapter = :pg
 
   # available options for paginator are: :simple_paginator, :kaminari, :will_paginate
