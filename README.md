@@ -357,7 +357,7 @@ Don't forget to make sure the proper route has been added to `config/routes.rb`.
 The resulting view may look like this:
 
 ```html
-<table id="users-table", data-source="<%= users_path(format: :json) %>">
+<table id="users-table" data-source="<%= users_path(format: :json) %>">
   <thead>
     <tr>
       <th>First Name</th>
