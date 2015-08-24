@@ -17,6 +17,10 @@ module AjaxDatatablesRails
       @config ||= AjaxDatatablesRails.config
     end
 
+    def datatable
+      @datatable ||= Datatable::Datatable.new params, view_columns
+    end
+
     def view_columns
       fail(NotImplemented, view_columns_error_text)
     end
@@ -27,10 +31,10 @@ module AjaxDatatablesRails
 
     def as_json(options = {})
       {
-        :draw => params[:draw].to_i,
-        :recordsTotal =>  get_raw_records.count(:all),
-        :recordsFiltered => filter_records(get_raw_records).count(:all),
-        :data => data
+        draw: params[:draw].to_i,
+        recordsTotal: get_raw_records.count(:all),
+        recordsFiltered: filter_records(get_raw_records).count(:all),
+        data: data
       }
     end
 
@@ -40,17 +44,37 @@ module AjaxDatatablesRails
 
     # helper methods
     def searchable_columns
-      searchable_indexes = params[:columns].map {|k, v| k.to_i if v[:searchable] == 'true' }.compact
-      @searchable_columns ||= view_columns.values_at(*searchable_indexes)
+      @searchable_columns ||= begin
+        connected_columns.each_with_object({}) do |(column, column_def), cols|
+          cols[column] = column_def if column.searchable?
+        end
+      end
+    end
+
+    def search_columns
+      @search_columns ||= begin
+        searchable_columns.each_with_object({}) do |(column, column_def), cols|
+          cols[column] = column_def if column.search.value.present?
+        end
+      end
+    end
+
+    def connected_columns
+      @connected_columns ||= begin
+        view_columns.each_with_object({}) do |(k, v), cols|
+          column = datatable.column(:data, k.to_s)
+          cols[column] = v[:source] if column
+        end
+      end
     end
 
     private
 
     def retrieve_records
       records = fetch_records
-      records = filter_records(records) if params[:search].present?
-      records = sort_records(records) if params[:order].present?
-      records = paginate_records(records) unless params[:length].present? && params[:length] == '-1'
+      records = filter_records(records)   #if datatable.searchable?
+      records = sort_records(records)     if datatable.orderable?
+      records = paginate_records(records) if datatable.paginate?
       records
     end
 
@@ -78,22 +102,6 @@ module AjaxDatatablesRails
     end
 
     # Private helper methods
-    def search_query_present?
-      params[:search].present? && params[:search][:value].present?
-    end
-
-    def offset
-      (page - 1) * per_page
-    end
-
-    def page
-      (params[:start].to_i / per_page) + 1
-    end
-
-    def per_page
-      params.fetch(:length, 10).to_i
-    end
-
     def load_orm_extension
       case config.orm
       when :mongoid then nil

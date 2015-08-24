@@ -6,105 +6,51 @@ module AjaxDatatablesRails
       end
 
       def filter_records(records)
-        records = simple_search(records)
+        records = simple_search(records) if datatable.searchable?
         records = composite_search(records)
         records
       end
 
       def sort_records(records)
-        sort_by = []
-        params[:order].each_value do |item|
-          sort_by << "#{sort_column(item)} #{sort_direction(item)}"
+        sort_by = connected_columns.each_with_object([]) do |(column, column_def), queries|
+          order = datatable.order(:column_index, column.index)
+          queries << order.query(column.sort_query) if order
         end
         records.order(sort_by.join(", "))
       end
 
       def paginate_records(records)
-        records.offset(offset).limit(per_page)
+        records.offset(datatable.offset).limit(datatable.per_page)
       end
 
       # ----------------- SEARCH HELPER METHODS --------------------
 
       def simple_search(records)
-        return records unless search_query_present?
-        conditions = build_conditions_for(params[:search][:value], params[:search][:regex])
-        records = records.where(conditions) if conditions
-        records
+        conditions = build_conditions_for_datatable
+        conditions ? records.where(conditions) : records
       end
 
       def composite_search(records)
         conditions = aggregate_query
-        records = records.where(conditions) if conditions
-        records
+        conditions ? records.where(conditions) : records
       end
 
-      def build_conditions_for(query, regex)
-        search_for = query.split(' ')
+      def build_conditions_for_datatable
+        search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          criteria << searchable_columns.map { |col| search_condition(col, atom, regex == 'true') }
-            .reduce(:or)
+          criteria << searchable_columns.map do |simple_column, column_def|
+            simple_search = Datatable::SimpleSearch.new({ value: atom, regexp: datatable.search.regexp? })
+            simple_column.instance_variable_set("@search", simple_search)
+            simple_column.search_query
+          end.reduce(:or)
         end.reduce(:and)
         criteria
       end
 
       def aggregate_query
-        conditions = view_columns.each_with_index.map do |column, index|
-          value = params[:columns]["#{index}"][:search][:value] if params[:columns]
-          regex = params[:columns]["#{index}"][:search][:regex] == 'true' if params[:columns]
-          search_condition(column, value, regex) unless value.blank?
-        end
-        conditions.compact.reduce(:and)
-      end
-
-      def search_condition(column, value, regex=false)
-        model, column = column.split('.')
-        table = get_table(model)
-        regex ? regex_search(table, column, value) : non_regex_search(table, column, value)
-      end
-
-      def get_table(model)
-        model.constantize.arel_table
-      rescue
-        table_from_downcased(model)
-      end
-
-      def table_from_downcased(model)
-        model.singularize.titleize.gsub( / /, '' ).constantize.arel_table
-      rescue
-        ::Arel::Table.new(model.to_sym, ::ActiveRecord::Base)
-      end
-
-      def typecast
-        case config.db_adapter
-        when :mysql, :mysql2 then 'CHAR'
-        when :sqlite, :sqlite3 then 'TEXT'
-        else
-          'VARCHAR'
-        end
-      end
-
-      def regex_search(table, column, value)
-        ::Arel::Nodes::Regexp.new(table[column.to_sym], ::Arel::Nodes.build_quoted(value))
-      end
-
-      def non_regex_search(table, column, value)
-        casted_column = ::Arel::Nodes::NamedFunction.new(
-          'CAST', [table[column.to_sym].as(typecast)]
-        )
-        casted_column.matches("%#{value}%")
-      end
-
-      # ----------------- SORT HELPER METHODS --------------------
-
-      def sort_column(item)
-        model, column = view_columns[item[:column].to_i].split('.')
-        table = get_table(model)
-        [table.name, column].join('.')
-      end
-
-      def sort_direction(item)
-        options = %w(desc asc)
-        options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
+        search_columns.map do |simple_column, column_def|
+          simple_column.search_query
+        end.reduce(:and)
       end
     end
   end
