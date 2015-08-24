@@ -1,6 +1,7 @@
 module AjaxDatatablesRails
   class Base
     extend Forwardable
+    include ActiveRecord::Sanitization::ClassMethods
     class MethodNotImplementedError < StandardError; end
 
     attr_reader :view, :options, :sortable_columns, :searchable_columns
@@ -126,7 +127,7 @@ module AjaxDatatablesRails
       model, column = column.split('.')
       model = model.constantize
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
+      casted_column.matches("%#{sanitize_sql_like(value)}%")
     end
 
     def deprecated_search_condition(column, value)
@@ -134,7 +135,7 @@ module AjaxDatatablesRails
       model = model.singularize.titleize.gsub( / /, '' ).constantize
 
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
+      casted_column.matches("%#{sanitize_sql_like(value)}%")
     end
 
     def aggregate_query
