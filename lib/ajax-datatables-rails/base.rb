@@ -42,10 +42,11 @@ module AjaxDatatablesRails
     def as_json(options = {})
       filtered_data = data
       total_count = get_raw_records.count(:all)
+      filtered_count = (records.blank? ? 0 : records.first['filtered_count']) || total_count
       {
         :draw => params[:draw].to_i,
         :recordsTotal => total_count,
-        :recordsFiltered => records.first['filtered_count'] || total_count,
+        :recordsFiltered => filtered_count,
         :data => filtered_data
       }
     end
