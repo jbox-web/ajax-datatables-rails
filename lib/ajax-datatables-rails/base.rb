@@ -40,11 +40,13 @@ module AjaxDatatablesRails
     end
 
     def as_json(options = {})
+      filtered_data = data
+      total_count = get_raw_records.count(:all)
       {
         :draw => params[:draw].to_i,
-        :recordsTotal =>  get_raw_records.count(:all),
-        :recordsFiltered => filter_records(get_raw_records).count(:all),
-        :data => data
+        :recordsTotal => total_count,
+        :recordsFiltered => records.first['filtered_count'] || total_count,
+        :data => filtered_data
       }
     end
 
@@ -65,7 +67,7 @@ module AjaxDatatablesRails
     end
 
     def fetch_records
-      records = get_raw_records
+      records = get_raw_records.select('*, count(*) OVER() as filtered_count')
       records = sort_records(records) if params[:order].present?
       records = filter_records(records) if params[:search].present?
       records = paginate_records(records) unless params[:length].present? && params[:length] == '-1'
