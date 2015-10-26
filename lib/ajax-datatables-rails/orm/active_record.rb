@@ -41,8 +41,9 @@ module AjaxDatatablesRails
       def build_conditions_for_datatable
         search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
+          search = Datatable::SimpleSearch.new({ value: atom, regexp: datatable.search.regexp? })
           criteria << searchable_columns.map do |simple_column, column_def|
-            simple_column.search = Datatable::SimpleSearch.new({ value: atom, regexp: datatable.search.regexp? })
+            simple_column.search = search
             simple_column.search_query
           end.reduce(:or)
         end.reduce(:and)

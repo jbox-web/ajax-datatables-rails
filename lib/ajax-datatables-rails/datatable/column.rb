@@ -32,12 +32,8 @@ module AjaxDatatablesRails
         @view_column[:cond] || :like
       end
 
-      def filter?
-        @view_column[:filter]
-      end
-
-      def filter
-        datatable.send @view_column[:filter] if filter?
+      def filter value
+        @view_column[:cond].call self
       end
 
       def source
@@ -71,14 +67,15 @@ module AjaxDatatablesRails
       end
 
       def non_regex_search
-        filter if filter?
-        casted_column = ::Arel::Nodes::NamedFunction.new(
-          'CAST', [table[field].as(typecast)]
-        )
         case cond
-        when :lteq, :gteq, :eq
+        when Proc
+          filter search.value
+        when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
           table[field].send(cond, search.value)
         else
+          casted_column = ::Arel::Nodes::NamedFunction.new(
+            'CAST', [table[field].as(typecast)]
+          )
           casted_column.matches("%#{ search.value }%")
         end
       end
