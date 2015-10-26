@@ -18,7 +18,7 @@ module AjaxDatatablesRails
     end
 
     def datatable
-      @datatable ||= Datatable::Datatable.new params, view_columns
+      @datatable ||= Datatable::Datatable.new self
     end
 
     def view_columns
