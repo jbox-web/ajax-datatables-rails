@@ -1,12 +1,13 @@
 module AjaxDatatablesRails
   module Datatable
     class SimpleOrder
-      attr_reader :options, :index, :datatable
+      attr_reader :datatable, :options
 
       DIRECTIONS = %w(desc asc)
 
-      def initialize(datatable, index, options = {})
-        @index, @options, @datatable = index, options, datatable
+      def initialize(datatable, options)
+        @datatable = datatable
+        @options = options || {}
       end
 
       def dir

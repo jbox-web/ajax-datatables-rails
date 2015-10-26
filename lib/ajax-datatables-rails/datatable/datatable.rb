@@ -1,11 +1,11 @@
 module AjaxDatatablesRails
   module Datatable
     class Datatable
-      attr_reader :options, :view_columns
+      attr_reader :datatable, :options
 
-      def initialize(options, view_columns)
-        @options = options
-        @view_columns = view_columns
+      def initialize datatable
+        @datatable = datatable
+        @options = datatable.params
       end
 
       # ----------------- ORDER METHODS --------------------
@@ -15,7 +15,7 @@ module AjaxDatatablesRails
       end
 
       def orders
-        @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, index, order_options) }
+        @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, order_options) }
       end
 
       def order key, value
@@ -36,7 +36,7 @@ module AjaxDatatablesRails
 
       def columns
         @columns ||= options[:columns].map do |index, col|
-          Column.new(index, col, view_columns[col["data"].to_sym])
+          Column.new(datatable, index, col)
         end
       end
 
@@ -61,7 +61,6 @@ module AjaxDatatablesRails
       def per_page
         options.fetch(:length, 10).to_i
       end
-
     end
   end
 end

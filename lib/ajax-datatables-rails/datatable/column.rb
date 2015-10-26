@@ -1,11 +1,11 @@
 module AjaxDatatablesRails
   module Datatable
     class Column
-      attr_reader :index, :options
+      attr_reader :datatable, :index, :options
 
-      def initialize(index, options = {}, view_column = {})
-        @index, @options = index, options
-        @view_column = view_column || {}
+      def initialize(datatable, index, options)
+        @datatable, @index, @options = datatable, index, options
+        @view_column = datatable.view_columns[options["data"].to_sym]
       end
 
       def data
@@ -24,8 +24,20 @@ module AjaxDatatablesRails
         @search ||= SimpleSearch.new(options[:search])
       end
 
+      def search= value
+        @search = value
+      end
+
       def cond
         @view_column[:cond] || :like
+      end
+
+      def filter?
+        @view_column[:filter]
+      end
+
+      def filter
+        datatable.send @view_column[:filter] if filter?
       end
 
       def source
@@ -59,6 +71,7 @@ module AjaxDatatablesRails
       end
 
       def non_regex_search
+        filter if filter?
         casted_column = ::Arel::Nodes::NamedFunction.new(
           'CAST', [table[field].as(typecast)]
         )
@@ -72,7 +85,7 @@ module AjaxDatatablesRails
 
       def typecast
         case config.db_adapter
-        when :mysql, :mysql2 then 'CHAR'
+        when :mysql, :mysql2   then 'CHAR'
         when :sqlite, :sqlite3 then 'TEXT'
         else
           'VARCHAR'
@@ -80,7 +93,7 @@ module AjaxDatatablesRails
       end
 
       def table_from_downcased(model)
-        model.singularize.titleize.gsub( / /, '' ).constantize.arel_table
+        model.singularize.titleize.gsub(/ /, '').constantize.arel_table
       rescue
         ::Arel::Table.new(model.to_sym, ::ActiveRecord::Base)
       end
