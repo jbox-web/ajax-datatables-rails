@@ -2,7 +2,8 @@ ActiveRecord::Schema.define do
   self.verbose = false
 
   create_table :users, :force => true do |t|
-    t.string :username
+    t.string  :username
+    t.integer :status
 
     t.timestamps
   end

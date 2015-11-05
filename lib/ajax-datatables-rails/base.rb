@@ -72,11 +72,10 @@ module AjaxDatatablesRails
     end
 
     def sort_records(records)
-      sort_by = []
-      params[:order].each_value do |item|
-        sort_by << "#{sort_column(item)} #{sort_direction(item)}"
+      params[:order].values.reduce(records) do |sorted_records, item|
+        condition = sort_column(item).order_condition(sort_direction(item))
+        sorted_records.order(condition)
       end
-      records.order(sort_by.join(", "))
     end
 
     def paginate_records(records)
@@ -107,51 +106,23 @@ module AjaxDatatablesRails
 
     def build_conditions_for(query)
       search_for = query.split(' ')
-      criteria = search_for.inject([]) do |criteria, atom|
-        criteria << searchable_columns.map { |col| search_condition(col, atom) }.reduce(:or)
+      search_for.inject([]) do |criteria, atom|
+        criteria << searchable_columns.map do |col|
+          Column.from_string(col, config.db_adapter).filter_condition(atom)
+        end.reduce(:or)
       end.reduce(:and)
-      criteria
-    end
-
-    def search_condition(column, value)
-      if column[0] == column.downcase[0]
-        ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
-        return deprecated_search_condition(column, value)
-      else
-        return new_search_condition(column, value)
-      end
-    end
-
-    def new_search_condition(column, value)
-      model, column = column.split('.')
-      model = model.constantize
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
-    end
-
-    def deprecated_search_condition(column, value)
-      model, column = column.split('.')
-      model = model.singularize.titleize.gsub( / /, '' ).constantize
-
-      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-      casted_column.matches("%#{value}%")
     end
 
     def aggregate_query
-      conditions = searchable_columns.each_with_index.map do |column, index|
-        value = params[:columns]["#{index}"][:search][:value] if params[:columns]
-        search_condition(column, value) unless value.blank?
+      conditions = if params[:columns]
+        searchable_columns.each_with_index.map do |column, index|
+          value = params[:columns]["#{index}"][:search][:value]
+          Column.from_string(column, config.db_adapter).filter_condition(value)
+        end
+      else []
       end
-      conditions.compact.reduce(:and)
-    end
 
-    def typecast
-      case config.db_adapter
-      when :oracle then 'VARCHAR2(4000)'  
-      when :pg then 'VARCHAR'
-      when :mysql2 then 'CHAR'
-      when :sqlite3 then 'TEXT'
-      end
+      conditions.compact.reduce(:and)
     end
 
     def offset
@@ -167,24 +138,13 @@ module AjaxDatatablesRails
     end
 
     def sort_column(item)
-      new_sort_column(item)
-    rescue
-      ::AjaxDatatablesRails::Base.deprecated '[DEPRECATED] Using table_name.column_name notation is deprecated. Please refer to: https://github.com/antillas21/ajax-datatables-rails#searchable-and-sortable-columns-syntax'
-      deprecated_sort_column(item)
-    end
-
-    def deprecated_sort_column(item)
-      sortable_columns[sortable_displayed_columns.index(item[:column])]
-    end
-
-    def new_sort_column(item)
-      model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
-      col = [model.constantize.table_name, column].join('.')
+      column = sortable_columns[sortable_displayed_columns.index(item[:column])]
+      Column.from_string(column, config.db_adapter)
     end
 
     def sort_direction(item)
       options = %w(desc asc)
-      options.include?(item[:dir]) ? item[:dir].upcase : 'ASC'
+      options.include?(item[:dir]) ? item[:dir].to_sym : :asc
     end
 
     def sortable_displayed_columns
