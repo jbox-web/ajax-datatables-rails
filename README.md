@@ -167,7 +167,7 @@ returned 2D array, like `link_to`, `mail_to`, `resource_path`, etc.
 
 #### Automatic addition of ID
 If you want the gem inserts automatically the ID of the record in the `<tr>` element
-as shown in this [DataTable axample](http://www.datatables.net/examples/server_side/ids.html),
+as shown in this [DataTable example](http://www.datatables.net/examples/server_side/ids.html),
 you have to perform some modifications in both `some_datatable.rb` file and in your javascript.
 
 Here is an example:
