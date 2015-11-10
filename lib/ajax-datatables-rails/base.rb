@@ -109,7 +109,7 @@ module AjaxDatatablesRails
     def build_conditions_for(query)
       search_for = query.split(' ')
       criteria = search_for.inject([]) do |criteria, atom|
-        criteria << searchable_columns.map { |col| search_condition(col, atom) }.reduce(:or)
+        criteria << searchable_columns_hash.values.map { |col| search_condition(col, atom) }.reduce(:or)
       end.reduce(:and)
       criteria
     end
@@ -138,12 +138,31 @@ module AjaxDatatablesRails
       casted_column.matches("%#{sanitize_sql_like(value)}%")
     end
 
+    def searchable_columns_hash
+      ( searchable_columns.is_a? Array) ? Hash[searchable_columns.map.with_index { |i, x| [x.to_s, i] }] : searchable_columns
+    end
+
+
     def aggregate_query
-      conditions = searchable_columns.each_with_index.map do |column, index|
-        value = params[:columns]["#{index}"][:search][:value] if params[:columns]
+      conditions = search_columns_from_dt_view.each.map do |index, column_key|
+        value = params[:columns][index][:search][:value] if params[:columns]
+        column = searchable_columns_hash[column_key]
         search_condition(column, value) unless value.blank?
       end
       conditions.compact.reduce(:and)
+    end
+
+
+    def search_columns_from_dt_view
+      @search_columns_from_dt_view ||= generate_searchable_columns
+    end
+
+    def generate_searchable_columns
+      @searchable_columns_from_dt_view = {}
+      params[:columns].to_a.each do |index, column|
+        @searchable_columns_from_dt_view[index] = column[:data] unless column[:search][:value].blank?
+      end
+      @searchable_columns_from_dt_view
     end
 
     def typecast
@@ -174,12 +193,16 @@ module AjaxDatatablesRails
       deprecated_sort_column(item)
     end
 
+    def sortable_columns_hash
+      ( sortable_columns.is_a? Array) ? Hash[sortable_columns.map.with_index { |i, x| [x.to_s, i] }] : sortable_columns
+    end
+
     def deprecated_sort_column(item)
-      sortable_columns[sortable_displayed_columns.index(item[:column])]
+      sortable_columns_hash[sortable_displayed_columns[item[:column]]]
     end
 
     def new_sort_column(item)
-      model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
+      model, column = sortable_columns_hash[sortable_displayed_columns[item[:column]]].split('.')
       col = [model.constantize.table_name, column].join('.')
     end
 
@@ -193,9 +216,9 @@ module AjaxDatatablesRails
     end
 
     def generate_sortable_displayed_columns
-      @sortable_displayed_columns = []
-      params[:columns].each_value do |column|
-        @sortable_displayed_columns << column[:data] if column[:orderable] == 'true'
+      @sortable_displayed_columns = {}
+      params[:columns].to_a.each do |key,column|
+        @sortable_displayed_columns[key] = column[:data] if column[:orderable] == 'true'
       end
       @sortable_displayed_columns
     end
