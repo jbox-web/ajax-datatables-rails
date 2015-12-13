@@ -15,10 +15,16 @@ module AjaxDatatablesRails
       end
 
       def sort_records records
-        sort_by = connected_columns.each_with_object([]) do |(column, column_def), queries|
-          order = datatable.order(:column_index, column.index)
-          queries << order.query(column.sort_query) if order
+        sort_by = datatable.orders.inject([]) do |queries, column_def|
+          column = column_def.column
+          queries << column_def.query(column.sort_query) if column
         end
+
+        #sort_by = connected_columns.each_with_object([]) do |(column, column_def), queries|
+        #  order = datatable.order(:column_index, column.index)
+        #  queries << order.query(column.sort_query) if order
+        #end
+
         records.order(sort_by.join(", "))
       end
 
