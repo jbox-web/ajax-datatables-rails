@@ -3,23 +3,24 @@ module AjaxDatatablesRails
     class SimpleOrder
       attr_reader :datatable, :options
 
-      DIRECTIONS = %w(desc asc)
+      DIRECTIONS = %w(DESC ASC)
 
       def initialize(datatable, options)
         @datatable = datatable
         @options = options || {}
       end
 
-      def dir
-        DIRECTIONS.include?(options[:dir]) ? options[:dir].upcase : 'ASC'
-      end
-
-      def query(sort_column)
+      def query sort_column
         "#{ sort_column } #{ dir }"
       end
 
       def column
-        datatable.column(:index, column_index)
+        datatable.column_by(:index, column_index)
+      end
+
+      private
+      def dir
+        DIRECTIONS.find { |direction| direction == options[:dir].upcase } || 'ASC'
       end
 
       def column_index

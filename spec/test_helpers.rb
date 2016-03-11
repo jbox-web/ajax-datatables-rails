@@ -4,25 +4,25 @@ def sample_params
       "draw"=>"1",
       "columns"=> {
         "0"=> {
-          "data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+          "data"=>"username", "name"=>"", "searchable"=>"true", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
         },
         "1"=> {
-          "data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+          "data"=>"email", "name"=>"", "searchable"=>"true", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
         },
         "2"=> {
-          "data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+          "data"=>"first_name", "name"=>"", "searchable"=>"false", "orderable"=>"false",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
         },
         "3"=> {
-          "data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"true",
+          "data"=>"last_name", "name"=>"", "searchable"=>"false", "orderable"=>"true",
           "search"=> {
             "value"=>"", "regex"=>"false"
           }
@@ -41,9 +41,7 @@ end
 
 class SampleDatatable < AjaxDatatablesRails::Base
   def view_columns
-    @view_columns ||= [
-      'User.username', 'User.email', 'User.first_name', 'User.last_name'
-    ]
+    @view_columns ||= ['User.username', 'User.email', 'User.first_name', 'User.last_name']
   end
 
   def data
@@ -52,5 +50,17 @@ class SampleDatatable < AjaxDatatablesRails::Base
 
   def get_raw_records
     User.all
+  end
+end
+
+
+class ComplexDatatable < SampleDatatable
+  def view_columns
+    @view_columns ||= {
+      username: { source: 'User.username' },
+      email: { source: 'User.email' },
+      first_name: { source: 'User.first_name' },
+      last_name: { source: 'User.last_name' }
+    }
   end
 end

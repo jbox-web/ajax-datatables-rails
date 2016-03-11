@@ -9,15 +9,15 @@ module AjaxDatatablesRails
       end
 
       def data
-        options[:data] || options[:name]
+        options[:data].presence || options[:name]
       end
 
       def searchable?
-        options[:searchable] == 'true'
+        options[:searchable] == TRUE_VALUE
       end
 
       def orderable?
-        options[:orderable] == 'true'
+        options[:orderable] == TRUE_VALUE
       end
 
       def search
@@ -42,7 +42,7 @@ module AjaxDatatablesRails
 
       def table
         model = source.split('.').first.constantize
-        model.arel_table rescue table_from_downcased(model)
+        model.arel_table rescue model
       end
 
       def field
@@ -54,16 +54,24 @@ module AjaxDatatablesRails
       end
 
       def sort_query
-        "#{ table.name }.#{ field }"
+        if custom_field?
+          source
+        else
+          "#{ table.name }.#{ field }"
+        end
       end
 
       private
+      def custom_field?
+        !source.include?('.')
+      end
+
       def config
         @config ||= AjaxDatatablesRails.config
       end
 
       def regex_search
-        ::Arel::Nodes::Regexp.new(table[field], ::Arel::Nodes.build_quoted(search.value))
+        ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(search.value))
       end
 
       def non_regex_search
@@ -71,7 +79,11 @@ module AjaxDatatablesRails
         when Proc
           filter search.value
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-          table[field].send(cond, search.value)
+          if custom_field?
+            ::Arel::Nodes::SqlLiteral.new(field).eq(search.value)
+          else
+            table[field].send(cond, search.value)
+          end
         else
           casted_column = ::Arel::Nodes::NamedFunction.new(
             'CAST', [table[field].as(typecast)]
@@ -87,12 +99,6 @@ module AjaxDatatablesRails
         else
           'VARCHAR'
         end
-      end
-
-      def table_from_downcased(model)
-        model.singularize.titleize.gsub(/ /, '').constantize.arel_table
-      rescue
-        ::Arel::Table.new(model.to_sym, ::ActiveRecord::Base)
       end
 
     end

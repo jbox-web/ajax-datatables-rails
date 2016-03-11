@@ -1,5 +1,8 @@
 module AjaxDatatablesRails
   module Datatable
+
+    TRUE_VALUE = 'true'
+
     class Datatable
       attr_reader :datatable, :options
 
@@ -18,8 +21,8 @@ module AjaxDatatablesRails
         @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, order_options) }
       end
 
-      def order key, value
-        orders.find { |o| o.send(key) == value }
+      def order_by(how, what)
+        orders.find { |simple_order| simple_order.send(how) == what }
       end
 
       # ----------------- SEARCH METHODS --------------------
@@ -35,13 +38,13 @@ module AjaxDatatablesRails
       # ----------------- COLUMN METHODS --------------------
 
       def columns
-        @columns ||= options[:columns].map do |index, col|
-          Column.new(datatable, index, col)
+        @columns ||= options[:columns].map do |index, column_options|
+          Column.new(datatable, index, column_options)
         end
       end
 
-      def column key, value
-        columns.find { |col| col.send(key) == value }
+      def column_by how, what
+        columns.find { |simple_column| simple_column.send(how) == what }
       end
 
       # ----------------- OPTIONS METHODS --------------------

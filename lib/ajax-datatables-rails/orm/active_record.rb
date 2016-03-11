@@ -7,17 +7,13 @@ module AjaxDatatablesRails
       end
 
       def filter_records records
-        if datatable.searchable?
-          simple_search records
-        else
-          composite_search records
-        end
+        records.where(build_conditions)
       end
 
       def sort_records records
-        sort_by = datatable.orders.inject([]) do |queries, column_def|
-          column = column_def.column
-          queries << column_def.query(column.sort_query) if column
+        sort_by = datatable.orders.inject([]) do |queries, order|
+          column = order.column
+          queries << order.query(column.sort_query) if column
         end
         records.order(sort_by.join(", "))
       end
@@ -28,21 +24,19 @@ module AjaxDatatablesRails
 
       # ----------------- SEARCH HELPER METHODS --------------------
 
-      def simple_search records
-        conditions = build_conditions_for_datatable
-        conditions ? records.where(conditions) : records
-      end
-
-      def composite_search records
-        conditions = aggregate_query
-        conditions ? records.where(conditions) : records
+      def build_conditions
+        if datatable.searchable?
+          build_conditions_for_datatable
+        else
+          build_conditions_for_selected_columns
+        end
       end
 
       def build_conditions_for_datatable
         search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |criteria, atom|
-          search = Datatable::SimpleSearch.new({ value: atom, regexp: datatable.search.regexp? })
-          criteria << searchable_columns.map do |simple_column, column_def|
+          search = Datatable::SimpleSearch.new({ value: atom, regex: datatable.search.regexp? })
+          criteria << searchable_columns.map do |simple_column|
             simple_column.search = search
             simple_column.search_query
           end.reduce(:or)
@@ -50,12 +44,9 @@ module AjaxDatatablesRails
         criteria
       end
 
-      def aggregate_query
-        search_columns.map do |simple_column, column_def|
-          simple_column.search_query
-        end.reduce(:and)
+      def build_conditions_for_selected_columns
+        search_columns.map(&:search_query).reduce(:and)
       end
-
     end
   end
 end

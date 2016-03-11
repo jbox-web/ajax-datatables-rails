@@ -12,7 +12,7 @@ module AjaxDatatablesRails
       end
 
       def regexp?
-        options[:regexp] == 'true'
+        options[:regex] == TRUE_VALUE
       end
     end
   end

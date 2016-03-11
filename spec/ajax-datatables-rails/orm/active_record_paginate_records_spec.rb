@@ -38,12 +38,12 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#paginate_records' do
     end
 
     it 'depends on the value of #offset' do
-      expect(datatable).to receive(:offset)
+      expect(datatable.datatable).to receive(:offset)
       datatable.send(:paginate_records, records)
     end
 
     it 'depends on the value of #per_page' do
-      expect(datatable).to receive(:per_page).at_least(:once) { 10 }
+      expect(datatable.datatable).to receive(:per_page).at_least(:once) { 10 }
       datatable.send(:paginate_records, records)
     end
   end
