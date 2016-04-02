@@ -126,6 +126,19 @@ module AjaxDatatablesRails
     def new_search_condition(column, value)
       model, column = column.split('.')
       model = model.constantize
+      if column_cast?
+        pattern_match(model, column, value)
+      else
+        new_value = valuecast(model, column, value)
+        new_value == value ? pattern_match(model, column, value) : exact_match(model, column, new_value)
+      end
+    end
+
+    def exact_match(model, column, value)
+      model.arel_table[column.intern].eq(value)
+    end
+
+    def pattern_match(model, column, value)
       casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
       casted_column.matches("%#{sanitize_sql_like(value)}%")
     end
@@ -148,11 +161,35 @@ module AjaxDatatablesRails
 
     def typecast
       case config.db_adapter
-      when :oracle then 'VARCHAR2(4000)'  
+      when :oracle then 'VARCHAR2(4000)'
       when :pg then 'VARCHAR'
       when :mysql2 then 'CHAR'
       when :sqlite3 then 'TEXT'
       end
+    end
+
+    def valuecast(model, column, value)
+      column_type = model.column_for_attribute(column).type
+      case column_type
+      when :date, :datetime, :time
+        value.send :"to_#{column_type}"
+      when :integer, :timestamp
+        value.to_i
+      when :float, :decimal
+        value.to_f
+      when :boolean
+        value.to_b
+      else
+        value
+      end
+    end
+
+    def column_cast?
+      !param_cast?
+    end
+
+    def param_cast?
+      !!options[:param_cast]
     end
 
     def offset
