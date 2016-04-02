@@ -127,11 +127,20 @@ module AjaxDatatablesRails
       model, column = column.split('.')
       model = model.constantize
       if column_cast?
-        casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
-        casted_column.matches("%#{sanitize_sql_like(value)}%")
+        pattern_match(model, column, value)
       else
-        model.arel_table[column.to_sym].eq(valuecast(model, column, value))
+        new_value = valuecast(model, column, value)
+        new_value == value ? pattern_match(model, column, value) : exact_match(model, column, new_value)
       end
+    end
+
+    def exact_match(model, column, value)
+      model.arel_table[column.intern].eq(value)
+    end
+
+    def pattern_match(model, column, value)
+      casted_column = ::Arel::Nodes::NamedFunction.new('CAST', [model.arel_table[column.to_sym].as(typecast)])
+      casted_column.matches("%#{sanitize_sql_like(value)}%")
     end
 
     def deprecated_search_condition(column, value)
