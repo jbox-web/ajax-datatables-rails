@@ -512,6 +512,13 @@ AjaxDatatablesRails.configure do |config|
 
   # available options for paginator are: :simple_paginator, :kaminari, :will_paginate
   # config.paginator = :simple_paginator
+
+  # avabilable options for no_split_terms are: true, false
+  #
+  # By default, search terms "hello world" will search for records matching "hello"
+  # OR "world". When set to true, it will search for records matching the entire
+  # string.
+  # config.no_split_terms = false
 end
 ```
 
@@ -522,6 +529,10 @@ Uncomment the `config.paginator` line to set `kaminari or will_paginate` if
 included in your project. It defaults to `simple_paginator`, it falls back to
 passing `offset` and `limit` at the database level (through `ActiveRecord`
 of course).
+
+Uncomment the `config.no_split_terms` line and set to true if you want
+to search based on the the whole search string in it's entirety, rather
+than each individual word.
 
 If you want to make the file from scratch, just copy the above code block into
 a file inside the `config/initializers` directory.
