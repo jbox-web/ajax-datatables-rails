@@ -280,12 +280,21 @@ describe AjaxDatatablesRails::Configuration do
     it "default db_adapter should :pg (postgresql)" do
       expect(config.db_adapter).to eq(:pg)
     end
+
+    it 'default no_split_terms should be false' do
+      expect(config.no_split_terms).to eq(false)
+    end
   end
 
   describe "custom config" do
     it 'should accept db_adapter custom value' do
       config.db_adapter = :mysql2
       expect(config.db_adapter).to eq(:mysql2)
+    end
+
+    it 'should accept no_split_terms custom value' do
+      config.no_split_terms = true
+      expect(config.no_split_terms).to eq(true)
     end
   end
 

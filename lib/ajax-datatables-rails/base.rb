@@ -107,7 +107,9 @@ module AjaxDatatablesRails
     end
 
     def build_conditions_for(query)
-      search_for = query.split(' ')
+      search_for = query.split(' ') unless config.no_split_terms
+      search_for = [query] if config.no_split_terms
+
       criteria = search_for.inject([]) do |criteria, atom|
         criteria << searchable_columns.map { |col| search_condition(col, atom) }.reduce(:or)
       end.reduce(:and)
@@ -148,7 +150,7 @@ module AjaxDatatablesRails
 
     def typecast
       case config.db_adapter
-      when :oracle then 'VARCHAR2(4000)'  
+      when :oracle then 'VARCHAR2(4000)'
       when :pg then 'VARCHAR'
       when :mysql2 then 'CHAR'
       when :sqlite3 then 'TEXT'
