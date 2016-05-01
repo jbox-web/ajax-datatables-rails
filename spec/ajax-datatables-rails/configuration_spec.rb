@@ -41,4 +41,3 @@ describe AjaxDatatablesRails::Configuration do
     end
   end
 end
-
