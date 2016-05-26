@@ -5,7 +5,7 @@ module AjaxDatatablesRails
       private
       
       def paginate_records(records)
-        records.offset(offset).limit(per_page)
+        records.offset(offset).limit(per_page).order(:id)
       end
     end
   end
