@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
   let(:view) { double('view', params: sample_params) }
-  let(:datatable) { SampleDatatable.new(view) }
+  let(:datatable) { ComplexDatatable.new(view) }
 
   before(:each) do
     AjaxDatatablesRails.configure do |config|
@@ -34,39 +34,9 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
       # by Users email in descending order
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
-      params = datatable.params
       expect(datatable.send(:sort_records, records).to_sql).to include(
         "ORDER BY users.username ASC, users.email DESC"
       )
-    end
-
-    describe '#sort_column helper method' do
-      before(:each) do
-        datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
-        datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
-      end
-
-      it 'returns a string representing the column(s) to sort by' do
-        params = datatable.params
-        expect(datatable.send(:sort_column, params[:order]['0'])).to eq("users.username")
-        expect(datatable.send(:sort_column, params[:order]['1'])).to eq("users.email")
-      end
-    end
-
-    describe '#sort_direction helper method' do
-      let(:params) { datatable.params }
-
-      it 'matches value of params[:order]' do
-        expect(datatable.send(:sort_direction, params[:order]["0"])).to eq('ASC')
-
-        params[:order]['0'][:dir] = 'desc'
-        expect(datatable.send(:sort_direction, params[:order]['0'])).to eq('DESC')
-      end
-
-      it 'can only be one option from ASC or DESC' do
-        params[:order]['0'][:dir] = 'foo'
-        expect(datatable.send(:sort_direction, params[:order]["0"])).to eq('ASC')
-      end
     end
   end
 end

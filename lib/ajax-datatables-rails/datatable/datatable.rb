@@ -1,11 +1,14 @@
 module AjaxDatatablesRails
   module Datatable
-    class Datatable
-      attr_reader :options, :view_columns
 
-      def initialize(options, view_columns)
-        @options = options
-        @view_columns = view_columns
+    TRUE_VALUE = 'true'
+
+    class Datatable
+      attr_reader :datatable, :options
+
+      def initialize datatable
+        @datatable = datatable
+        @options = datatable.params
       end
 
       # ----------------- ORDER METHODS --------------------
@@ -15,11 +18,11 @@ module AjaxDatatablesRails
       end
 
       def orders
-        @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, index, order_options) }
+        @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, order_options) }
       end
 
-      def order key, value
-        orders.find { |o| o.send(key) == value }
+      def order_by(how, what)
+        orders.find { |simple_order| simple_order.send(how) == what }
       end
 
       # ----------------- SEARCH METHODS --------------------
@@ -35,13 +38,13 @@ module AjaxDatatablesRails
       # ----------------- COLUMN METHODS --------------------
 
       def columns
-        @columns ||= options[:columns].map do |index, col|
-          Column.new(index, col, view_columns[col["data"].to_sym])
+        @columns ||= options[:columns].map do |index, column_options|
+          Column.new(datatable, index, column_options)
         end
       end
 
-      def column key, value
-        columns.find { |col| col.send(key) == value }
+      def column_by how, what
+        columns.find { |simple_column| simple_column.send(how) == what }
       end
 
       # ----------------- OPTIONS METHODS --------------------
@@ -61,7 +64,6 @@ module AjaxDatatablesRails
       def per_page
         options.fetch(:length, 10).to_i
       end
-
     end
   end
 end

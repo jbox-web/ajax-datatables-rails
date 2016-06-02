@@ -4,7 +4,7 @@ module AjaxDatatablesRails
   class Base
     extend Forwardable
 
-    attr_reader :view, :options, :searchable_columns
+    attr_reader :view, :options
     def_delegator :@view, :params, :params
 
     def initialize(view, options = {})
@@ -18,9 +18,10 @@ module AjaxDatatablesRails
     end
 
     def datatable
-      @datatable ||= Datatable::Datatable.new params, view_columns
+      @datatable ||= Datatable::Datatable.new self
     end
 
+    # Must overrited methods
     def view_columns
       fail(NotImplemented, view_columns_error_text)
     end
@@ -29,11 +30,14 @@ module AjaxDatatablesRails
       fail(NotImplemented, data_error_text)
     end
 
+    def get_raw_records
+      fail(NotImplemented, raw_records_error_text)
+    end
+
     def as_json(options = {})
       {
-        draw: params[:draw].to_i,
         recordsTotal: get_raw_records.count(:all),
-        recordsFiltered: filter_records(get_raw_records).count(:all),
+        recordsFiltered: get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count,
         data: data
       }
     end
@@ -45,60 +49,50 @@ module AjaxDatatablesRails
     # helper methods
     def searchable_columns
       @searchable_columns ||= begin
-        connected_columns.each_with_object({}) do |(column, column_def), cols|
-          cols[column] = column_def if column.searchable?
-        end
+        connected_columns.select &:searchable?
       end
     end
 
     def search_columns
       @search_columns ||= begin
-        searchable_columns.each_with_object({}) do |(column, column_def), cols|
-          cols[column] = column_def if column.search.value.present?
-        end
+        searchable_columns.select { |column| column.search.value.present? }
       end
     end
 
     def connected_columns
       @connected_columns ||= begin
-        view_columns.each_with_object({}) do |(k, v), cols|
-          column = datatable.column(:data, k.to_s)
-          cols[column] = v[:source] if column
-        end
+        view_columns.keys.map do |field_name|
+          datatable.column_by(:data, field_name.to_s)
+        end.compact
       end
     end
 
     private
+    # view_columns can be an Array or Hash. we have to support all these formats of defining columns
+    def connect_view_columns
+      # @connect_view_columns ||= begin
+      #   adapted_options =
+      #     case view_columns
+      #     when Hash
+      #     when Array
+      #       cols = {}
+      #       view_columns.each_with_index({}) do |index, source|
+      #         cols[index.to_s] = { source: source }
+      #       end
+      #       cols
+      #     else
+      #       view_columns
+      #     end
+      #   ActiveSupport::HashWithIndifferentAccess.new adapted_options
+      # end
+    end
 
     def retrieve_records
       records = fetch_records
-      records = filter_records(records)   #if datatable.searchable?
+      records = filter_records(records)
       records = sort_records(records)     if datatable.orderable?
       records = paginate_records(records) if datatable.paginate?
       records
-    end
-
-    def get_raw_records
-      fail(NotImplemented, raw_records_error_text)
-    end
-
-    # These methods represent the basic operations to perform on records
-    # and should be implemented in each ORM::Extension
-
-    def fetch_records
-      fail orm_extension_error_text
-    end
-
-    def filter_records(records)
-      fail orm_extension_error_text
-    end
-
-    def sort_records(records)
-      fail orm_extension_error_text
-    end
-
-    def paginate_records(records)
-      fail orm_extension_error_text
     end
 
     # Private helper methods
@@ -135,14 +129,6 @@ module AjaxDatatablesRails
         of database columns based on the columns displayed in the HTML view.
         These columns should be represented in the ModelName.column_name,
         or aliased_join_table.column_name notation.
-      eos
-    end
-
-    def orm_extension_error_text
-      return <<-eos
-
-        This method should be overriden by an AjaxDatatablesRails::ORM::Extension.
-        It defaults to AjaxDatatables::ORM::ActiveRecord.
       eos
     end
   end

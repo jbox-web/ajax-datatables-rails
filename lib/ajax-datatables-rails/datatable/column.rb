@@ -1,31 +1,39 @@
 module AjaxDatatablesRails
   module Datatable
     class Column
-      attr_reader :index, :options
+      attr_reader :datatable, :index, :options
 
-      def initialize(index, options = {}, view_column = {})
-        @index, @options = index, options
-        @view_column = view_column || {}
+      def initialize(datatable, index, options)
+        @datatable, @index, @options = datatable, index, options
+        @view_column = datatable.view_columns[options["data"].to_sym]
       end
 
       def data
-        options[:data] || options[:name]
+        options[:data].presence || options[:name]
       end
 
       def searchable?
-        options[:searchable] == 'true'
+        options[:searchable] == TRUE_VALUE
       end
 
       def orderable?
-        options[:orderable] == 'true'
+        options[:orderable] == TRUE_VALUE
       end
 
       def search
         @search ||= SimpleSearch.new(options[:search])
       end
 
+      def search= value
+        @search = value
+      end
+
       def cond
         @view_column[:cond] || :like
+      end
+
+      def filter value
+        @view_column[:cond].call self
       end
 
       def source
@@ -34,7 +42,7 @@ module AjaxDatatablesRails
 
       def table
         model = source.split('.').first.constantize
-        model.arel_table rescue table_from_downcased(model)
+        model.arel_table rescue model
       end
 
       def field
@@ -46,43 +54,51 @@ module AjaxDatatablesRails
       end
 
       def sort_query
-        "#{ table.name }.#{ field }"
+        if custom_field?
+          source
+        else
+          "#{ table.name }.#{ field }"
+        end
       end
 
       private
+      def custom_field?
+        !source.include?('.')
+      end
+
       def config
         @config ||= AjaxDatatablesRails.config
       end
 
       def regex_search
-        ::Arel::Nodes::Regexp.new(table[field], ::Arel::Nodes.build_quoted(search.value))
+        ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(search.value))
       end
 
       def non_regex_search
-        casted_column = ::Arel::Nodes::NamedFunction.new(
-          'CAST', [table[field].as(typecast)]
-        )
         case cond
-        when :lteq, :gteq, :eq
-          table[field].send(cond, search.value)
+        when Proc
+          filter search.value
+        when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
+          if custom_field?
+            ::Arel::Nodes::SqlLiteral.new(field).eq(search.value)
+          else
+            table[field].send(cond, search.value)
+          end
         else
+          casted_column = ::Arel::Nodes::NamedFunction.new(
+            'CAST', [table[field].as(typecast)]
+          )
           casted_column.matches("%#{ search.value }%")
         end
       end
 
       def typecast
         case config.db_adapter
-        when :mysql, :mysql2 then 'CHAR'
+        when :mysql, :mysql2   then 'CHAR'
         when :sqlite, :sqlite3 then 'TEXT'
         else
           'VARCHAR'
         end
-      end
-
-      def table_from_downcased(model)
-        model.singularize.titleize.gsub( / /, '' ).constantize.arel_table
-      rescue
-        ::Arel::Table.new(model.to_sym, ::ActiveRecord::Base)
       end
 
     end

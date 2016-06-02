@@ -3,8 +3,8 @@ module AjaxDatatablesRails
     class SimpleSearch
       attr_reader :options
 
-      def initialize(options = {})
-        @options = options
+      def initialize options
+        @options = options || {}
       end
 
       def value
@@ -12,7 +12,7 @@ module AjaxDatatablesRails
       end
 
       def regexp?
-        options[:regexp] == 'true'
+        options[:regex] == TRUE_VALUE
       end
     end
   end
