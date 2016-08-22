@@ -121,12 +121,16 @@ This gives us:
 ```ruby
 def view_columns
   @view_columns ||= {
-    id: { source: "City.id", cond: :eq },
+    id: { source: "City.id", cond: :eq, searchable: true, orderable: true },
     name: { source: "City.name", cond: :like },
     created_at: { source: "City.created_at", cond: :gteq },
     country_name: { source: "City.country_id", cond: :eq }
   }
 end
+```
+
+```ruby
+by default orderable and searchable is true
 ```
 
 * [See here](#searching-on-non-text-based-columns) for notes about the
