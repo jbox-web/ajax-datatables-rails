@@ -81,7 +81,7 @@ describe AjaxDatatablesRails::Base do
           'view', :params => params
         )
         datatable = AjaxDatatablesRails::Base.new(sort_view)
-        allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+        allow(datatable).to receive(:sortable_displayed_column_indexes) { ["0", "1"] }
         allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar', 'User.baz'] }
 
         expect(datatable.send(:sort_column, sort_view.params[:order]["0"])).to eq('users.bar')
@@ -202,7 +202,7 @@ describe AjaxDatatablesRails::Base do
 
     before(:each) do
       allow(datatable).to receive(:sortable_columns) { ['User.foo', 'User.bar'] }
-      allow(datatable).to receive(:sortable_displayed_columns) { ["0", "1"] }
+      allow(datatable).to receive(:sortable_displayed_column_indexes) { ["0", "1"] }
     end
 
     describe '#paginate_records' do
@@ -227,6 +227,7 @@ describe AjaxDatatablesRails::Base do
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
         allow(datatable).to receive(:searchable_columns) { ['users.foo'] }
+        allow(datatable).to receive(:searchable_displayed_column_indexes) { ['0'] }
 
         expect(records).to receive(:where)
         records.where
@@ -241,6 +242,7 @@ describe AjaxDatatablesRails::Base do
       it 'applies search like functionality on a collection' do
         datatable = AjaxDatatablesRails::Base.new(search_view)
         allow(datatable).to receive(:searchable_columns) { ['user_datas.bar'] }
+        allow(datatable).to receive(:searchable_displayed_column_indexes) { ['0'] }
 
         expect(records).to receive(:where)
         records.where
