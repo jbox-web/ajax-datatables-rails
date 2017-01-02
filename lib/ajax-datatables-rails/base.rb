@@ -175,11 +175,11 @@ module AjaxDatatablesRails
     end
 
     def deprecated_sort_column(item)
-      sortable_columns[sortable_displayed_columns.index(item[:column])]
+      sortable_columns[sortable_displayed_columns[item[:column].to_i]]
     end
 
     def new_sort_column(item)
-      model, column = sortable_columns[sortable_displayed_columns.index(item[:column])].split('.')
+      model, column = sortable_columns[item[:column].to_i].split('.')
       col = [model.constantize.table_name, column].join('.')
     end
 
