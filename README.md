@@ -616,7 +616,7 @@ database.
 
 ## Tutorial
 
-Tutorial for Integrating `ajax-datatable-rails`, on  Rails 4 .
+Tutorial for Integrating `ajax-datatables-rails`, on  Rails 4 .
 
 [Part-1  The-Installation](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-1----The-Installation)
 
