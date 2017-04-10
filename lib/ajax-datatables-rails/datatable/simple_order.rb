@@ -19,6 +19,7 @@ module AjaxDatatablesRails
       end
 
       private
+
       def dir
         DIRECTIONS.find { |direction| direction == options[:dir].upcase } || 'ASC'
       end

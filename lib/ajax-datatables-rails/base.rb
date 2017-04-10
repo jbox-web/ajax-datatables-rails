@@ -68,6 +68,7 @@ module AjaxDatatablesRails
     end
 
     private
+
     # view_columns can be an Array or Hash. we have to support all these formats of defining columns
     def connect_view_columns
       # @connect_view_columns ||= begin

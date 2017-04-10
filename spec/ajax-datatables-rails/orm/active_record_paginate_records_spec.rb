@@ -22,7 +22,7 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#paginate_records' do
     let(:records) { User.all }
 
     it 'requires a records collection argument' do
-      expect { datatable.send(:paginate_records) }.to raise_error
+      expect { datatable.send(:paginate_records) }.to raise_error(ArgumentError)
     end
 
     it 'paginates records properly' do

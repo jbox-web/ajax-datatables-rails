@@ -6,11 +6,11 @@ module AjaxDatatablesRails
         get_raw_records
       end
 
-      def filter_records records
+      def filter_records(records)
         records.where(build_conditions)
       end
 
-      def sort_records records
+      def sort_records(records)
         sort_by = datatable.orders.inject([]) do |queries, order|
           column = order.column
           queries << order.query(column.sort_query) if column
@@ -18,7 +18,7 @@ module AjaxDatatablesRails
         records.order(sort_by.join(", "))
       end
 
-      def paginate_records records
+      def paginate_records(records)
         records.offset(datatable.offset).limit(datatable.per_page)
       end
 
