@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
+describe AjaxDatatablesRails::ORM::ActiveRecord do
   let(:view) { double('view', params: sample_params) }
   let(:datatable) { ComplexDatatable.new(view) }
 
@@ -18,13 +18,13 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
     User.destroy_all
   end
 
-  describe 'sort records' do
+  describe '#sort_records' do
     let(:records) { User.all }
 
     it 'returns a records collection sorted by :order params' do
       # set to order Users by email in descending order
       datatable.params[:order]['0'] = { column: '1', dir: 'desc' }
-      expect(datatable.send(:sort_records, records).map(&:email)).to match(
+      expect(datatable.sort_records(records).map(&:email)).to match(
         ['mary.smith@example.com', 'johndoe@example.com']
       )
     end
@@ -34,7 +34,7 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#sort_records' do
       # by Users email in descending order
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
-      expect(datatable.send(:sort_records, records).to_sql).to include(
+      expect(datatable.sort_records(records).to_sql).to include(
         "ORDER BY users.username ASC, users.email DESC"
       )
     end
