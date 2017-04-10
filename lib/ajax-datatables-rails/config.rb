@@ -6,7 +6,7 @@ module AjaxDatatablesRails
   #   AjaxDatatablesRails.configure do |config|
   #     config.db_adapter = :pg
   #   end
-  def self.configure &block
+  def self.configure(&block)
     yield @config ||= AjaxDatatablesRails::Configuration.new
   end
 

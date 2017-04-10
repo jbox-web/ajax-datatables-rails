@@ -24,7 +24,7 @@ module AjaxDatatablesRails
         @search ||= SimpleSearch.new(options[:search])
       end
 
-      def search= value
+      def search=(value)
         @search = value
       end
 
@@ -32,7 +32,7 @@ module AjaxDatatablesRails
         @view_column[:cond] || :like
       end
 
-      def filter value
+      def filter(value)
         @view_column[:cond].call self
       end
 
@@ -62,6 +62,7 @@ module AjaxDatatablesRails
       end
 
       private
+
       def custom_field?
         !source.include?('.')
       end

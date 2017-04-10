@@ -18,7 +18,7 @@ module AjaxDatatablesRails
       end
 
       def orders
-        @orders ||= options[:order].map { |index, order_options| SimpleOrder.new(self, order_options) }
+        @orders ||= options[:order].map { |_, order_options| SimpleOrder.new(self, order_options) }
       end
 
       def order_by(how, what)
