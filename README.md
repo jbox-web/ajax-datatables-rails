@@ -41,12 +41,16 @@ and get in touch.
 
 Add these lines to your application's Gemfile:
 
-    gem 'jquery-datatables-rails'
-    gem 'ajax-datatables-rails'
+```ruby
+gem 'jquery-datatables-rails'
+gem 'ajax-datatables-rails'
+```
 
 And then execute:
 
-    $ bundle
+```sh
+$ bundle
+```
 
 The `jquery-datatables-rails` gem is listed as a convenience, to ease adding
 jQuery dataTables to your Rails project. You can always add the plugin assets
@@ -64,8 +68,9 @@ entry in the Additional Notes section.*
 ### Generate
 Run the following command:
 
-    $ rails generate datatable User
-
+```sh
+$ rails generate datatable User
+```
 
 This will generate a file named `user_datatable.rb` in `app/datatables`.
 Open the file and customize in the functions as directed by the comments.
@@ -108,6 +113,7 @@ Something like this:
 ```
 
 ### Customize the generated Datatables class
+
 ```ruby
 def view_columns
   # Declare strings in this format: ModelName.column_name
@@ -171,6 +177,7 @@ end
 returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
 
 #### Get Raw Records
+
 ```ruby
 def get_raw_records
   # insert query here
@@ -208,42 +215,41 @@ Contact, Competency and CompetencyType` models. We want to have a datatables
 report which has the following column:
 
 ```ruby
-        'coursetypes.name',
-        'courses.name',
-        'events.title',
-        'events.event_start',
-        'events.event_end',
-        'contacts.full_name',
-        'competency_types.name',
-        'events.status'
+'coursetypes.name',
+'courses.name',
+'events.title',
+'events.event_start',
+'events.event_end',
+'contacts.full_name',
+'competency_types.name',
+'events.status'
 ```
 
 We want to sort and search on all columns of the list. The related definition
 would be:
 
 ```ruby
+def view_columns
+  @view_columns ||= [
+      'Coursetype.name',
+      'Course.name',
+      'Event.title',
+      'Event.event_start',
+      'Event.event_end',
+      'Contact.last_name',
+      'CompetencyType.name',
+      'Event.status'
+  ]
+end
 
-  def view_columns
-    @view_columns ||= [
-        'Coursetype.name',
-        'Course.name',
-        'Event.title',
-        'Event.event_start',
-        'Event.event_end',
-        'Contact.last_name',
-        'CompetencyType.name',
-        'Event.status'
-    ]
-  end
-
-  def get_raw_records
-     Event.joins(
-      { course: :coursetype },
-      { allocations: {
-          teacher: [:contact, {competencies: :competency_type}]
-        }
-      }).distinct
-  end
+def get_raw_records
+   Event.joins(
+    { course: :coursetype },
+    { allocations: {
+        teacher: [:contact, {competencies: :competency_type}]
+      }
+    }).distinct
+end
 ```
 
 __Some comments for the above code:__
@@ -270,15 +276,15 @@ is not empty.
 So the query using the `.includes()` method is:
 
 ```ruby
-  def get_raw_records
-     Event.includes(
-      { course: :coursetype },
-      { allocations: {
-          teacher: [:contact, { competencies: :competency_type }]
-        }
+def get_raw_records
+   Event.includes(
+    { course: :coursetype },
+    { allocations: {
+        teacher: [:contact, { competencies: :competency_type }]
       }
-      ).references(:course).distinct
-  end
+    }
+    ).references(:course).distinct
+end
 ```
 
 
@@ -298,8 +304,8 @@ end
 Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
 
-
 ### Wire up the Javascript
+
 Finally, the javascript to tie this all together. In the appropriate `coffee` file:
 
 ```coffeescript
@@ -361,6 +367,7 @@ end
 ```
 
 ##### What if the datatable itself is namespaced?
+
 Example: what if the datatable is namespaced into an `Admin` module?
 
 ```ruby
@@ -414,7 +421,7 @@ You have two options to create this initializer:
 
 To use the generator, from the terminal execute:
 
-```
+```sh
 $ bundle exec rails generate datatable:config
 ```
 
@@ -487,6 +494,7 @@ datatable = UnrespondedMessagesDatatable.new(view_context,
   { :foo => { :bar => Baz.new }, :from => 1.month.ago }
 )
 ```
+
 So, now inside your class code, you can use those options like this:
 
 
@@ -512,7 +520,7 @@ existing model, module, constant or any type of class in your Rails app.
 You can pass a name to your datatable class like this:
 
 
-```
+```sh
 $ rails generate datatable users
 # returns a users_datatable.rb file with a UsersDatatable class
 
