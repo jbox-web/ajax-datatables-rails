@@ -58,6 +58,6 @@ require 'ajax-datatables-rails'
 
 ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
 
-load File.dirname(__FILE__) + '/schema.rb'
-load File.dirname(__FILE__) + '/test_helpers.rb'
-require File.dirname(__FILE__) + '/test_models.rb'
+load File.dirname(__FILE__) + '/support/schema.rb'
+load File.dirname(__FILE__) + '/support/test_helpers.rb'
+require File.dirname(__FILE__) + '/support/test_models.rb'

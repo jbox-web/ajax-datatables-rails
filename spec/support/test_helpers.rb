@@ -53,7 +53,6 @@ class SampleDatatable < AjaxDatatablesRails::Base
   end
 end
 
-
 class ComplexDatatable < SampleDatatable
   def view_columns
     @view_columns ||= {
