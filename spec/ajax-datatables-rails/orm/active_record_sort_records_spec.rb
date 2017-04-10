@@ -1,26 +1,17 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
+
   let(:view) { double('view', params: sample_params) }
   let(:datatable) { ComplexDatatable.new(view) }
+  let(:records) { User.all }
 
   before(:each) do
-    AjaxDatatablesRails.configure do |config|
-      config.db_adapter = :sqlite
-      config.orm = :active_record
-    end
-
-    User.create(username: 'johndoe', email: 'johndoe@example.com')
-    User.create(username: 'msmith', email: 'mary.smith@example.com')
-  end
-
-  after(:each) do
-    User.destroy_all
+    create(:user, username: 'johndoe', email: 'johndoe@example.com')
+    create(:user, username: 'msmith', email: 'mary.smith@example.com')
   end
 
   describe '#sort_records' do
-    let(:records) { User.all }
-
     it 'returns a records collection sorted by :order params' do
       # set to order Users by email in descending order
       datatable.params[:order]['0'] = { column: '1', dir: 'desc' }
@@ -39,4 +30,5 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       )
     end
   end
+
 end

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
+
   describe 'an instance' do
     let(:view) { double('view', params: sample_params) }
 
@@ -69,6 +70,7 @@ describe AjaxDatatablesRails::Base do
   end
 
   context 'Private API' do
+
     let(:view) { double('view', params: sample_params) }
     let(:datatable) { ComplexDatatable.new(view) }
 
@@ -76,25 +78,25 @@ describe AjaxDatatablesRails::Base do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
     end
 
-    describe 'fetch records' do
+    describe '#fetch_records' do
       it 'raises an error if it does not include an ORM module' do
         expect { datatable.send(:fetch_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'filter records' do
+    describe '#filter_records' do
       it 'raises an error if it does not include an ORM module' do
         expect { datatable.send(:filter_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'sort records' do
+    describe '#sort_records' do
       it 'raises an error if it does not include an ORM module' do
         expect { datatable.send(:sort_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'paginate records' do
+    describe '#paginate_records' do
       it 'raises an error if it does not include an ORM module' do
         expect { datatable.send(:paginate_records) }.to raise_error NoMethodError
       end
