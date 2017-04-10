@@ -3,7 +3,7 @@ module AjaxDatatablesRails
     class SimpleOrder
       attr_reader :datatable, :options
 
-      DIRECTIONS = %w(DESC ASC)
+      DIRECTIONS = %w[DESC ASC].freeze
 
       def initialize(datatable, options)
         @datatable = datatable
@@ -11,7 +11,7 @@ module AjaxDatatablesRails
       end
 
       def query sort_column
-        "#{ sort_column } #{ dir }"
+        "#{sort_column} #{dir}"
       end
 
       def column

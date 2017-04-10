@@ -1,7 +1,7 @@
 module AjaxDatatablesRails
   module Datatable
 
-    TRUE_VALUE = 'true'
+    TRUE_VALUE = 'true'.freeze
 
     class Datatable
       attr_reader :datatable, :options
