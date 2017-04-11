@@ -6,9 +6,9 @@ module AjaxDatatablesRails
     class Datatable
       attr_reader :datatable, :options
 
-      def initialize datatable
+      def initialize(datatable)
         @datatable = datatable
-        @options = datatable.params
+        @options   = datatable.params
       end
 
       # ----------------- ORDER METHODS --------------------
