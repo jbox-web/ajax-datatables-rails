@@ -22,7 +22,7 @@ def sample_params
           }
         },
         '3' => {
-          'data' => 'last_name', 'name' => '', 'searchable' => 'false', 'orderable' => 'true',
+          'data' => 'last_name', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
           'search' => {
             'value' => '', 'regex' => 'false'
           }
@@ -59,7 +59,7 @@ class ComplexDatatable < SampleDatatable
       username:   { source: 'User.username' },
       email:      { source: 'User.email' },
       first_name: { source: 'User.first_name' },
-      last_name:  { source: 'User.last_name' }
+      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase }  }
     }
   end
 end

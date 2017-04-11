@@ -40,6 +40,22 @@ module AjaxDatatablesRails
         @view_column[:source]
       end
 
+      # Add sort_field option to allow overriding of sort field
+      def sort_field
+        @view_column[:sort_field] || field
+      end
+
+      # Add formater option to allow modification of the value
+      # before passing it to the database
+      def formater
+        @view_column[:formater]
+      end
+
+      # Add use_regex option to allow bypassing of regex search
+      def use_regex?
+        @view_column.fetch(:use_regex, true)
+      end
+
       def table
         model = source.split('.').first.constantize
         model.arel_table rescue model
@@ -57,7 +73,7 @@ module AjaxDatatablesRails
         if custom_field?
           source
         else
-          "#{ table.name }.#{ field }"
+          "#{table.name}.#{sort_field}"
         end
       end
 
@@ -71,8 +87,26 @@ module AjaxDatatablesRails
         @config ||= AjaxDatatablesRails.config
       end
 
+      def formated_value
+        if formater
+          formater.call(search.value)
+        else
+          search.value
+        end
+      end
+
+      # Using multi-select filters in JQuery Datatable auto-enables regex_search.
+      # Unfortunately regex_search doesn't work when filtering on primary keys with integer.
+      # It generates this kind of query : AND ("regions"."id" ~ '2|3') which throws an error :
+      # operator doesn't exist : integer ~ unknown
+      # The solution is to bypass regex_search and use non_regex_search with :in operator
       def regex_search
-        ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(search.value))
+        if use_regex?
+          value = formated_value
+          ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(value))
+        else
+          non_regex_search
+        end
       end
 
       def non_regex_search

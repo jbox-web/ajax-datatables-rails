@@ -62,6 +62,38 @@ describe AjaxDatatablesRails::Datatable::Column do
         expect(column.sort_query).to eq('users.username')
       end
     end
+
+    describe '#use_regex?' do
+      it 'should be true by default' do
+        expect(column.use_regex?).to be true
+      end
+    end
+  end
+
+  describe 'last_name column' do
+    let(:column) { datatable.datatable.columns.last }
+
+    before do
+      datatable.params[:columns] = {'0'=>{'data'=>'last_name', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'', 'regex'=>'false'}}}
+    end
+
+    it 'should be orderable' do
+      expect(column.orderable?).to eq(true)
+    end
+
+    it 'should be searchable' do
+      expect(column.searchable?).to eq(true)
+    end
+
+    it 'should have connected to id column' do
+      expect(column.data).to eq('last_name')
+    end
+
+    describe '#formater' do
+      it 'should be a proc' do
+        expect(column.formater).to be_a(Proc)
+      end
+    end
   end
 
 end
