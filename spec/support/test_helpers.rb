@@ -1,5 +1,5 @@
 def sample_params
-  ActiveSupport::HashWithIndifferentAccess.new(
+  ActionController::Parameters.new(
     {
       'draw' => '1',
       'columns' => {

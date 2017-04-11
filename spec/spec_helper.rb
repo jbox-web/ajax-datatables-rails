@@ -6,6 +6,7 @@ require 'faker'
 require 'pry'
 require 'rails'
 require 'active_record'
+require 'action_controller'
 
 # Start Simplecov
 SimpleCov.start do
