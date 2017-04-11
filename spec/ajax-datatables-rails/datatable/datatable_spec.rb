@@ -23,12 +23,12 @@ describe AjaxDatatablesRails::Datatable::Datatable do
 
     it 'first column ordered by ASC' do
       datatable.options[:order] = order_option
-      expect(datatable.orders.first.send :dir).to eq('ASC')
+      expect(datatable.orders.first.direction).to eq('ASC')
     end
 
     it 'first column ordered by DESC' do
       datatable.options[:order] = order_option
-      expect(datatable.orders.last.send :dir).to eq('DESC')
+      expect(datatable.orders.last.direction).to eq('DESC')
     end
 
     it 'child class' do
