@@ -68,6 +68,12 @@ describe AjaxDatatablesRails::Datatable::Column do
         expect(column.use_regex?).to be true
       end
     end
+
+    describe '#delimiter' do
+      it 'should be - by default' do
+        expect(column.delimiter).to eq('-')
+      end
+    end
   end
 
   describe 'last_name column' do

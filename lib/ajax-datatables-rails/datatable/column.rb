@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module AjaxDatatablesRails
   module Datatable
     class Column
@@ -56,6 +58,11 @@ module AjaxDatatablesRails
         @view_column.fetch(:use_regex, true)
       end
 
+      # Add delimiter option to handle range search
+      def delimiter
+        @view_column[:delimiter] || '-'
+      end
+
       def table
         model = source.split('.').first.constantize
         model.arel_table rescue model
@@ -110,20 +117,36 @@ module AjaxDatatablesRails
       end
 
       def non_regex_search
+        value = formated_value
+
         case cond
         when Proc
-          filter search.value
+          filter value
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
           if custom_field?
-            ::Arel::Nodes::SqlLiteral.new(field).eq(search.value)
+            ::Arel::Nodes::SqlLiteral.new(field).eq(value)
           else
-            table[field].send(cond, search.value)
+            table[field].send(cond, value)
           end
+        when :range
+          if empty_range_search?
+            # Return True to avoid error : 'Unsupported argument type: NilClass. Construct an Arel node instead'
+            Arel::Nodes::True.new
+          else
+            range_search
+          end
+        when :null_value
+          if search.value == '!NULL'
+            table[field].not_eq(nil)
+          else
+            table[field].eq(nil)
+          end
+        when :start_with
+          casted_column.matches("#{value}%")
+        when :end_with
+          casted_column.matches("%#{value}")
         else
-          casted_column = ::Arel::Nodes::NamedFunction.new(
-            'CAST', [table[field].as(typecast)]
-          )
-          casted_column.matches("%#{ search.value }%")
+          casted_column.matches("%#{value}%")
         end
       end
 
@@ -134,6 +157,33 @@ module AjaxDatatablesRails
         else
           'VARCHAR'
         end
+      end
+
+      def casted_column
+        ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(typecast)])
+      end
+
+      def empty_range_search?
+        (search.value == delimiter) || (range_start.blank? && range_end.blank?)
+      end
+
+      # A range value is in form '<range_start><delimiter><range_end>'
+      # This returns <range_start>
+      def range_start
+        @range_start ||= search.value.split(delimiter)[0]
+      end
+
+      # A range value is in form '<range_start><delimiter><range_end>'
+      # This returns <range_end>
+      def range_end
+        @range_end ||= search.value.split(delimiter)[1]
+      end
+
+      # Do a range search
+      def range_search
+        new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
+        new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
+        table[field].between(OpenStruct.new(begin: new_start, end: new_end))
       end
 
     end

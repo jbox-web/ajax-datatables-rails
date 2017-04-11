@@ -27,6 +27,12 @@ def sample_params
             'value' => '', 'regex' => 'false'
           }
         },
+        '4' => {
+          'data' => 'created_at', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        },
       },
       'order' => {
         '0' => {'column' => '0', 'dir' => 'asc'}
@@ -59,7 +65,7 @@ class ComplexDatatable < SampleDatatable
       username:   { source: 'User.username' },
       email:      { source: 'User.email' },
       first_name: { source: 'User.first_name' },
-      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase }  }
+      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase } },
     }
   end
 end
@@ -86,6 +92,30 @@ class ComplexDatatableArray < ComplexDatatable
         record.first_name,
         record.last_name,
       ]
+    end
+  end
+end
+
+class ReallyComplexDatatable < SampleDatatable
+  def view_columns
+    @view_columns ||= {
+      username:   { source: 'User.username' },
+      email:      { source: 'User.email' },
+      first_name: { source: 'User.first_name' },
+      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase } },
+      created_at: { source: 'User.created_at', cond: :range },
+    }
+  end
+
+  def data
+    records.map do |record|
+      {
+        username:   record.username,
+        email:      record.email,
+        first_name: record.first_name,
+        last_name:  record.last_name,
+        created_at: record.created_at,
+      }
     end
   end
 end

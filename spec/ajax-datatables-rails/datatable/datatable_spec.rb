@@ -54,7 +54,7 @@ describe AjaxDatatablesRails::Datatable::Datatable do
 
   describe 'columns methods' do
     it 'should have 4 columns' do
-      expect(datatable.columns.count).to eq(4)
+      expect(datatable.columns.count).to eq(5)
     end
 
     it 'child class' do
