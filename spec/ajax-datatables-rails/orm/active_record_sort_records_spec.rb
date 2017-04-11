@@ -26,7 +26,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(datatable.sort_records(records).to_sql).to include(
-        "ORDER BY users.username ASC, users.email DESC"
+        'ORDER BY users.username ASC, users.email DESC'
       )
     end
   end

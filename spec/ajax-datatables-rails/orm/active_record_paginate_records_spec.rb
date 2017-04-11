@@ -18,13 +18,13 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     it 'paginates records properly' do
       expect(datatable.paginate_records(records).to_sql).to include(
-        "LIMIT 10 OFFSET 0"
+        'LIMIT 10 OFFSET 0'
       )
 
-      datatable.params[:start] = "26"
-      datatable.params[:length] = "25"
+      datatable.params[:start] = '26'
+      datatable.params[:length] = '25'
       expect(datatable.paginate_records(records).to_sql).to include(
-        "LIMIT 25 OFFSET 25"
+        'LIMIT 25 OFFSET 25'
       )
     end
 

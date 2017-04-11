@@ -43,7 +43,7 @@ module AjaxDatatablesRails
         end
       end
 
-      def column_by how, what
+      def column_by(how, what)
         columns.find { |simple_column| simple_column.send(how) == what }
       end
 

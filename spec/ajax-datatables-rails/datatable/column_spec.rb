@@ -1,17 +1,16 @@
 require 'spec_helper'
 
-describe 'AjaxDatatablesRails::Datatable::Column' do
+describe AjaxDatatablesRails::Datatable::Column do
 
   let(:view) { double('view', params: sample_params) }
   let(:datatable) { ComplexDatatable.new(view) }
-
 
   describe 'username column' do
 
     let(:column) { datatable.datatable.columns.first }
 
     before do
-      datatable.params[:columns] = {"0"=>{"data"=>"username", "name"=>"", "searchable"=>"true", "orderable"=>"true", "search"=>{"value"=>"searchvalue", "regex"=>"false"}}}
+      datatable.params[:columns] = {'0'=>{'data'=>'username', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
     end
 
     it 'should be orderable' do
@@ -26,7 +25,7 @@ describe 'AjaxDatatablesRails::Datatable::Column' do
       expect(column.data).to eq('username')
     end
 
-    context '#search' do
+    describe '#search' do
       it 'child class' do
         expect(column.search).to be_a(AjaxDatatablesRails::Datatable::SimpleSearch)
       end
@@ -64,4 +63,5 @@ describe 'AjaxDatatablesRails::Datatable::Column' do
       end
     end
   end
+
 end
