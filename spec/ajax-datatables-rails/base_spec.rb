@@ -43,18 +43,20 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'child class implements data' do
-        let(:datatable) { ComplexDatatable.new(view) }
-
         it 'can return an array of hashes' do
-          allow(datatable).to receive(:data) { [{}, {}] }
+          datatable = ComplexDatatableHash.new(view)
+          create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
+          expect(datatable.data.size).to eq 5
           item = datatable.data.first
           expect(item).to be_a(Hash)
         end
 
         it 'can return an array of arrays' do
-          allow(datatable).to receive(:data) { [[], []] }
+          datatable = ComplexDatatableArray.new(view)
+          create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
+          expect(datatable.data.size).to eq 5
           item = datatable.data.first
           expect(item).to be_a(Array)
         end

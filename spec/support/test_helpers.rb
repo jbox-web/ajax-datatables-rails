@@ -63,3 +63,29 @@ class ComplexDatatable < SampleDatatable
     }
   end
 end
+
+class ComplexDatatableHash < ComplexDatatable
+  def data
+    records.map do |record|
+      {
+        username:   record.username,
+        email:      record.email,
+        first_name: record.first_name,
+        last_name:  record.last_name,
+      }
+    end
+  end
+end
+
+class ComplexDatatableArray < ComplexDatatable
+  def data
+    records.map do |record|
+      [
+        record.username,
+        record.email,
+        record.first_name,
+        record.last_name,
+      ]
+    end
+  end
+end
