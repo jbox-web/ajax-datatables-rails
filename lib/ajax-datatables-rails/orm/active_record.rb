@@ -45,7 +45,7 @@ module AjaxDatatablesRails
       end
 
       def build_conditions_for_selected_columns
-        search_columns.map(&:search_query).reduce(:and)
+        search_columns.map(&:search_query).compact.reduce(:and)
       end
     end
   end

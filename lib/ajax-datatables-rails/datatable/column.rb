@@ -130,8 +130,7 @@ module AjaxDatatablesRails
           end
         when :range
           if empty_range_search?
-            # Return True to avoid error : 'Unsupported argument type: NilClass. Construct an Arel node instead'
-            Arel::Nodes::True.new
+            nil
           else
             range_search
           end

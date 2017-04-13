@@ -54,6 +54,48 @@ describe AjaxDatatablesRails::Base do
         expect(datatable.data.size).to eq 1
       end
     end
+
+    context 'when another filter is active' do
+      context 'when range is empty' do
+        it 'should filter records' do
+          datatable.params[:columns]['0'][:search][:value] = 'doe'
+          datatable.params[:columns]['4'][:search][:value] = '-'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'Doe'
+        end
+      end
+
+      context 'when start date is filled' do
+        it 'should filter records' do
+          datatable.params[:columns]['0'][:search][:value] = 'doe'
+          datatable.params[:columns]['4'][:search][:value] = '01/12/1999-'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'Doe'
+        end
+      end
+
+      context 'when end date is filled' do
+        it 'should filter records' do
+          datatable.params[:columns]['0'][:search][:value] = 'doe'
+          datatable.params[:columns]['4'][:search][:value] = '-15/01/2000'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'Doe'
+        end
+      end
+
+      context 'when both date are filled' do
+        it 'should filter records' do
+          datatable.params[:columns]['0'][:search][:value] = 'doe'
+          datatable.params[:columns]['4'][:search][:value] = '01/12/1999-15/01/2000'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'Doe'
+        end
+      end
+    end
   end
 
 end
