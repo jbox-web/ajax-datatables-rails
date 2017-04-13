@@ -87,9 +87,9 @@ Something like this:
 
 |First Name|Last Name|Brief Bio|
 |----------|---------|---------|
-|John|Doe|Is your default user everywhere|
-|Jane|Doe|Is John's wife|
-|James|Doe|Is John's brother and best friend|
+|John      |Doe      |Is your default user everywhere|
+|Jane      |Doe      |Is John's wife|
+|James     |Doe      |Is John's brother and best friend|
 
 
 * Set up an html `<table>` with a `<thead>` and `<tbody>`
@@ -151,9 +151,9 @@ considerations for the `view_columns` method.
 def data
   records.map do |record|
     [
-        # comma separated list of the values for each cell of a table row
-        # example: record.attribute,
-      ]
+      # comma separated list of the values for each cell of a table row
+      # example: record.first_name, record.last_name
+    ]
   end
 end
 ```
@@ -169,6 +169,20 @@ def data
       record.last_name,
       record.bio
     ]
+  end
+end
+```
+
+You can either use a Hash style for your columns :
+
+```ruby
+def data
+  records.map do |record|
+    {
+      first_name: record.first_name,
+      last_name:  record.last_name,
+      bio:        record.bio
+    }
   end
 end
 ```
@@ -535,22 +549,6 @@ $ rails generate datatable UnrespondedMessages
 In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
-
-## Tutorial
-
-Tutorial for Integrating `ajax-datatable-rails`, on  Rails 4.
-
-__version 0.3.0:__
-
-[Part-1  The-Installation](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-1----The-Installation)
-
-[Part 2 The Datatables with ajax functionality](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-2-The-Datatables-with-ajax-functionality)
-
-The complete project code for this tutorial series is available on [github](https://github.com/trkrameshkumar/simple_app).
-
-__version 0.4.0:__
-
-Another sample project [code](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
 
 ## Contributing
 
