@@ -6,11 +6,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   let(:datatable) { ComplexDatatable.new(view) }
   let(:records) { User.all }
 
-  before(:each) do
-    create(:user, username: 'johndoe', email: 'johndoe@example.com')
-    create(:user, username: 'msmith', email: 'mary.smith@example.com')
-  end
-
   describe '#filter_records' do
     it 'requires a records collection as argument' do
       expect { datatable.send(:filter_records) }.to raise_error(ArgumentError)
@@ -30,6 +25,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#build_conditions_for_datatable' do
+    before(:each) do
+      create(:user, username: 'johndoe', email: 'johndoe@example.com')
+      create(:user, username: 'msmith', email: 'mary.smith@example.com')
+    end
+
     it 'returns an Arel object' do
       datatable.params[:search] = { value: 'msmith' }
       result = datatable.send(:build_conditions_for_datatable)
@@ -69,6 +69,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#build_conditions_for_selected_columns' do
+    before(:each) do
+      create(:user, username: 'johndoe', email: 'johndoe@example.com')
+      create(:user, username: 'msmith', email: 'mary.smith@example.com')
+    end
+
     context 'columns include search query' do
       before do
         datatable.params[:columns]['0'][:search][:value] = 'doe'
@@ -143,4 +148,247 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
+  describe 'filter conditions' do
+    let(:datatable) { ReallyComplexDatatable.new(view) }
+
+    describe 'it can filter records with condition :range' do
+      before(:each) do
+        create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
+        create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'Smith', created_at: '01/02/2000')
+      end
+
+      context 'when range is empty' do
+        it 'should not filter records' do
+          datatable.params[:columns]['5'][:search][:value] = '-'
+          expect(datatable.data.size).to eq 2
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'Doe'
+        end
+      end
+
+      context 'when start date is filled' do
+        it 'should filter records created after this date' do
+          datatable.params[:columns]['5'][:search][:value] = '31/12/1999-'
+          expect(datatable.data.size).to eq 2
+        end
+      end
+
+      context 'when end date is filled' do
+        it 'should filter records created before this date' do
+          datatable.params[:columns]['5'][:search][:value] = '-31/12/1999'
+          expect(datatable.data.size).to eq 0
+        end
+      end
+
+      context 'when both date are filled' do
+        it 'should filter records created between the range' do
+          datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
+          expect(datatable.data.size).to eq 1
+        end
+      end
+
+      context 'when another filter is active' do
+        context 'when range is empty' do
+          it 'should filter records' do
+            datatable.params[:columns]['0'][:search][:value] = 'doe'
+            datatable.params[:columns]['5'][:search][:value] = '-'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'Doe'
+          end
+        end
+
+        context 'when start date is filled' do
+          it 'should filter records' do
+            datatable.params[:columns]['0'][:search][:value] = 'doe'
+            datatable.params[:columns]['5'][:search][:value] = '01/12/1999-'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'Doe'
+          end
+        end
+
+        context 'when end date is filled' do
+          it 'should filter records' do
+            datatable.params[:columns]['0'][:search][:value] = 'doe'
+            datatable.params[:columns]['5'][:search][:value] = '-15/01/2000'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'Doe'
+          end
+        end
+
+        context 'when both date are filled' do
+          it 'should filter records' do
+            datatable.params[:columns]['0'][:search][:value] = 'doe'
+            datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'Doe'
+          end
+        end
+      end
+    end
+
+    describe 'it can filter records with condition :start_with' do
+      before(:each) do
+        create(:user, first_name: 'John')
+        create(:user, first_name: 'Mary')
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['2'][:search][:value] = 'jo'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'John'
+      end
+    end
+
+    describe 'it can filter records with condition :end_with' do
+      before(:each) do
+        create(:user, last_name: 'John')
+        create(:user, last_name: 'Mary')
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['3'][:search][:value] = 'ry'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:last_name]).to eq 'Mary'
+      end
+    end
+
+    describe 'it can filter records with condition :null_value' do
+      before(:each) do
+        create(:user, first_name: 'john', email: 'foo@bar.com')
+        create(:user, first_name: 'mary', email: nil)
+      end
+
+      context 'when condition is NULL' do
+        it 'should filter records matching' do
+          datatable.params[:columns]['1'][:search][:value] = 'NULL'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'mary'
+        end
+      end
+
+      context 'when condition is !NULL' do
+        it 'should filter records matching' do
+          datatable.params[:columns]['1'][:search][:value] = '!NULL'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'john'
+        end
+      end
+    end
+
+    describe 'it can filter records with condition :eq' do
+      let(:datatable) { ReallyComplexDatatableEq.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 1
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'john'
+      end
+    end
+
+    describe 'it can filter records with condition :not_eq' do
+      let(:datatable) { ReallyComplexDatatableNotEq.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 1
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'mary'
+      end
+    end
+
+    describe 'it can filter records with condition :lt' do
+      let(:datatable) { ReallyComplexDatatableLt.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 2
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'john'
+      end
+    end
+
+    describe 'it can filter records with condition :gt' do
+      let(:datatable) { ReallyComplexDatatableGt.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 1
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'mary'
+      end
+    end
+
+    describe 'it can filter records with condition :lteq' do
+      let(:datatable) { ReallyComplexDatatableLteq.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 2
+        expect(datatable.data.size).to eq 2
+      end
+    end
+
+    describe 'it can filter records with condition :gteq' do
+      let(:datatable) { ReallyComplexDatatableGteq.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = 1
+        expect(datatable.data.size).to eq 2
+      end
+    end
+
+    describe 'it can filter records with condition :in' do
+      let(:datatable) { ReallyComplexDatatableIn.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = [1]
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'john'
+      end
+    end
+  end
 end
