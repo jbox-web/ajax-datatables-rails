@@ -4,4 +4,8 @@ source "https://rubygems.org"
 
 gem "rails", "5.1.0.rc1"
 
+group :test do
+  gem "codeclimate-test-reporter", "~> 1.0.0"
+end
+
 gemspec :path => "../"
