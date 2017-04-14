@@ -35,7 +35,7 @@ module AjaxDatatablesRails
       end
 
       def filter(value)
-        @view_column[:cond].call self
+        @view_column[:cond].call(value)
       end
 
       def source
@@ -77,11 +77,7 @@ module AjaxDatatablesRails
       end
 
       def sort_query
-        if custom_field?
-          source
-        else
-          "#{table.name}.#{sort_field}"
-        end
+        custom_field? ? source : "#{table.name}.#{sort_field}"
       end
 
       private
@@ -95,11 +91,7 @@ module AjaxDatatablesRails
       end
 
       def formated_value
-        if formater
-          formater.call(search.value)
-        else
-          search.value
-        end
+        formater ? formater.call(search.value) : search.value
       end
 
       # Using multi-select filters in JQuery Datatable auto-enables regex_search.
@@ -109,36 +101,28 @@ module AjaxDatatablesRails
       # The solution is to bypass regex_search and use non_regex_search with :in operator
       def regex_search
         if use_regex?
-          value = formated_value
-          ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(value))
+          ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(formated_value))
         else
           non_regex_search
         end
       end
 
       def non_regex_search
-        value = formated_value
-
         case cond
         when Proc
-          filter value
+          filter(formated_value)
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-          if custom_field?
-            ::Arel::Nodes::SqlLiteral.new(field).eq(value)
-          else
-            table[field].send(cond, value)
-          end
+          numeric_search
         when :range
-          return nil if empty_range_search?
           range_search
         when :null_value
           null_value_search
         when :start_with
-          casted_column.matches("#{value}%")
+          casted_column.matches("#{formated_value}%")
         when :end_with
-          casted_column.matches("%#{value}")
+          casted_column.matches("%#{formated_value}")
         else
-          casted_column.matches("%#{value}%")
+          casted_column.matches("%#{formated_value}%")
         end
       end
 
@@ -156,33 +140,42 @@ module AjaxDatatablesRails
       end
 
       def empty_range_search?
-        (search.value == delimiter) || (range_start.blank? && range_end.blank?)
+        (formated_value == delimiter) || (range_start.blank? && range_end.blank?)
       end
 
       # A range value is in form '<range_start><delimiter><range_end>'
       # This returns <range_start>
       def range_start
-        @range_start ||= search.value.split(delimiter)[0]
+        @range_start ||= formated_value.split(delimiter)[0]
       end
 
       # A range value is in form '<range_start><delimiter><range_end>'
       # This returns <range_end>
       def range_end
-        @range_end ||= search.value.split(delimiter)[1]
+        @range_end ||= formated_value.split(delimiter)[1]
       end
 
       # Do a range search
       def range_search
+        return nil if empty_range_search?
         new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
         new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
         table[field].between(OpenStruct.new(begin: new_start, end: new_end))
       end
 
       def null_value_search
-        if search.value == '!NULL'
+        if formated_value == '!NULL'
           table[field].not_eq(nil)
         else
           table[field].eq(nil)
+        end
+      end
+
+      def numeric_search
+        if custom_field?
+          ::Arel::Nodes::SqlLiteral.new(field).eq(formated_value)
+        else
+          table[field].send(cond, formated_value)
         end
       end
 
