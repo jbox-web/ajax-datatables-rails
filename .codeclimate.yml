@@ -22,4 +22,4 @@ ratings:
   - "**.py"
   - "**.rb"
 exclude_paths:
-- spec/
+- lib/generators/rails/templates/
