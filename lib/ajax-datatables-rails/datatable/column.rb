@@ -129,17 +129,10 @@ module AjaxDatatablesRails
             table[field].send(cond, value)
           end
         when :range
-          if empty_range_search?
-            nil
-          else
-            range_search
-          end
+          return nil if empty_range_search?
+          range_search
         when :null_value
-          if search.value == '!NULL'
-            table[field].not_eq(nil)
-          else
-            table[field].eq(nil)
-          end
+          null_value_search
         when :start_with
           casted_column.matches("#{value}%")
         when :end_with
@@ -183,6 +176,14 @@ module AjaxDatatablesRails
         new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
         new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
         table[field].between(OpenStruct.new(begin: new_start, end: new_end))
+      end
+
+      def null_value_search
+        if search.value == '!NULL'
+          table[field].not_eq(nil)
+        else
+          table[field].eq(nil)
+        end
       end
 
     end
