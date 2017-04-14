@@ -69,25 +69,6 @@ module AjaxDatatablesRails
 
     private
 
-    # view_columns can be an Array or Hash. we have to support all these formats of defining columns
-    def connect_view_columns
-      # @connect_view_columns ||= begin
-      #   adapted_options =
-      #     case view_columns
-      #     when Hash
-      #     when Array
-      #       cols = {}
-      #       view_columns.each_with_index({}) do |index, source|
-      #         cols[index.to_s] = { source: source }
-      #       end
-      #       cols
-      #     else
-      #       view_columns
-      #     end
-      #   ActiveSupport::HashWithIndifferentAccess.new adapted_options
-      # end
-    end
-
     def retrieve_records
       records = fetch_records
       records = filter_records(records)
