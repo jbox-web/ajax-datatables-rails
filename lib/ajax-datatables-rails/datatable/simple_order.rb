@@ -4,9 +4,9 @@ module AjaxDatatablesRails
 
       DIRECTIONS = %w[DESC ASC].freeze
 
-      def initialize(datatable, options)
+      def initialize(datatable, options = {})
         @datatable = datatable
-        @options = options || {}
+        @options   = options
       end
 
       def query(sort_column)

@@ -5,10 +5,10 @@ module AjaxDatatablesRails
     extend Forwardable
 
     attr_reader :view, :options
-    def_delegator :@view, :params, :params
+    def_delegator :@view, :params
 
     def initialize(view, options = {})
-      @view = view
+      @view    = view
       @options = options
       load_orm_extension
     end
@@ -18,7 +18,7 @@ module AjaxDatatablesRails
     end
 
     def datatable
-      @datatable ||= Datatable::Datatable.new self
+      @datatable ||= Datatable::Datatable.new(self)
     end
 
     # Must overrited methods
