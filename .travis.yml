@@ -9,3 +9,5 @@ gemfile:
   - gemfiles/rails_4.2.8.gemfile
   - gemfiles/rails_5.0.2.gemfile
   - gemfiles/rails_5.1.0.rc1.gemfile
+after_success:
+  - bundle exec codeclimate-test-reporter
