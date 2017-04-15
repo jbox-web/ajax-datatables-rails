@@ -339,7 +339,7 @@ def additional_datas
 end
 ```
 
-Very useful with https://github.com/vedmack/yadcf to provides values for dropdowns filters.
+Very useful with https://github.com/vedmack/yadcf to provide values for dropdown filters.
 
 
 ### Setup the Controller action
