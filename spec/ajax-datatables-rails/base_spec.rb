@@ -42,8 +42,8 @@ describe AjaxDatatablesRails::Base do
         expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
       end
 
-      context 'child class implements data' do
-        it 'can return an array of hashes' do
+      context 'when data is defined as a hash' do
+        it 'should return an array of hashes' do
           datatable = ComplexDatatableHash.new(view)
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
@@ -51,8 +51,10 @@ describe AjaxDatatablesRails::Base do
           item = datatable.data.first
           expect(item).to be_a(Hash)
         end
+      end
 
-        it 'can return an array of arrays' do
+      context 'when data is defined as a array' do
+        it 'should return an array of arrays' do
           datatable = ComplexDatatableArray.new(view)
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
