@@ -15,11 +15,11 @@ module AjaxDatatablesRails
       end
 
       def searchable?
-        options[:searchable] == TRUE_VALUE
+        @view_column.fetch(:searchable, true)
       end
 
       def orderable?
-        options[:orderable] == TRUE_VALUE
+        @view_column.fetch(:orderable, true)
       end
 
       def search
