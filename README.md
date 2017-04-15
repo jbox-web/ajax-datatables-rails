@@ -198,14 +198,14 @@ def data
     {
       first_name: record.first_name,
       last_name:  record.last_name,
-      bio:        record.bio
+      bio:        record.bio,
+      # 'DT_RowId' => record.id, # This will set the id attribute on the corresponding <tr> in the datatable
     }
   end
 end
 ```
 
-[See here](#using-view-helpers) if you need to use view helpers in the
-returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
+[See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, `resource_path`, etc.
 
 #### Get Raw Records
 
