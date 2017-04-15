@@ -88,7 +88,20 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
+
+    describe '#as_json' do
+      it 'should return a hash' do
+        datatable = ComplexDatatableHash.new(view)
+        create_list(:user, 5)
+        data = datatable.as_json
+        expect(data[:recordsTotal]).to eq 5
+        expect(data[:recordsFiltered]).to eq 5
+        expect(data[:data]).to be_a(Array)
+        expect(data[:data].size).to eq 5
+      end
+    end
   end
+
 
   context 'Private API' do
 

@@ -34,10 +34,10 @@ module AjaxDatatablesRails
       fail(NotImplemented, raw_records_error_text)
     end
 
-    def as_json(options = {})
+    def as_json(*)
       {
-        recordsTotal: get_raw_records.count(:all),
-        recordsFiltered: get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count,
+        recordsTotal: records_total_count,
+        recordsFiltered: records_filtered_count,
         data: sanitize(data)
       }
     end
@@ -85,6 +85,14 @@ module AjaxDatatablesRails
       records = sort_records(records)     if datatable.orderable?
       records = paginate_records(records) if datatable.paginate?
       records
+    end
+
+    def records_total_count
+      get_raw_records.count(:all)
+    end
+
+    def records_filtered_count
+      get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count
     end
 
     # Private helper methods
