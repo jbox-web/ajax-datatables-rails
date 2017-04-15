@@ -37,6 +37,12 @@ describe AjaxDatatablesRails::Base do
       end
     end
 
+    describe '#get_raw_records' do
+      it 'raises an error if not defined by the user' do
+        expect { datatable.get_raw_records }.to raise_error AjaxDatatablesRails::NotImplemented
+      end
+    end
+
     describe '#data' do
       it 'raises an error if not defined by the user' do
         expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
@@ -80,13 +86,6 @@ describe AjaxDatatablesRails::Base do
           expect(item[2]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
           expect(item[3]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
         end
-      end
-
-    end
-
-    describe '#get_raw_records' do
-      it 'raises an error if not defined by the user' do
-        expect { datatable.get_raw_records }.to raise_error AjaxDatatablesRails::NotImplemented
       end
     end
   end
