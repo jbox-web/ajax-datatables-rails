@@ -71,14 +71,18 @@ manually via the assets pipeline. If you decide to use the
 `jquery-datatables-rails` gem, please refer to its installation instructions
 [here](https://github.com/rweng/jquery-datatables-rails).
 
+
 ## Usage
+
 *The following examples assume that we are setting up ajax-datatables-rails for
 an index page of users from a `User` model, and that we are using postgresql as
 our db, because you __should be using it__, if not, please refer to the
 [Searching on non text-based columns](#searching-on-non-text-based-columns)
 entry in the Additional Notes section.*
 
+
 ### Generate
+
 Run the following command:
 
 ```sh
@@ -89,7 +93,6 @@ This will generate a file named `user_datatable.rb` in `app/datatables`.
 Open the file and customize in the functions as directed by the comments.
 
 Take a look [here](#generator-syntax) for an explanation about the generator syntax.
-
 
 
 ### Build the View
@@ -124,6 +127,7 @@ Something like this:
   </tbody>
 </table>
 ```
+
 
 ### Customize the generated Datatables class
 
@@ -163,7 +167,8 @@ end
 [Read these notes](#columns-syntax) about considerations for the `view_columns` method.
 
 
-### Map data
+#### Map data
+
 ```ruby
 def data
   records.map do |record|
@@ -207,6 +212,7 @@ end
 
 [See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, `resource_path`, etc.
 
+
 #### Get Raw Records
 
 ```ruby
@@ -236,7 +242,9 @@ datatable is used. Example: `User.active.with_recent_messages`.
 > Why? Because the result from this method, will be chained (for now)
 > to `ActiveRecord` methods for sorting, filtering and pagination.
 
+
 #### Associated and nested models
+
 The previous example has only one single model. But what about if you have
 some associated nested models and in a report you want to show fields from
 these tables.
@@ -319,6 +327,21 @@ end
 ```
 
 
+#### Additional datas
+
+You can inject other key/value pairs in the rendered JSON by defining the `#additional_datas` method :
+
+```ruby
+def additional_datas
+  {
+    foo: 'bar'
+  }
+end
+```
+
+Very useful with https://github.com/vedmack/yadcf to provides values for dropdowns filters.
+
+
 ### Setup the Controller action
 
 Set the controller to respond to JSON
@@ -370,6 +393,7 @@ jQuery(document).ready(function() {
 });
 ```
 
+
 ### Additional Notes
 
 #### Columns syntax
@@ -397,7 +421,8 @@ def view_columns
 end
 ```
 
-##### What if the datatable itself is namespaced?
+
+#### What if the datatable itself is namespaced?
 
 Example: what if the datatable is namespaced into an `Admin` module?
 
@@ -425,6 +450,7 @@ end
 ```
 
 Pretty much like you would do it, if you were inside a namespaced controller.
+
 
 #### Searching on non text-based columns
 
@@ -511,6 +537,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
 end
 ```
 
+
 #### Options
 
 An `AjaxDatatablesRails::Base` inherited class can accept an options hash at
@@ -548,6 +575,7 @@ def get_raw_records
 end
 ```
 
+
 #### Generator Syntax
 
 Also, a class that inherits from `AjaxDatatablesRails::Base` is not tied to an
@@ -566,10 +594,10 @@ $ rails generate datatable UnrespondedMessages
 # returns an unresponded_messages_datatable.rb file with an UnrespondedMessagesDatatable class
 ```
 
-
 In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
+
 
 ## Contributing
 

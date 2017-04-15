@@ -30,6 +30,10 @@ module AjaxDatatablesRails
       fail(NotImplemented, data_error_text)
     end
 
+    def additional_datas
+      {}
+    end
+
     def get_raw_records
       fail(NotImplemented, raw_records_error_text)
     end
@@ -39,7 +43,7 @@ module AjaxDatatablesRails
         recordsTotal: records_total_count,
         recordsFiltered: records_filtered_count,
         data: sanitize(data)
-      }
+      }.merge(additional_datas)
     end
 
     def records
