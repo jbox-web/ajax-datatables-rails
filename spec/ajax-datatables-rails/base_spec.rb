@@ -51,6 +51,15 @@ describe AjaxDatatablesRails::Base do
           item = datatable.data.first
           expect(item).to be_a(Hash)
         end
+
+        it 'should html escape data' do
+          datatable = ComplexDatatableHash.new(view)
+          create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
+          data = datatable.send(:sanitize, datatable.data)
+          item = data.first
+          expect(item[:first_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
+          expect(item[:last_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
+        end
       end
 
       context 'when data is defined as a array' do
@@ -61,6 +70,15 @@ describe AjaxDatatablesRails::Base do
           expect(datatable.data.size).to eq 5
           item = datatable.data.first
           expect(item).to be_a(Array)
+        end
+
+        it 'should html escape data' do
+          datatable = ComplexDatatableArray.new(view)
+          create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
+          data = datatable.send(:sanitize, datatable.data)
+          item = data.first
+          expect(item[2]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
+          expect(item[3]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
         end
       end
 

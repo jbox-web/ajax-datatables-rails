@@ -38,7 +38,7 @@ module AjaxDatatablesRails
       {
         recordsTotal: get_raw_records.count(:all),
         recordsFiltered: get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count,
-        data: data
+        data: sanitize(data)
       }
     end
 
@@ -68,6 +68,16 @@ module AjaxDatatablesRails
     end
 
     private
+
+    def sanitize(data)
+      data.map do |record|
+        if record.is_a?(Array)
+          record.map { |td| ERB::Util.html_escape(td) }
+        else
+          record.update(record){ |_, v| ERB::Util.html_escape(v) }
+        end
+      end
+    end
 
     def retrieve_records
       records = fetch_records
