@@ -22,9 +22,9 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    AjaxDatatablesRails.configure do |config|
-      config.db_adapter = :sqlite
-      config.orm = :active_record
+    AjaxDatatablesRails.configure do |c|
+      c.db_adapter = :sqlite
+      c.orm = :active_record
     end
   end
 

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/MethodLength
 def sample_params
   ActionController::Parameters.new(
     {
@@ -50,6 +51,7 @@ def sample_params
     }
   )
 end
+# rubocop:enable Metrics/MethodLength
 
 class SampleDatatable < AjaxDatatablesRails::Base
   def view_columns
