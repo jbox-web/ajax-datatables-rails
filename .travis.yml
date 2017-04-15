@@ -11,3 +11,9 @@ gemfile:
   - gemfiles/rails_5.1.0.rc1.gemfile
 after_success:
   - bundle exec codeclimate-test-reporter
+services:
+  - postgresql
+addons:
+  postgresql: '9.4'
+before_script:
+  - psql -c 'create database ajax_datatables_rails;' -U postgres
