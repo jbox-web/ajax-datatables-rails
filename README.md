@@ -14,6 +14,17 @@
 >
 > This gem is targeted at Datatables version 1.10 and up.
 
+> __Notes__
+>
+> This gem is a fork of [antillas21/ajax-datatables-rails](https://github.com/antillas21/ajax-datatables-rails)
+>
+> It's based on the `v-0-4-0` branch (which works very well, kudos to [antillas21](https://github.com/antillas21)!)
+>
+> I've only added some conditions in the `view_columns` (see below), a bunch of tests and a fancy christmas tree of badges :)
+>
+> It also fixes [antillas21#199](https://github.com/antillas21/ajax-datatables-rails/issues/199) (XSS vulnerability)
+>
+> It's tested against Rails 4.2.8 / 5.0.2 / 5.1.0.rc1 and Ruby 2.2.7 / 2.3.4 / 2.4.1
 
 ## Description
 
@@ -131,22 +142,26 @@ This gives us:
 ```ruby
 def view_columns
   @view_columns ||= {
-    id: { source: "City.id", cond: :eq, searchable: true, orderable: true },
-    name: { source: "City.name", cond: :like },
-    created_at: { source: "City.created_at", cond: :gteq },
-    country_name: { source: "City.country_id", cond: :eq }
+    first_name: { source: "User.first_name", cond: :like, searchable: true, orderable: true },
+    last_name:  { source: "User.last_name",  cond: :like },
+    bio:        { source: "User.bio" },
   }
 end
 ```
 
-```ruby
-by default orderable and searchable is true
-```
+**Notes :** by default `orderable` and `searchable` are true and `cond` is `:like`.
 
-* [See here](#searching-on-non-text-based-columns) for notes about the
-`view_columns` settings (if using something different from `postgre`).
-* [Read these notes](#columns-syntax) about
-considerations for the `view_columns` method.
+`cond` can be :
+
+* `:like`, `:start_with`, `:end_with` for string or full text search
+* `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
+* `:date_range` for date range
+* `:null_value` for nil field
+* `Proc` for whatever
+
+[See here](#searching-on-non-text-based-columns) for notes about the `view_columns` settings (if using something different from `postgres`).
+[Read these notes](#columns-syntax) about considerations for the `view_columns` method.
+
 
 ### Map data
 ```ruby
@@ -247,14 +262,14 @@ would be:
 ```ruby
 def view_columns
   @view_columns ||= [
-      'Coursetype.name',
-      'Course.name',
-      'Event.title',
-      'Event.event_start',
-      'Event.event_end',
-      'Contact.last_name',
-      'CompetencyType.name',
-      'Event.status'
+    'Coursetype.name',
+    'Course.name',
+    'Event.title',
+    'Event.event_start',
+    'Event.event_end',
+    'Contact.last_name',
+    'CompetencyType.name',
+    'Event.status'
   ]
 end
 
@@ -507,7 +522,7 @@ class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
 end
 
 datatable = UnrespondedMessagesDatatable.new(view_context,
-  { :foo => { :bar => Baz.new }, :from => 1.month.ago }
+  { user: current_user, from: 1.month.ago }
 )
 ```
 
@@ -524,8 +539,12 @@ def to
   @to ||= Date.today.end_of_day
 end
 
+def user
+  @user ||= optiions[:user]
+end
+
 def get_raw_records
-  Message.unresponded.where(received_at: from..to)
+  user.messages.unresponded.where(received_at: from..to)
 end
 ```
 
