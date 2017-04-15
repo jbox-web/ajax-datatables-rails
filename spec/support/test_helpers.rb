@@ -112,7 +112,7 @@ class ReallyComplexDatatable < SampleDatatable
       first_name: { source: 'User.first_name', cond: :start_with },
       last_name:  { source: 'User.last_name',  cond: :end_with, formater: -> (o) { o.downcase } },
       post_id:    { source: 'User.post_id' },
-      created_at: { source: 'User.created_at', cond: :range },
+      created_at: { source: 'User.created_at', cond: :date_range },
     }
   end
 

@@ -113,8 +113,8 @@ module AjaxDatatablesRails
           filter(formated_value)
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
           numeric_search
-        when :range
-          range_search
+        when :date_range
+          date_range_search
         when :null_value
           null_value_search
         when :start_with
@@ -156,7 +156,7 @@ module AjaxDatatablesRails
       end
 
       # Do a range search
-      def range_search
+      def date_range_search
         return nil if empty_range_search?
         new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
         new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
