@@ -1,3 +1,4 @@
+dist: trusty
 language: ruby
 sudo: false
 cache: bundler
@@ -14,6 +15,6 @@ after_success:
 services:
   - postgresql
 addons:
-  postgresql: '9.4'
+  postgresql: '9.6'
 before_script:
   - psql -c 'create database ajax_datatables_rails;' -U postgres
