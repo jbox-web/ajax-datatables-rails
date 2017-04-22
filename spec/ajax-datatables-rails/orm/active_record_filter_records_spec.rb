@@ -22,7 +22,7 @@ describe 'AjaxDatatablesRails::ORM::ActiveRecord#filter_records' do
     let(:records) { User.all }
 
     it 'requires a records collection as argument' do
-      expect { datatable.send(:filter_records) }.to raise_error
+      expect { datatable.send(:filter_records) }.to raise_error(ArgumentError)
     end
 
     it 'performs a simple search first' do

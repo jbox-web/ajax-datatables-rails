@@ -8,7 +8,8 @@ module AjaxDatatablesRails
 
       def initialize datatable
         @datatable = datatable
-        @options = datatable.params
+        @options = datatable.params.to_h.with_indifferent_access.deep_symbolize_keys
+        p @options
       end
 
       # ----------------- ORDER METHODS --------------------

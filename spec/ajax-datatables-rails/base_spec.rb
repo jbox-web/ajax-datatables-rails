@@ -78,25 +78,25 @@ describe AjaxDatatablesRails::Base do
 
     describe 'fetch records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:fetch_records) }.to raise_error
+        expect { datatable.send(:fetch_records) }.to raise_error NoMethodError
       end
     end
 
     describe 'filter records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:filter_records) }.to raise_error
+        expect { datatable.send(:filter_records) }.to raise_error NoMethodError
       end
     end
 
     describe 'sort records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:sort_records) }.to raise_error
+        expect { datatable.send(:sort_records) }.to raise_error NoMethodError
       end
     end
 
     describe 'paginate records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:paginate_records) }.to raise_error
+        expect { datatable.send(:paginate_records) }.to raise_error NoMethodError
       end
     end
 
