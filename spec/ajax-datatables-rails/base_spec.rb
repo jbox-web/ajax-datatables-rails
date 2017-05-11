@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
+
   describe 'an instance' do
     let(:view) { double('view', params: sample_params) }
 
@@ -36,39 +37,88 @@ describe AjaxDatatablesRails::Base do
       end
     end
 
-    describe '#data' do
-      it 'raises an error if not defined by the user' do
-        expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
-      end
-
-      context 'child class implements data' do
-        let(:datatable) { ComplexDatatable.new(view) }
-
-        it 'can return an array of hashes' do
-          allow(datatable).to receive(:data) { [{}, {}] }
-          expect(datatable.data).to be_a(Array)
-          item = datatable.data.first
-          expect(item).to be_a(Hash)
-        end
-
-        it 'can return an array of arrays' do
-          allow(datatable).to receive(:data) { [[], []] }
-          expect(datatable.data).to be_a(Array)
-          item = datatable.data.first
-          expect(item).to be_a(Array)
-        end
-      end
-
-    end
-
     describe '#get_raw_records' do
       it 'raises an error if not defined by the user' do
         expect { datatable.get_raw_records }.to raise_error AjaxDatatablesRails::NotImplemented
       end
     end
+
+    describe '#data' do
+      it 'raises an error if not defined by the user' do
+        expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
+      end
+
+      context 'when data is defined as a hash' do
+        it 'should return an array of hashes' do
+          datatable = ComplexDatatableHash.new(view)
+          create_list(:user, 5)
+          expect(datatable.data).to be_a(Array)
+          expect(datatable.data.size).to eq 5
+          item = datatable.data.first
+          expect(item).to be_a(Hash)
+        end
+
+        it 'should html escape data' do
+          datatable = ComplexDatatableHash.new(view)
+          create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
+          data = datatable.send(:sanitize, datatable.data)
+          item = data.first
+          expect(item[:first_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
+          expect(item[:last_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
+        end
+      end
+
+      context 'when data is defined as a array' do
+        it 'should return an array of arrays' do
+          datatable = ComplexDatatableArray.new(view)
+          create_list(:user, 5)
+          expect(datatable.data).to be_a(Array)
+          expect(datatable.data.size).to eq 5
+          item = datatable.data.first
+          expect(item).to be_a(Array)
+        end
+
+        it 'should html escape data' do
+          datatable = ComplexDatatableArray.new(view)
+          create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
+          data = datatable.send(:sanitize, datatable.data)
+          item = data.first
+          expect(item[2]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
+          expect(item[3]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
+        end
+      end
+    end
+
+    describe '#as_json' do
+      it 'should return a hash' do
+        datatable = ComplexDatatableHash.new(view)
+        create_list(:user, 5)
+        data = datatable.as_json
+        expect(data[:recordsTotal]).to eq 5
+        expect(data[:recordsFiltered]).to eq 5
+        expect(data[:data]).to be_a(Array)
+        expect(data[:data].size).to eq 5
+      end
+
+      context 'with additional_datas' do
+        it 'should return a hash' do
+          datatable = ComplexDatatableHash.new(view)
+          create_list(:user, 5)
+          expect(datatable).to receive(:additional_datas){ { foo: 'bar' } }
+          data = datatable.as_json
+          expect(data[:recordsTotal]).to eq 5
+          expect(data[:recordsFiltered]).to eq 5
+          expect(data[:data]).to be_a(Array)
+          expect(data[:data].size).to eq 5
+          expect(data[:foo]).to eq 'bar'
+        end
+      end
+    end
   end
 
+
   context 'Private API' do
+
     let(:view) { double('view', params: sample_params) }
     let(:datatable) { ComplexDatatable.new(view) }
 
@@ -76,27 +126,27 @@ describe AjaxDatatablesRails::Base do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
     end
 
-    describe 'fetch records' do
+    describe '#fetch_records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:fetch_records) }.to raise_error
+        expect { datatable.send(:fetch_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'filter records' do
+    describe '#filter_records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:filter_records) }.to raise_error
+        expect { datatable.send(:filter_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'sort records' do
+    describe '#sort_records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:sort_records) }.to raise_error
+        expect { datatable.send(:sort_records) }.to raise_error NoMethodError
       end
     end
 
-    describe 'paginate records' do
+    describe '#paginate_records' do
       it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:paginate_records) }.to raise_error
+        expect { datatable.send(:paginate_records) }.to raise_error NoMethodError
       end
     end
 

@@ -5,10 +5,10 @@ module AjaxDatatablesRails
     extend Forwardable
 
     attr_reader :view, :options
-    def_delegator :@view, :params, :params
+    def_delegator :@view, :params
 
     def initialize(view, options = {})
-      @view = view
+      @view    = view
       @options = options
       load_orm_extension
     end
@@ -18,7 +18,7 @@ module AjaxDatatablesRails
     end
 
     def datatable
-      @datatable ||= Datatable::Datatable.new self
+      @datatable ||= Datatable::Datatable.new(self)
     end
 
     # Must overrited methods
@@ -30,16 +30,20 @@ module AjaxDatatablesRails
       fail(NotImplemented, data_error_text)
     end
 
+    def additional_datas
+      {}
+    end
+
     def get_raw_records
       fail(NotImplemented, raw_records_error_text)
     end
 
-    def as_json(options = {})
+    def as_json(*)
       {
-        recordsTotal: get_raw_records.count(:all),
-        recordsFiltered: get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count,
-        data: data
-      }
+        recordsTotal: records_total_count,
+        recordsFiltered: records_filtered_count,
+        data: sanitize(data)
+      }.merge(additional_datas)
     end
 
     def records
@@ -49,7 +53,7 @@ module AjaxDatatablesRails
     # helper methods
     def searchable_columns
       @searchable_columns ||= begin
-        connected_columns.select &:searchable?
+        connected_columns.select(&:searchable?)
       end
     end
 
@@ -68,23 +72,15 @@ module AjaxDatatablesRails
     end
 
     private
-    # view_columns can be an Array or Hash. we have to support all these formats of defining columns
-    def connect_view_columns
-      # @connect_view_columns ||= begin
-      #   adapted_options =
-      #     case view_columns
-      #     when Hash
-      #     when Array
-      #       cols = {}
-      #       view_columns.each_with_index({}) do |index, source|
-      #         cols[index.to_s] = { source: source }
-      #       end
-      #       cols
-      #     else
-      #       view_columns
-      #     end
-      #   ActiveSupport::HashWithIndifferentAccess.new adapted_options
-      # end
+
+    def sanitize(data)
+      data.map do |record|
+        if record.is_a?(Array)
+          record.map { |td| ERB::Util.html_escape(td) }
+        else
+          record.update(record){ |_, v| ERB::Util.html_escape(v) }
+        end
+      end
     end
 
     def retrieve_records
@@ -93,6 +89,14 @@ module AjaxDatatablesRails
       records = sort_records(records)     if datatable.orderable?
       records = paginate_records(records) if datatable.paginate?
       records
+    end
+
+    def records_total_count
+      get_raw_records.count(:all)
+    end
+
+    def records_filtered_count
+      get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count
     end
 
     # Private helper methods

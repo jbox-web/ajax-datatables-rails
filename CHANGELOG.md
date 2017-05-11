@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 0.3.0 (unreleased yet)
+## 0.3.1
+* Adds `:oracle` as supported `db_adapter`. Thanks to [lutechspa](https://github.com/lutechspa) for this contribution.
+
+## 0.3.0
 * Changes to the `sortable_columns` and `searchable_columns` syntax as it
   required us to do unnecessary guessing. New syntax is `ModelName.column_name`
   or `Namespace::ModelName.column_name`. Old syntax of `table_name.column_name`

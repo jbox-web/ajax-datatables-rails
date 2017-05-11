@@ -1,8 +1,12 @@
 # ajax-datatables-rails
 
-[![Build Status](https://travis-ci.org/antillas21/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/antillas21/ajax-datatables-rails)
+[![GitHub license](https://img.shields.io/github/license/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/releases/latest)
 [![Gem Version](https://badge.fury.io/rb/ajax-datatables-rails.svg)](http://badge.fury.io/rb/ajax-datatables-rails)
-[![Code Climate](https://codeclimate.com/github/antillas21/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/antillas21/ajax-datatables-rails)
+[![Build Status](https://travis-ci.org/jbox-web/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/jbox-web/ajax-datatables-rails)
+[![Code Climate](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails)
+[![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
+[![Dependency Status](https://gemnasium.com/jbox-web/ajax-datatables-rails.svg)](https://gemnasium.com/jbox-web/ajax-datatables-rails)
 
 > __Important__
 >
@@ -10,6 +14,17 @@
 >
 > This gem is targeted at Datatables version 1.10 and up.
 
+> __Notes__
+>
+> This gem is a fork of [antillas21/ajax-datatables-rails](https://github.com/antillas21/ajax-datatables-rails)
+>
+> It's based on the `v-0-4-0` branch (which works very well, kudos to [antillas21](https://github.com/antillas21)!)
+>
+> I've only added some conditions in the `view_columns` (see below), a bunch of tests and a fancy christmas tree of badges :)
+>
+> It also fixes [antillas21#199](https://github.com/antillas21/ajax-datatables-rails/issues/199) (XSS vulnerability)
+>
+> It's tested against Rails 4.2.8 / 5.0.2 / 5.1.0.rc1 and Ruby 2.2.7 / 2.3.4 / 2.4.1
 
 ## Description
 
@@ -39,12 +54,16 @@ and get in touch.
 
 Add these lines to your application's Gemfile:
 
-    gem 'jquery-datatables-rails'
-    gem 'ajax-datatables-rails'
+```ruby
+gem 'jquery-datatables-rails'
+gem 'ajax-datatables-rails'
+```
 
 And then execute:
 
-    $ bundle
+```sh
+$ bundle
+```
 
 The `jquery-datatables-rails` gem is listed as a convenience, to ease adding
 jQuery dataTables to your Rails project. You can always add the plugin assets
@@ -52,24 +71,28 @@ manually via the assets pipeline. If you decide to use the
 `jquery-datatables-rails` gem, please refer to its installation instructions
 [here](https://github.com/rweng/jquery-datatables-rails).
 
+
 ## Usage
+
 *The following examples assume that we are setting up ajax-datatables-rails for
 an index page of users from a `User` model, and that we are using postgresql as
 our db, because you __should be using it__, if not, please refer to the
 [Searching on non text-based columns](#searching-on-non-text-based-columns)
 entry in the Additional Notes section.*
 
+
 ### Generate
+
 Run the following command:
 
-    $ rails generate datatable User
-
+```sh
+$ rails generate datatable User
+```
 
 This will generate a file named `user_datatable.rb` in `app/datatables`.
 Open the file and customize in the functions as directed by the comments.
 
 Take a look [here](#generator-syntax) for an explanation about the generator syntax.
-
 
 
 ### Build the View
@@ -80,9 +103,9 @@ Something like this:
 
 |First Name|Last Name|Brief Bio|
 |----------|---------|---------|
-|John|Doe|Is your default user everywhere|
-|Jane|Doe|Is John's wife|
-|James|Doe|Is John's brother and best friend|
+|John      |Doe      |Is your default user everywhere|
+|Jane      |Doe      |Is John's wife|
+|James     |Doe      |Is John's brother and best friend|
 
 
 * Set up an html `<table>` with a `<thead>` and `<tbody>`
@@ -105,7 +128,9 @@ Something like this:
 </table>
 ```
 
+
 ### Customize the generated Datatables class
+
 ```ruby
 def view_columns
   # Declare strings in this format: ModelName.column_name
@@ -121,31 +146,36 @@ This gives us:
 ```ruby
 def view_columns
   @view_columns ||= {
-    id: { source: "City.id", cond: :eq, searchable: true, orderable: true },
-    name: { source: "City.name", cond: :like },
-    created_at: { source: "City.created_at", cond: :gteq },
-    country_name: { source: "City.country_id", cond: :eq }
+    first_name: { source: "User.first_name", cond: :like, searchable: true, orderable: true },
+    last_name:  { source: "User.last_name",  cond: :like },
+    bio:        { source: "User.bio" },
   }
 end
 ```
 
-```ruby
-by default orderable and searchable is true
-```
+**Notes :** by default `orderable` and `searchable` are true and `cond` is `:like`.
 
-* [See here](#searching-on-non-text-based-columns) for notes about the
-`view_columns` settings (if using something different from `postgre`).
-* [Read these notes](#columns-syntax) about
-considerations for the `view_columns` method.
+`cond` can be :
 
-### Map data
+* `:like`, `:start_with`, `:end_with` for string or full text search
+* `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
+* `:date_range` for date range
+* `:null_value` for nil field
+* `Proc` for whatever
+
+[See here](#searching-on-non-text-based-columns) for notes about the `view_columns` settings (if using something different from `postgres`).
+[Read these notes](#columns-syntax) about considerations for the `view_columns` method.
+
+
+#### Map data
+
 ```ruby
 def data
   records.map do |record|
     [
-        # comma separated list of the values for each cell of a table row
-        # example: record.attribute,
-      ]
+      # comma separated list of the values for each cell of a table row
+      # example: record.first_name, record.last_name
+    ]
   end
 end
 ```
@@ -165,10 +195,26 @@ def data
 end
 ```
 
-[See here](#using-view-helpers) if you need to use view helpers in the
-returned 2d array, like `link_to`, `mail_to`, `resource_path`, etc.
+You can either use a Hash style for your columns :
+
+```ruby
+def data
+  records.map do |record|
+    {
+      first_name: record.first_name,
+      last_name:  record.last_name,
+      bio:        record.bio,
+      # 'DT_RowId' => record.id, # This will set the id attribute on the corresponding <tr> in the datatable
+    }
+  end
+end
+```
+
+[See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, `resource_path`, etc.
+
 
 #### Get Raw Records
+
 ```ruby
 def get_raw_records
   # insert query here
@@ -196,7 +242,9 @@ datatable is used. Example: `User.active.with_recent_messages`.
 > Why? Because the result from this method, will be chained (for now)
 > to `ActiveRecord` methods for sorting, filtering and pagination.
 
+
 #### Associated and nested models
+
 The previous example has only one single model. But what about if you have
 some associated nested models and in a report you want to show fields from
 these tables.
@@ -206,42 +254,41 @@ Contact, Competency and CompetencyType` models. We want to have a datatables
 report which has the following column:
 
 ```ruby
-        'coursetypes.name',
-        'courses.name',
-        'events.title',
-        'events.event_start',
-        'events.event_end',
-        'contacts.full_name',
-        'competency_types.name',
-        'events.status'
+'coursetypes.name',
+'courses.name',
+'events.title',
+'events.event_start',
+'events.event_end',
+'contacts.full_name',
+'competency_types.name',
+'events.status'
 ```
 
 We want to sort and search on all columns of the list. The related definition
 would be:
 
 ```ruby
+def view_columns
+  @view_columns ||= [
+    'Coursetype.name',
+    'Course.name',
+    'Event.title',
+    'Event.event_start',
+    'Event.event_end',
+    'Contact.last_name',
+    'CompetencyType.name',
+    'Event.status'
+  ]
+end
 
-  def view_columns
-    @view_columns ||= [
-        'Coursetype.name',
-        'Course.name',
-        'Event.title',
-        'Event.event_start',
-        'Event.event_end',
-        'Contact.last_name',
-        'CompetencyType.name',
-        'Event.status'
-    ]
-  end
-
-  def get_raw_records
-     Event.joins(
-      { course: :coursetype },
-      { allocations: {
-          teacher: [:contact, {competencies: :competency_type}]
-        }
-      }).distinct
-  end
+def get_raw_records
+   Event.joins(
+    { course: :coursetype },
+    { allocations: {
+        teacher: [:contact, {competencies: :competency_type}]
+      }
+    }).distinct
+end
 ```
 
 __Some comments for the above code:__
@@ -268,16 +315,31 @@ is not empty.
 So the query using the `.includes()` method is:
 
 ```ruby
-  def get_raw_records
-     Event.includes(
-      { course: :coursetype },
-      { allocations: {
-          teacher: [:contact, { competencies: :competency_type }]
-        }
+def get_raw_records
+   Event.includes(
+    { course: :coursetype },
+    { allocations: {
+        teacher: [:contact, { competencies: :competency_type }]
       }
-      ).references(:course).distinct
-  end
+    }
+    ).references(:course).distinct
+end
 ```
+
+
+#### Additional datas
+
+You can inject other key/value pairs in the rendered JSON by defining the `#additional_datas` method :
+
+```ruby
+def additional_datas
+  {
+    foo: 'bar'
+  }
+end
+```
+
+Very useful with https://github.com/vedmack/yadcf to provide values for dropdown filters.
 
 
 ### Setup the Controller action
@@ -296,8 +358,8 @@ end
 Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
 
-
 ### Wire up the Javascript
+
 Finally, the javascript to tie this all together. In the appropriate `coffee` file:
 
 ```coffeescript
@@ -331,6 +393,7 @@ jQuery(document).ready(function() {
 });
 ```
 
+
 ### Additional Notes
 
 #### Columns syntax
@@ -358,7 +421,9 @@ def view_columns
 end
 ```
 
-##### What if the datatable itself is namespaced?
+
+#### What if the datatable itself is namespaced?
+
 Example: what if the datatable is namespaced into an `Admin` module?
 
 ```ruby
@@ -386,6 +451,7 @@ end
 
 Pretty much like you would do it, if you were inside a namespaced controller.
 
+
 #### Searching on non text-based columns
 
 It always comes the time when you need to add a non-string/non-text based
@@ -412,7 +478,7 @@ You have two options to create this initializer:
 
 To use the generator, from the terminal execute:
 
-```
+```sh
 $ bundle exec rails generate datatable:config
 ```
 
@@ -471,6 +537,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
 end
 ```
 
+
 #### Options
 
 An `AjaxDatatablesRails::Base` inherited class can accept an options hash at
@@ -482,9 +549,10 @@ class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
 end
 
 datatable = UnrespondedMessagesDatatable.new(view_context,
-  { :foo => { :bar => Baz.new }, :from => 1.month.ago }
+  { user: current_user, from: 1.month.ago }
 )
 ```
+
 So, now inside your class code, you can use those options like this:
 
 
@@ -498,10 +566,15 @@ def to
   @to ||= Date.today.end_of_day
 end
 
+def user
+  @user ||= optiions[:user]
+end
+
 def get_raw_records
-  Message.unresponded.where(received_at: from..to)
+  user.messages.unresponded.where(received_at: from..to)
 end
 ```
+
 
 #### Generator Syntax
 
@@ -510,7 +583,7 @@ existing model, module, constant or any type of class in your Rails app.
 You can pass a name to your datatable class like this:
 
 
-```
+```sh
 $ rails generate datatable users
 # returns a users_datatable.rb file with a UsersDatatable class
 
@@ -521,26 +594,10 @@ $ rails generate datatable UnrespondedMessages
 # returns an unresponded_messages_datatable.rb file with an UnrespondedMessagesDatatable class
 ```
 
-
 In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
 
-## Tutorial
-
-Tutorial for Integrating `ajax-datatable-rails`, on  Rails 4.
-
-__version 0.3.0:__
-
-[Part-1  The-Installation](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-1----The-Installation)
-
-[Part 2 The Datatables with ajax functionality](https://github.com/antillas21/ajax-datatables-rails/wiki/Part-2-The-Datatables-with-ajax-functionality)
-
-The complete project code for this tutorial series is available on [github](https://github.com/trkrameshkumar/simple_app).
-
-__version 0.4.0:__
-
-Another sample project [code](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
 
 ## Contributing
 
