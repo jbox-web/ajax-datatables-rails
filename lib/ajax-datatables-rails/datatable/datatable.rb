@@ -18,12 +18,7 @@ module AjaxDatatablesRails
       end
 
       def orders
-        return @orders if @orders
-        @orders = []
-        options[:order].each do |_, order_options|
-          @orders << SimpleOrder.new(self, order_options)
-        end
-        @orders
+        @orders ||= options[:order].to_unsafe_h.with_indifferent_access.map { |index, order_options| SimpleOrder.new(self, order_options) }
       end
 
       def order_by(how, what)
@@ -43,12 +38,9 @@ module AjaxDatatablesRails
       # ----------------- COLUMN METHODS --------------------
 
       def columns
-        return @columns if @columns
-        @columns = []
-        options[:columns].each do |index, column_options|
-          @columns << Column.new(datatable, index, column_options)
+        @columns ||= options[:columns].to_unsafe_h.with_indifferent_access.map do |index, column_options|
+          Column.new(datatable, index, column_options)
         end
-        @columns
       end
 
       def column_by(how, what)
