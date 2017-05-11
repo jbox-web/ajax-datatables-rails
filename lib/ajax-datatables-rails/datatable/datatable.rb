@@ -18,7 +18,9 @@ module AjaxDatatablesRails
       end
 
       def orders
-        @orders ||= options[:order].to_unsafe_h.with_indifferent_access.map { |index, order_options| SimpleOrder.new(self, order_options) }
+        @orders ||= options[:order].to_unsafe_h.with_indifferent_access.map do |_, order_options|
+          SimpleOrder.new(self, order_options)
+        end
       end
 
       def order_by(how, what)
