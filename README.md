@@ -2,7 +2,8 @@
 
 [![GitHub license](https://img.shields.io/github/license/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/releases/latest)
-[![Gem Version](https://badge.fury.io/rb/ajax-datatables-rails.svg)](http://badge.fury.io/rb/ajax-datatables-rails)
+[![Gem](https://img.shields.io/gem/v/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
+[![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Build Status](https://travis-ci.org/jbox-web/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/jbox-web/ajax-datatables-rails)
 [![Code Climate](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails)
 [![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
@@ -10,21 +11,9 @@
 
 > __Important__
 >
-> [Datatables](http://datatables.net) recently released version 1.10 (which includes a new API and features) and deprecated version 1.9.
+> This gem is targeted at Datatables version 1.10.x.
 >
-> This gem is targeted at Datatables version 1.10 and up.
-
-> __Notes__
->
-> This gem is a fork of [antillas21/ajax-datatables-rails](https://github.com/antillas21/ajax-datatables-rails)
->
-> It's based on the `v-0-4-0` branch (which works very well, kudos to [antillas21](https://github.com/antillas21)!)
->
-> I've only added some conditions in the `view_columns` (see below), a bunch of tests and a fancy christmas tree of badges :)
->
-> It also fixes [antillas21#199](https://github.com/antillas21/ajax-datatables-rails/issues/199) (XSS vulnerability)
->
-> It's tested against Rails 4.2.8 / 5.0.2 / 5.1.0.rc1 and Ruby 2.2.7 / 2.3.4 / 2.4.1
+> It's tested against Rails 4.2.8 / 5.0.2 / 5.1.0 and Ruby 2.2.7 / 2.3.4 / 2.4.1
 
 ## Description
 
