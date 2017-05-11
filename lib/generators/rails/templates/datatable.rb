@@ -1,29 +1,41 @@
-class <%= @datatable_name %>Datatable < AjaxDatatablesRails::Base
+class <%= datatable_name %> < AjaxDatatablesRails::Base
 
-  def sortable_columns
+  def view_columns
     # Declare strings in this format: ModelName.column_name
-    @sortable_columns ||= []
+    # or in aliased_join_table.column_name format
+    @view_columns ||= {
+      # id: { source: "User.id", cond: :eq },
+      # name: { source: "User.name", cond: :like }
+    }
   end
 
-  def searchable_columns
-    # Declare strings in this format: ModelName.column_name
-    @searchable_columns ||= []
+  def data
+    records.map do |record|
+      {
+        # example:
+        # id: record.id,
+        # name: record.name
+      }
+    end
   end
 
   private
 
-  def data
-    records.map do |record|
-      [
-        # comma separated list of the values for each cell of a table row
-        # example: record.attribute,
-      ]
-    end
-  end
-
   def get_raw_records
     # insert query here
   end
+
+  # ==== These methods represent the basic operations to perform on records
+  # and feel free to override them
+
+  # def filter_records(records)
+  # end
+
+  # def sort_records(records)
+  # end
+
+  # def paginate_records(records)
+  # end
 
   # ==== Insert 'presenter'-like methods below if necessary
 end
