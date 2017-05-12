@@ -556,7 +556,7 @@ def to
 end
 
 def user
-  @user ||= optiions[:user]
+  @user ||= options[:user]
 end
 
 def get_raw_records
