@@ -17,7 +17,6 @@ services:
   - mysql
 addons:
   postgresql: '9.6'
-  mariadb: '10.0'
 before_script:
   - mysql -e 'create database ajax_datatables_rails;'
   - psql -c 'create database ajax_datatables_rails;' -U postgres
