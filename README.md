@@ -1,7 +1,6 @@
 # ajax-datatables-rails
 
 [![GitHub license](https://img.shields.io/github/license/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/releases/latest)
 [![Gem](https://img.shields.io/gem/v/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Build Status](https://travis-ci.org/jbox-web/ajax-datatables-rails.svg?branch=master)](https://travis-ci.org/jbox-web/ajax-datatables-rails)
@@ -13,7 +12,12 @@
 >
 > This gem is targeted at Datatables version 1.10.x.
 >
-> It's tested against Rails 4.2.8 / 5.0.2 / 5.1.0 and Ruby 2.2.7 / 2.3.4 / 2.4.1
+> It's tested against :
+> * Rails 4.2.8 / 5.0.2 / 5.1.0
+> * Ruby 2.2.7 / 2.3.4 / 2.4.1
+> * Postgresql
+> * MySQL
+> * SQLite
 
 ## Description
 
@@ -547,16 +551,16 @@ So, now inside your class code, you can use those options like this:
 
 ```ruby
 # let's see an example
+def user
+  @user ||= options[:user]
+end
+
 def from
   @from ||= options[:from].beginning_of_day
 end
 
 def to
   @to ||= Date.today.end_of_day
-end
-
-def user
-  @user ||= options[:user]
 end
 
 def get_raw_records
