@@ -91,7 +91,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
             result = datatable.send(:build_conditions_for_selected_columns)
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
-              "CAST(\"users\".\"username\" AS TEXT) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS TEXT) ILIKE '%example%'"
+              "CAST(\"users\".\"username\" AS VARCHAR) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS VARCHAR) ILIKE '%example%'"
             )
           end
         end
