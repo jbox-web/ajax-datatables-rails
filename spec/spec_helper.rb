@@ -21,9 +21,9 @@ RSpec.configure do |config|
     FactoryGirl.find_definitions
   end
 
-  config.before(:each) do
+  config.after(:each) do
     AjaxDatatablesRails.configure do |c|
-      c.db_adapter = :sqlite
+      c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
       c.orm = :active_record
     end
   end
@@ -58,9 +58,14 @@ end
 require 'ajax-datatables-rails'
 
 ActiveRecord::Base.establish_connection(
-  adapter:  'postgresql',
+  adapter:  ENV.fetch('DB_ADAPTER', 'postgresql'),
   database: 'ajax_datatables_rails'
 )
+
+AjaxDatatablesRails.configure do |c|
+  c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+  c.orm = :active_record
+end
 
 load File.dirname(__FILE__) + '/support/schema.rb'
 load File.dirname(__FILE__) + '/support/test_helpers.rb'

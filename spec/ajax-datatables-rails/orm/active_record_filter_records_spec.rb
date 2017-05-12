@@ -85,12 +85,28 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         expect(result).to be_a(Arel::Nodes::And)
       end
 
-      it 'can call #to_sql on returned object' do
-        result = datatable.send(:build_conditions_for_selected_columns)
-        expect(result).to respond_to(:to_sql)
-        expect(result.to_sql).to eq(
-          "CAST(\"users\".\"username\" AS TEXT) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS TEXT) ILIKE '%example%'"
-        )
+      if AjaxDatatablesRails.config.db_adapter == :postgresql
+        context 'when db_adapter is postgresql' do
+          it 'can call #to_sql on returned object' do
+            result = datatable.send(:build_conditions_for_selected_columns)
+            expect(result).to respond_to(:to_sql)
+            expect(result.to_sql).to eq(
+              "CAST(\"users\".\"username\" AS TEXT) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS TEXT) ILIKE '%example%'"
+            )
+          end
+        end
+      end
+
+      if AjaxDatatablesRails.config.db_adapter.in? %i[mysql2 sqlite3]
+        context 'when db_adapter is mysql2' do
+          it 'can call #to_sql on returned object' do
+            result = datatable.send(:build_conditions_for_selected_columns)
+            expect(result).to respond_to(:to_sql)
+            expect(result.to_sql).to eq(
+              "CAST(`users`.`username` AS CHAR) LIKE '%doe%' AND CAST(`users`.`email` AS CHAR) LIKE '%example%'"
+            )
+          end
+        end
       end
     end
 
