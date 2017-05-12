@@ -127,6 +127,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect(column.send(:typecast)).to eq('VARCHAR')
     end
 
+    it 'returns VARCHAR if :db_adapter is :postgre' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgresql }
+      expect(column.send(:typecast)).to eq('VARCHAR')
+    end
+
     it 'returns CHAR if :db_adapter is :mysql2' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql2 }
       expect(column.send(:typecast)).to eq('CHAR')

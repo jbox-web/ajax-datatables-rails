@@ -24,8 +24,8 @@ describe AjaxDatatablesRails::Configuration do
       expect(config.orm).to eq(:active_record)
     end
 
-    it 'default db_adapter should :pg (postgresql)' do
-      expect(config.db_adapter).to eq(:pg)
+    it 'default db_adapter should :postgresql' do
+      expect(config.db_adapter).to eq(:postgresql)
     end
   end
 

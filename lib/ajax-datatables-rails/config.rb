@@ -4,7 +4,7 @@ module AjaxDatatablesRails
 
   # configure AjaxDatatablesRails global settings
   #   AjaxDatatablesRails.configure do |config|
-  #     config.db_adapter = :pg
+  #     config.db_adapter = :postgresql
   #   end
   def self.configure
     yield @config ||= AjaxDatatablesRails::Configuration.new
@@ -19,6 +19,6 @@ module AjaxDatatablesRails
     include ActiveSupport::Configurable
 
     config_accessor(:orm) { :active_record }
-    config_accessor(:db_adapter) { :pg }
+    config_accessor(:db_adapter) { :postgresql }
   end
 end
