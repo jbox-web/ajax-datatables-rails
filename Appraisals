@@ -8,5 +8,6 @@ RAILS_VERSIONS = %w(
 RAILS_VERSIONS.each do |version|
   appraise "rails_#{version}" do
     gem 'rails', version
+    gem 'mysql2', '~> 0.3.18' if version == '4.1.15'
   end
 end

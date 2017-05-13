@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gem "rails", "4.1.15"
+gem "mysql2", "~> 0.3.18"
 
 group :test do
   gem "codeclimate-test-reporter", "~> 1.0.0"
