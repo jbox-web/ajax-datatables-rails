@@ -14,10 +14,22 @@ matrix:
   include:
     - rvm: 2.4.1
       gemfile: gemfiles/rails_4.2.8.gemfile
+      env: DB_ADAPTER=postgresql
     - rvm: 2.4.1
       gemfile: gemfiles/rails_5.0.2.gemfile
+      env: DB_ADAPTER=postgresql
     - rvm: 2.4.1
       gemfile: gemfiles/rails_5.1.0.gemfile
+      env: DB_ADAPTER=postgresql
+    - rvm: 2.4.1
+      gemfile: gemfiles/rails_4.2.8.gemfile
+      env: DB_ADAPTER=mysql2
+    - rvm: 2.4.1
+      gemfile: gemfiles/rails_5.0.2.gemfile
+      env: DB_ADAPTER=mysql2
+    - rvm: 2.4.1
+      gemfile: gemfiles/rails_5.1.0.gemfile
+      env: DB_ADAPTER=mysql2
 after_success:
   - bundle exec codeclimate-test-reporter
 services:
@@ -37,4 +49,3 @@ env:
   matrix:
     - DB_ADAPTER=postgresql
     - DB_ADAPTER=mysql2
-    - DB_ADAPTER=sqlite3
