@@ -18,7 +18,7 @@ module AjaxDatatablesRails
       end
 
       def orders
-        @orders ||= options[:order].to_unsafe_h.with_indifferent_access.map do |_, order_options|
+        @orders ||= get_param(:order).map do |_, order_options|
           SimpleOrder.new(self, order_options)
         end
       end
@@ -40,7 +40,7 @@ module AjaxDatatablesRails
       # ----------------- COLUMN METHODS --------------------
 
       def columns
-        @columns ||= options[:columns].to_unsafe_h.with_indifferent_access.map do |index, column_options|
+        @columns ||= get_param(:columns).map do |index, column_options|
           Column.new(datatable, index, column_options)
         end
       end
@@ -65,6 +65,14 @@ module AjaxDatatablesRails
 
       def per_page
         options.fetch(:length, 10).to_i
+      end
+
+      def get_param(param)
+        if AjaxDatatablesRails.rails_41?
+          options[param]
+        else
+          options[param].to_unsafe_h.with_indifferent_access
+        end
       end
     end
   end

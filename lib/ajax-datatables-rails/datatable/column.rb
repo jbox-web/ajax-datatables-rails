@@ -5,6 +5,10 @@ module AjaxDatatablesRails
     class Column
       attr_reader :datatable, :index, :options
 
+      unless AjaxDatatablesRails.rails_41?
+        prepend ColumnDateFilter
+      end
+
       def initialize(datatable, index, options)
         @datatable, @index, @options = datatable, index, options
         @view_column = datatable.view_columns[options["data"].to_sym]
@@ -113,8 +117,6 @@ module AjaxDatatablesRails
           filter(formated_value)
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
           numeric_search
-        when :date_range
-          date_range_search
         when :null_value
           null_value_search
         when :start_with
@@ -139,30 +141,6 @@ module AjaxDatatablesRails
 
       def casted_column
         ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(typecast)])
-      end
-
-      def empty_range_search?
-        (formated_value == delimiter) || (range_start.blank? && range_end.blank?)
-      end
-
-      # A range value is in form '<range_start><delimiter><range_end>'
-      # This returns <range_start>
-      def range_start
-        @range_start ||= formated_value.split(delimiter)[0]
-      end
-
-      # A range value is in form '<range_start><delimiter><range_end>'
-      # This returns <range_end>
-      def range_end
-        @range_end ||= formated_value.split(delimiter)[1]
-      end
-
-      # Do a range search
-      def date_range_search
-        return nil if empty_range_search?
-        new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
-        new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
-        table[field].between(OpenStruct.new(begin: new_start, end: new_end))
       end
 
       def null_value_search

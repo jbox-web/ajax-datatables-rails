@@ -15,6 +15,10 @@ module AjaxDatatablesRails
     @config ||= AjaxDatatablesRails::Configuration.new
   end
 
+  def self.rails_41?
+    Rails::VERSION::MAJOR == 4 && Rails::VERSION::MINOR == 1
+  end
+
   class Configuration
     include ActiveSupport::Configurable
 

@@ -4,6 +4,7 @@
 # Ignore Gemfile.lock
 /Gemfile.lock
 /gemfiles/*.lock
+/gemfiles/.bundle
 
 # Ignore test files
 /coverage
