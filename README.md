@@ -13,11 +13,10 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.2.8 / 5.0.2 / 5.1.0
+> * Rails 4.0.13 / 4.1.15 / 4.2.8 / 5.0.2 / 5.1.0
 > * Ruby 2.2.7 / 2.3.4 / 2.4.1
 > * Postgresql
 > * MySQL
-> * SQLite
 
 ## Description
 
@@ -152,7 +151,7 @@ end
 
 * `:like`, `:start_with`, `:end_with` for string or full text search
 * `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
-* `:date_range` for date range
+* `:date_range` for date range (only for Rails > 4.2.x)
 * `:null_value` for nil field
 * `Proc` for whatever
 
