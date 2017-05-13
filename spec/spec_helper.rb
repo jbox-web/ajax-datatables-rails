@@ -65,8 +65,8 @@ options = {
   encoding: 'utf8'
 }
 
-options = options.merge(username: 'root', host: 'localhost') if adapter == 'mysql2'
-options = options.merge(database: 'tmp/test.sqlite3') if adapter == 'sqlite3'
+options = options.merge(username: 'root') if adapter == 'mysql2'
+options = options.merge(database: ':memory:') if adapter == 'sqlite3'
 
 ActiveRecord::Base.establish_connection(options)
 

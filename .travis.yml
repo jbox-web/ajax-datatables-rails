@@ -1,6 +1,6 @@
 dist: trusty
 language: ruby
-sudo: false
+sudo: required
 cache: bundler
 rvm:
   - 2.4.1
@@ -17,6 +17,11 @@ services:
   - mysql
 addons:
   postgresql: '9.6'
+  apt:
+    packages:
+    - mysql-server-5.6
+    - mysql-client-core-5.6
+    - mysql-client-5.6
 before_script:
   - sh -c "if [ '$DB_ADAPTER' = 'mysql2' ]; then mysql -e 'create database ajax_datatables_rails;'; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'postgresql' ]; then psql -c 'create database ajax_datatables_rails;' -U postgres; fi"
