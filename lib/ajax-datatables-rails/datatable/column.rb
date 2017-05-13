@@ -121,8 +121,10 @@ module AjaxDatatablesRails
           casted_column.matches("#{formated_value}%")
         when :end_with
           casted_column.matches("%#{formated_value}")
-        else
+        when :like
           casted_column.matches("%#{formated_value}%")
+        else
+          nil
         end
       end
 
