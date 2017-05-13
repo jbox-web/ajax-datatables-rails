@@ -172,7 +172,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   describe 'filter conditions' do
     let(:datatable) { ReallyComplexDatatable.new(view) }
 
-    unless AjaxDatatablesRails.rails_41?
+    unless AjaxDatatablesRails.old_rails?
       describe 'it can filter records with condition :date_range' do
         before(:each) do
           create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')

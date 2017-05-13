@@ -15,8 +15,8 @@ module AjaxDatatablesRails
     @config ||= AjaxDatatablesRails::Configuration.new
   end
 
-  def self.rails_41?
-    Rails::VERSION::MAJOR == 4 && Rails::VERSION::MINOR == 1
+  def self.old_rails?
+    Rails::VERSION::MAJOR == 4 && (Rails::VERSION::MINOR == 1 || Rails::VERSION::MINOR == 0)
   end
 
   class Configuration

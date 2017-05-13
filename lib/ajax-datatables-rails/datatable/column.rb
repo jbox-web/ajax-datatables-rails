@@ -5,7 +5,7 @@ module AjaxDatatablesRails
     class Column
       attr_reader :datatable, :index, :options
 
-      unless AjaxDatatablesRails.rails_41?
+      unless AjaxDatatablesRails.old_rails?
         prepend ColumnDateFilter
       end
 

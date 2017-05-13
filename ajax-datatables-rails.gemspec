@@ -13,9 +13,9 @@ Gem::Specification.new do |s|
   s.description = %q{A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app}
   s.license     = 'MIT'
 
-  s.add_dependency 'railties', '>= 4.1'
+  s.add_dependency 'railties', '>= 4.0'
 
-  s.add_development_dependency 'rails', '>= 4.1'
+  s.add_development_dependency 'rails', '>= 4.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'mysql2'
