@@ -164,6 +164,31 @@ end
 ```ruby
 def data
   records.map do |record|
+    {
+      # a hash of key value pairs
+    }
+  end
+end
+```
+
+```ruby
+def data
+  records.map do |record|
+    {
+      first_name: record.first_name,
+      last_name:  record.last_name,
+      bio:        record.bio,
+      # 'DT_RowId' => record.id, # This will set the id attribute on the corresponding <tr> in the datatable
+    }
+  end
+end
+```
+
+You can either use the v0.3 Array style for your columns :
+
+```ruby
+def data
+  records.map do |record|
     [
       # comma separated list of the values for each cell of a table row
       # example: record.first_name, record.last_name
@@ -183,21 +208,6 @@ def data
       record.last_name,
       record.bio
     ]
-  end
-end
-```
-
-You can either use a Hash style for your columns :
-
-```ruby
-def data
-  records.map do |record|
-    {
-      first_name: record.first_name,
-      last_name:  record.last_name,
-      bio:        record.bio,
-      # 'DT_RowId' => record.id, # This will set the id attribute on the corresponding <tr> in the datatable
-    }
   end
 end
 ```
@@ -225,8 +235,17 @@ def get_raw_records
 end
 ```
 
-Obviously, you can construct your query as required for the use case the
-datatable is used. Example: `User.active.with_recent_messages`.
+Obviously, you can construct your query as required for the use case the datatable is used.
+
+Example:
+
+```ruby
+def get_raw_records
+  User.active.with_recent_messages
+end
+```
+
+You can put any logic in `get_raw_records` [based on any parameters you inject](#options) in the `Datatable` object.
 
 > __IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object
 > as the end product of this method.
@@ -349,6 +368,7 @@ end
 
 Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
+[See here](#options) to inject params in the `UserDatatable`.
 
 ### Wire up the Javascript
 
@@ -519,11 +539,11 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   # example: mapping the 2d jsonified array returned.
   def data
     records.map do |record|
-      [
-        link_to(record.fname, edit_resource_path(record)),
-        mail_to(record.email),
+      {
+        first_name: link_to(record.fname, edit_resource_path(record)),
+        email:      mail_to(record.email),
         # other attributes
-      ]
+      }
     end
   end
 end
