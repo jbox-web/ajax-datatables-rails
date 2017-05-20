@@ -30,6 +30,10 @@ module AjaxDatatablesRails
         @search ||= SimpleSearch.new(options[:search])
       end
 
+      def searched?
+        search.value.present?
+      end
+
       def search=(value)
         @search = value
       end

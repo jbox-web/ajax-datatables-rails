@@ -66,7 +66,7 @@ module AjaxDatatablesRails
 
     def search_columns
       @search_columns ||= begin
-        searchable_columns.select { |column| column.search.value.present? }
+        searchable_columns.select(&:searched?)
       end
     end
 

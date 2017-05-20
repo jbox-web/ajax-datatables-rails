@@ -21,6 +21,10 @@ describe AjaxDatatablesRails::Datatable::Column do
       expect(column.searchable?).to eq(true)
     end
 
+    it 'should be searched' do
+      expect(column.searched?).to eq(true)
+    end
+
     it 'should have connected to id column' do
       expect(column.data).to eq('username')
     end
