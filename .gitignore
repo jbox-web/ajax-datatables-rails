@@ -10,6 +10,9 @@
 /coverage
 /tmp
 
+# Ignore sqlite db file
+/ajax_datatables_rails
+
 # RVM files
 /.ruby-version
 
