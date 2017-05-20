@@ -611,6 +611,19 @@ In the end, it's up to the developer which model(s), scope(s), relationship(s)
 database.
 
 
+## Tutorial
+
+Tutorial for Integrating `ajax-datatables-rails` on  Rails 4.
+
+[Part-1  The-Installation](https://github.com/jbox-web/ajax-datatables-rails/wiki/Part-1----The-Installation)
+
+[Part 2 The Datatables with ajax functionality](https://github.com/jbox-web/ajax-datatables-rails/wiki/Part-2-The-Datatables-with-ajax-functionality)
+
+The complete project code for this tutorial series is available on [github](https://github.com/trkrameshkumar/simple_app).
+
+Another sample project [code](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
+
+
 ## Contributing
 
 1. Fork it
