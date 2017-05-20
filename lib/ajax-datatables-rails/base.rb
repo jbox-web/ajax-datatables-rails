@@ -21,9 +21,12 @@ module AjaxDatatablesRails
       @datatable ||= Datatable::Datatable.new(self)
     end
 
-    # Must overrited methods
     def view_columns
       fail(NotImplemented, view_columns_error_text)
+    end
+
+    def get_raw_records
+      fail(NotImplemented, raw_records_error_text)
     end
 
     def data
@@ -32,10 +35,6 @@ module AjaxDatatablesRails
 
     def additional_datas
       {}
-    end
-
-    def get_raw_records
-      fail(NotImplemented, raw_records_error_text)
     end
 
     def as_json(*)
@@ -51,6 +50,14 @@ module AjaxDatatablesRails
     end
 
     # helper methods
+    def connected_columns
+      @connected_columns ||= begin
+        view_columns.keys.map do |field_name|
+          datatable.column_by(:data, field_name.to_s)
+        end.compact
+      end
+    end
+
     def searchable_columns
       @searchable_columns ||= begin
         connected_columns.select(&:searchable?)
@@ -60,14 +67,6 @@ module AjaxDatatablesRails
     def search_columns
       @search_columns ||= begin
         searchable_columns.select { |column| column.search.value.present? }
-      end
-    end
-
-    def connected_columns
-      @connected_columns ||= begin
-        view_columns.keys.map do |field_name|
-          datatable.column_by(:data, field_name.to_s)
-        end.compact
       end
     end
 
