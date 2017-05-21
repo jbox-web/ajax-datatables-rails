@@ -13,7 +13,7 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.15 / 4.2.8 / 5.0.2 / 5.1.0
+> * Rails 4.0.13 / 4.1.15 / 4.2.8 / 5.0.3 / 5.1.1
 > * Ruby 2.2.7 / 2.3.4 / 2.4.1
 > * Postgresql
 > * MySQL
@@ -154,7 +154,7 @@ end
 * `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
 * `:date_range` for date range (only for Rails > 4.2.x)
 * `:null_value` for nil field
-* `Proc` for whatever
+* `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
 
 [See here](#searching-on-non-text-based-columns) for notes about the `view_columns` settings (if using something different from `postgres`).
 [Read these notes](#columns-syntax) about considerations for the `view_columns` method.
