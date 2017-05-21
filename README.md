@@ -17,6 +17,7 @@
 > * Ruby 2.2.7 / 2.3.4 / 2.4.1
 > * Postgresql
 > * MySQL
+> * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 
 ## Description
 

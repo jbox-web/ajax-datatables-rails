@@ -136,6 +136,7 @@ module AjaxDatatablesRails
 
       def typecast
         case config.db_adapter
+        when :oracle, :oracleenhanced then 'VARCHAR2(4000)'
         when :mysql, :mysql2   then 'CHAR'
         when :sqlite, :sqlite3 then 'TEXT'
         else

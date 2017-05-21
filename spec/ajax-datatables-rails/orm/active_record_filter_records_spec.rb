@@ -56,7 +56,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     context 'with search query' do
       before(:each) do
-        datatable.params[:search] = { value: "John", regex: "false" }
+        datatable.params[:search] = { value: "john", regex: "false" }
       end
 
       it 'returns a filtering query' do
@@ -92,6 +92,18 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
               "CAST(\"users\".\"username\" AS VARCHAR) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS VARCHAR) ILIKE '%example%'"
+            )
+          end
+        end
+      end
+
+      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
+        context 'when db_adapter is oracle' do
+          it 'can call #to_sql on returned object' do
+            result = datatable.send(:build_conditions_for_selected_columns)
+            expect(result).to respond_to(:to_sql)
+            expect(result.to_sql).to eq(
+              "CAST(\"USERS\".\"USERNAME\" AS VARCHAR2(4000)) LIKE '%doe%' AND CAST(\"USERS\".\"EMAIL\" AS VARCHAR2(4000)) LIKE '%example%'"
             )
           end
         end
@@ -143,9 +155,19 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect(column.send(:typecast)).to eq('VARCHAR')
     end
 
-    it 'returns VARCHAR if :db_adapter is :postgre' do
+    it 'returns VARCHAR if :db_adapter is :postgresql' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgresql }
       expect(column.send(:typecast)).to eq('VARCHAR')
+    end
+
+    it 'returns VARCHAR if :db_adapter is :oracle' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracle }
+      expect(column.send(:typecast)).to eq('VARCHAR2(4000)')
+    end
+
+    it 'returns VARCHAR if :db_adapter is :oracleenhanced' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracleenhanced }
+      expect(column.send(:typecast)).to eq('VARCHAR2(4000)')
     end
 
     it 'returns CHAR if :db_adapter is :mysql2' do
@@ -260,7 +282,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       it 'should filter records matching' do
-        datatable.params[:columns]['2'][:search][:value] = 'jo'
+        datatable.params[:columns]['2'][:search][:value] = 'Jo'
         expect(datatable.data.size).to eq 1
         item = datatable.data.first
         expect(item[:first_name]).to eq 'John'
@@ -269,15 +291,15 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     describe 'it can filter records with condition :end_with' do
       before(:each) do
-        create(:user, last_name: 'John')
-        create(:user, last_name: 'Mary')
+        create(:user, last_name: 'JOHN')
+        create(:user, last_name: 'MARY')
       end
 
       it 'should filter records matching' do
         datatable.params[:columns]['3'][:search][:value] = 'ry'
         expect(datatable.data.size).to eq 1
         item = datatable.data.first
-        expect(item[:last_name]).to eq 'Mary'
+        expect(item[:last_name]).to eq 'MARY'
       end
     end
 

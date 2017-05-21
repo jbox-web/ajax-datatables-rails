@@ -17,15 +17,39 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     it 'paginates records properly' do
-      expect(datatable.paginate_records(records).to_sql).to include(
-        'LIMIT 10 OFFSET 0'
-      )
+      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
+        if Rails.version.in? %w[4.0.13 4.1.15 4.2.8]
+          expect(datatable.paginate_records(records).to_sql).to include(
+            'rownum <= 10'
+          )
+        else
+          expect(datatable.paginate_records(records).to_sql).to include(
+            'rownum <= (0 + 10)'
+          )
+        end
+      else
+        expect(datatable.paginate_records(records).to_sql).to include(
+          'LIMIT 10 OFFSET 0'
+        )
+      end
 
       datatable.params[:start] = '26'
       datatable.params[:length] = '25'
-      expect(datatable.paginate_records(records).to_sql).to include(
-        'LIMIT 25 OFFSET 25'
-      )
+      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
+        if Rails.version.in? %w[4.0.13 4.1.15 4.2.8]
+          expect(datatable.paginate_records(records).to_sql).to include(
+            'rownum <= 50'
+          )
+        else
+          expect(datatable.paginate_records(records).to_sql).to include(
+            'rownum <= (25 + 25)'
+          )
+        end
+      else
+        expect(datatable.paginate_records(records).to_sql).to include(
+          'LIMIT 25 OFFSET 25'
+        )
+      end
     end
 
     it 'depends on the value of #offset' do

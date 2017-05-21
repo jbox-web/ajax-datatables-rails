@@ -95,7 +95,7 @@ module AjaxDatatablesRails
     end
 
     def records_filtered_count
-      get_raw_records.model.from("(#{filter_records(get_raw_records).except(:limit, :offset, :order).to_sql}) AS foo").count
+      filter_records(get_raw_records).count(:all)
     end
 
     # Private helper methods

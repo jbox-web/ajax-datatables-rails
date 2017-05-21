@@ -76,9 +76,7 @@ class ComplexDatatable < SampleDatatable
       last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase } },
     }
   end
-end
 
-class ComplexDatatableHash < ComplexDatatable
   def data
     records.map do |record|
       {
@@ -89,6 +87,9 @@ class ComplexDatatableHash < ComplexDatatable
       }
     end
   end
+end
+
+class ComplexDatatableHash < ComplexDatatable
 end
 
 class ComplexDatatableArray < ComplexDatatable
@@ -110,7 +111,7 @@ class ReallyComplexDatatable < SampleDatatable
       username:   { source: 'User.username' },
       email:      { source: 'User.email',      cond: :null_value },
       first_name: { source: 'User.first_name', cond: :start_with },
-      last_name:  { source: 'User.last_name',  cond: :end_with, formater: -> (o) { o.downcase } },
+      last_name:  { source: 'User.last_name',  cond: :end_with, formater: -> (o) { o.upcase } },
       post_id:    { source: 'User.post_id' },
       created_at: { source: 'User.created_at', cond: :date_range },
     }
