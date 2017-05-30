@@ -384,7 +384,13 @@ $ ->
     serverSide: true
     ajax: $('#users-table').data('source')
     pagingType: 'full_numbers'
-    # optional, if you want full pagination controls.
+    columns: [
+      {data: 'id'}
+      {data: 'name'}
+      {data: 'phone'}
+      {data: 'address'}
+    ]
+    # pagingType is optional, if you want full pagination controls.
     # Check dataTables documentation to learn more about
     # available options.
 ```
@@ -399,7 +405,13 @@ jQuery(document).ready(function() {
     "serverSide": true,
     "ajax": $('#users-table').data('source'),
     "pagingType": "full_numbers",
-    // optional, if you want full pagination controls.
+    "columns": [
+      {"data": "id"},
+      {"data": "name"},
+      {"data": "phone"},
+      {"data": "address"}
+    ]
+    // pagingType is optional, if you want full pagination controls.
     // Check dataTables documentation to learn more about
     // available options.
   });
