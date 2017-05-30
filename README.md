@@ -43,6 +43,20 @@ for this gem. If you'd be interested in contributing to speed development,
 please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new)
 and get in touch.
 
+
+## Breaking changes
+
+**Warning:** the v0.4 version is a **major break** from v0.3. The core has been rewriten to remove dependency on Kaminari (or WillPaginate).
+
+It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search. [See below](#customize-the-generated-datatables-class) for more infos.
+
+To migrate on the v0.4 you'll need to :
+
+* update your DataTables classes to remove all the `extend` directives
+* switch to hash definitions of `view_columns`
+* update your views to declare your columns bindings ([See here](#wire-up-the-javascript))
+
+
 ## Installation
 
 Add these lines to your application's Gemfile:
@@ -385,10 +399,9 @@ $ ->
     ajax: $('#users-table').data('source')
     pagingType: 'full_numbers'
     columns: [
-      {data: 'id'}
-      {data: 'name'}
-      {data: 'phone'}
-      {data: 'address'}
+      {data: 'first_name'}
+      {data: 'last_name'}
+      {data: 'bio'}
     ]
     # pagingType is optional, if you want full pagination controls.
     # Check dataTables documentation to learn more about
@@ -406,10 +419,9 @@ jQuery(document).ready(function() {
     "ajax": $('#users-table').data('source'),
     "pagingType": "full_numbers",
     "columns": [
-      {"data": "id"},
-      {"data": "name"},
-      {"data": "phone"},
-      {"data": "address"}
+      {"data": "first_name"},
+      {"data": "last_name"},
+      {"data": "bio"}
     ]
     // pagingType is optional, if you want full pagination controls.
     // Check dataTables documentation to learn more about
