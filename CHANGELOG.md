@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.0
+
+**Warning:** this version is a **major break** from v0.3. The core has been rewriten to remove dependency on Kaminari (or WillPaginate).
+
+It also brings a new way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search. Take a look at the [README](https://github.com/jbox-web/ajax-datatables-rails#customize-the-generated-datatables-class) for more infos.
+
 ## 0.3.1
 * Adds `:oracle` as supported `db_adapter`. Thanks to [lutechspa](https://github.com/lutechspa) for this contribution.
 
