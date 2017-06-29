@@ -43,7 +43,7 @@ module AjaxDatatablesRails
       end
 
       def filter(value)
-        @view_column[:cond].call(value)
+        @view_column[:cond].call(self)
       end
 
       def source
