@@ -10,7 +10,7 @@ module AjaxDatatablesRails
       end
 
       def query(sort_column)
-        "#{sort_column} #{direction}"
+        "CASE WHEN #{sort_column} IS NULL THEN 1 ELSE 0 END, #{sort_column} #{direction}"
       end
 
       def column
