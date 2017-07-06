@@ -80,30 +80,11 @@ describe AjaxDatatablesRails::Datatable::Column do
     end
   end
 
-  describe 'last_name column' do
-    let(:column) { datatable.datatable.columns.last }
+  describe '#formater' do
+    let(:column) { datatable.datatable.columns.find { |c| c.data == 'last_name' } }
 
-    before do
-      datatable.params[:columns] = {'0'=>{'data'=>'last_name', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'', 'regex'=>'false'}}}
-    end
-
-    it 'should be orderable' do
-      expect(column.orderable?).to eq(true)
-    end
-
-    it 'should be searchable' do
-      expect(column.searchable?).to eq(true)
-    end
-
-    it 'should have connected to id column' do
-      expect(column.data).to eq('last_name')
-    end
-
-    describe '#formater' do
-      it 'should be a proc' do
-        expect(column.formater).to be_a(Proc)
-      end
+    it 'should be a proc' do
+      expect(column.formater).to be_a(Proc)
     end
   end
-
 end
