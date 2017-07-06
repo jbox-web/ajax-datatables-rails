@@ -43,14 +43,41 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'none of columns are connected' do
+    context 'when none of columns are connected' do
       before(:each) do
         allow(datatable).to receive(:searchable_columns) { [] }
       end
 
-      it 'returns empty query result' do
-        datatable.params[:search] = { value: 'msmith' }
-        expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+      context 'when search value is a string' do
+        before(:each) do
+          datatable.params[:search] = { value: 'msmith' }
+        end
+
+        it 'returns empty query result' do
+          expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+        end
+
+        it 'returns filtered results' do
+          query = datatable.send(:build_conditions_for_datatable)
+          results = records.where(query).map(&:username)
+          expect(results).to eq ['johndoe', 'msmith']
+        end
+      end
+
+      context 'when search value is space-separated string' do
+        before(:each) do
+          datatable.params[:search] = { value: 'foo bar' }
+        end
+
+        it 'returns empty query result' do
+          expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+        end
+
+        it 'returns filtered results' do
+          query = datatable.send(:build_conditions_for_datatable)
+          results = records.where(query).map(&:username)
+          expect(results).to eq ['johndoe', 'msmith']
+        end
       end
     end
 
@@ -70,28 +97,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       context 'when search value is space-separated string' do
         before(:each) do
-          datatable.instance_variable_set :@searchable_columns, []
-          datatable.params[:search] = { value: 'foo bar', regex: 'false' }
+          datatable.params[:search] = { value: 'john doe', regex: 'false' }
         end
 
         it 'returns a filtering query' do
           query = datatable.send(:build_conditions_for_datatable)
           results = records.where(query).map(&:username)
-          expect(results).to eq ['johndoe', 'msmith']
-        end
-      end
-
-      context 'when search value is comma-separated string' do
-        before(:each) do
-          datatable.instance_variable_set :@searchable_columns, []
-          datatable.params[:search] = { value: 'foo, bar', regex: 'false' }
-          expect(datatable).to receive(:global_search_delimiter).and_return(', ')
-        end
-
-        it 'returns a filtering query' do
-          query = datatable.send(:build_conditions_for_datatable)
-          results = records.where(query).map(&:username)
-          expect(results).to eq ['johndoe', 'msmith']
+          expect(results).to eq ['johndoe']
+          expect(results).not_to include('msmith')
         end
       end
     end
