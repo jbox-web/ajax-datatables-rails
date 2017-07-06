@@ -40,7 +40,7 @@ module AjaxDatatablesRails
             simple_column.search = search
             simple_column.search_query
           end.reduce(:or)
-        end.reduce(:and)
+        end.compact.reduce(:and)
         criteria
       end
 
