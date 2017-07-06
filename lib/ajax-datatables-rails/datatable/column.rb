@@ -42,8 +42,8 @@ module AjaxDatatablesRails
         @view_column[:cond] || :like
       end
 
-      def filter(value)
-        @view_column[:cond].call(self)
+      def filter
+        @view_column[:cond].call(self, formated_value)
       end
 
       def source
@@ -88,6 +88,10 @@ module AjaxDatatablesRails
         custom_field? ? source : "#{table.name}.#{sort_field}"
       end
 
+      def formated_value
+        formater ? formater.call(search.value) : search.value
+      end
+
       private
 
       def custom_field?
@@ -96,10 +100,6 @@ module AjaxDatatablesRails
 
       def config
         @config ||= AjaxDatatablesRails.config
-      end
-
-      def formated_value
-        formater ? formater.call(search.value) : search.value
       end
 
       # Using multi-select filters in JQuery Datatable auto-enables regex_search.
@@ -118,7 +118,7 @@ module AjaxDatatablesRails
       def non_regex_search
         case cond
         when Proc
-          filter(formated_value)
+          filter
         when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
           numeric_search
         when :null_value
