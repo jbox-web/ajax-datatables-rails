@@ -55,15 +55,44 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     context 'with search query' do
-      before(:each) do
-        datatable.params[:search] = { value: "john", regex: "false" }
+      context 'when search value is a string' do
+        before(:each) do
+          datatable.params[:search] = { value: 'john', regex: 'false' }
+        end
+
+        it 'returns a filtering query' do
+          query = datatable.send(:build_conditions_for_datatable)
+          results = records.where(query).map(&:username)
+          expect(results).to include('johndoe')
+          expect(results).not_to include('msmith')
+        end
       end
 
-      it 'returns a filtering query' do
-        query = datatable.send(:build_conditions_for_datatable)
-        results = records.where(query).map(&:username)
-        expect(results).to include('johndoe')
-        expect(results).not_to include('msmith')
+      context 'when search value is space-separated string' do
+        before(:each) do
+          datatable.instance_variable_set :@searchable_columns, []
+          datatable.params[:search] = { value: 'foo bar', regex: 'false' }
+        end
+
+        it 'returns a filtering query' do
+          query = datatable.send(:build_conditions_for_datatable)
+          results = records.where(query).map(&:username)
+          expect(results).to eq ['johndoe', 'msmith']
+        end
+      end
+
+      context 'when search value is comma-separated string' do
+        before(:each) do
+          datatable.instance_variable_set :@searchable_columns, []
+          datatable.params[:search] = { value: 'foo, bar', regex: 'false' }
+          expect(datatable).to receive(:global_search_delimiter).and_return(', ')
+        end
+
+        it 'returns a filtering query' do
+          query = datatable.send(:build_conditions_for_datatable)
+          results = records.where(query).map(&:username)
+          expect(results).to eq ['johndoe', 'msmith']
+        end
       end
     end
   end

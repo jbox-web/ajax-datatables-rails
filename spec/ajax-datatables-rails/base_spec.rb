@@ -86,26 +86,6 @@ describe AjaxDatatablesRails::Base do
           expect(item[2]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
           expect(item[3]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
         end
-
-        context 'with no searchable columns' do
-          let(:datatable) do
-            ComplexDatatableArray.new(view).tap do |datatable|
-              datatable.instance_variable_set :@searchable_columns, []
-            end
-          end
-
-          context 'when search value is comma-separated string' do
-            let(:view) { double('view', params: sample_params.merge(search: { value: 'one, two' })) }
-
-            it 'should return an array of arrays' do
-              create_list(:user, 5)
-              expect(datatable.data).to be_a(Array)
-              expect(datatable.data.size).to eq 5
-              item = datatable.data.first
-              expect(item).to be_a(Array)
-            end
-          end
-        end
       end
     end
 

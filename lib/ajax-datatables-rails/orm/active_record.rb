@@ -2,6 +2,8 @@ module AjaxDatatablesRails
   module ORM
     module ActiveRecord
 
+      GLOBAL_SEARCH_DELIMITER = ' '.freeze
+
       def fetch_records
         get_raw_records
       end
@@ -33,7 +35,6 @@ module AjaxDatatablesRails
       end
 
       def build_conditions_for_datatable
-        search_for = datatable.search.value.split(' ')
         criteria = search_for.inject([]) do |crit, atom|
           search = Datatable::SimpleSearch.new({ value: atom, regex: datatable.search.regexp? })
           crit << searchable_columns.map do |simple_column|
@@ -46,6 +47,14 @@ module AjaxDatatablesRails
 
       def build_conditions_for_selected_columns
         search_columns.map(&:search_query).compact.reduce(:and)
+      end
+
+      def search_for
+        datatable.search.value.split(global_search_delimiter)
+      end
+
+      def global_search_delimiter
+        GLOBAL_SEARCH_DELIMITER
       end
     end
   end
