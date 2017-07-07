@@ -10,7 +10,7 @@ module AjaxDatatablesRails
       end
 
       def query(sort_column)
-        "#{sort_column} #{direction}"
+        "#{nulls_last(sort_column)}#{sort_column} #{direction}"
       end
 
       def column
@@ -19,6 +19,10 @@ module AjaxDatatablesRails
 
       def direction
         DIRECTIONS.find { |dir| dir == @options[:dir].upcase } || 'ASC'
+      end
+      
+      def nulls_last(sort_column)
+        @options[:nulls_last] ? "CASE WHEN #{sort_column} IS NULL THEN 1 ELSE 0 END, " : nil
       end
 
       private
