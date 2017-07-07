@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::SimpleOrder do
+
   let(:options) { ActiveSupport::HashWithIndifferentAccess.new({'column'=>'1', 'dir'=>'desc'}) }
   let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(nil, options) }
 
