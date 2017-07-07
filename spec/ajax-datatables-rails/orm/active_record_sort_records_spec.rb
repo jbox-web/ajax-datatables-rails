@@ -29,6 +29,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         'ORDER BY users.username ASC, users.email DESC'
       )
     end
+  end
+
+  describe '#sort_records with nulls last' do
+    before { AjaxDatatablesRails.config.sort_nulls_last = true }
+    after  { AjaxDatatablesRails.config.sort_nulls_last = false }
 
     it 'can handle multiple sorting columns with nulls last' do
       # set to order by Users username in ascending order, and
