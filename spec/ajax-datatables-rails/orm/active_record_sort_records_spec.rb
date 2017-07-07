@@ -29,6 +29,17 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         'ORDER BY users.username ASC, users.email DESC'
       )
     end
+
+    it 'can handle multiple sorting columns with nulls last' do
+      # set to order by Users username in ascending order, and
+      # by Users email in descending order
+      datatable.params[:order]['0'] = { column: '0', dir: 'asc', nulls_last: true }
+      datatable.params[:order]['1'] = { column: '1', dir: 'desc', nulls_last: true }
+      expect(datatable.sort_records(records).to_sql).to include(
+        'ORDER BY CASE WHEN users.username IS NULL THEN 1 ELSE 0 END, users.username ASC, ' +
+        'CASE WHEN users.email IS NULL THEN 1 ELSE 0 END, users.email DESC'
+      )
+    end
   end
 
 end
