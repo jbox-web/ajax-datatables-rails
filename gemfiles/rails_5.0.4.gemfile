@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rails", "5.0.3"
+gem "rails", "5.0.4"
 gem "activerecord-oracle_enhanced-adapter", "~> 1.7.0"
 gem "ruby-oci8" if ENV["DB_ADAPTER"] == "oracle_enhanced"
 
