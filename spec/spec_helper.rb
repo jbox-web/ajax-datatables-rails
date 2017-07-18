@@ -78,4 +78,8 @@ end
 
 load File.dirname(__FILE__) + '/support/schema.rb'
 load File.dirname(__FILE__) + '/support/test_helpers.rb'
+load File.dirname(__FILE__) + '/support/datatable_cond_date.rb'
+load File.dirname(__FILE__) + '/support/datatable_cond_numeric.rb'
+load File.dirname(__FILE__) + '/support/datatable_cond_proc.rb'
+load File.dirname(__FILE__) + '/support/datatable_cond_string.rb'
 require File.dirname(__FILE__) + '/support/test_models.rb'

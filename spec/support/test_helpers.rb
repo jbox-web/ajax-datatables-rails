@@ -53,67 +53,15 @@ def sample_params
 end
 # rubocop:enable Metrics/MethodLength
 
-class SampleDatatable < AjaxDatatablesRails::Base
-  def view_columns
-    @view_columns ||= ['User.username', 'User.email', 'User.first_name', 'User.last_name']
-  end
-
-  def data
-    [{}, {}]
-  end
-
-  def get_raw_records
-    User.all
-  end
-end
-
-class ComplexDatatable < SampleDatatable
+class ComplexDatatable < AjaxDatatablesRails::Base
   def view_columns
     @view_columns ||= {
-      username:   { source: 'User.username' },
-      email:      { source: 'User.email' },
+      username:   { source: 'User.username'   },
+      email:      { source: 'User.email'      },
       first_name: { source: 'User.first_name' },
-      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase } },
-    }
-  end
-
-  def data
-    records.map do |record|
-      {
-        username:   record.username,
-        email:      record.email,
-        first_name: record.first_name,
-        last_name:  record.last_name,
-      }
-    end
-  end
-end
-
-class ComplexDatatableHash < ComplexDatatable
-end
-
-class ComplexDatatableArray < ComplexDatatable
-  def data
-    records.map do |record|
-      [
-        record.username,
-        record.email,
-        record.first_name,
-        record.last_name,
-      ]
-    end
-  end
-end
-
-class ReallyComplexDatatable < SampleDatatable
-  def view_columns
-    @view_columns ||= {
-      username:   { source: 'User.username' },
-      email:      { source: 'User.email',      cond: :null_value },
-      first_name: { source: 'User.first_name', cond: :start_with },
-      last_name:  { source: 'User.last_name',  cond: :end_with, formater: -> (o) { o.upcase } },
-      post_id:    { source: 'User.post_id' },
-      created_at: { source: 'User.created_at', cond: :date_range },
+      last_name:  { source: 'User.last_name'  },
+      post_id:    { source: 'User.post_id'    },
+      created_at: { source: 'User.created_at' },
     }
   end
 
@@ -129,58 +77,23 @@ class ReallyComplexDatatable < SampleDatatable
       }
     end
   end
-end
 
-class ReallyComplexDatatableEq < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :eq })
+  def get_raw_records
+    User.all
   end
 end
 
-class ReallyComplexDatatableNotEq < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :not_eq })
-  end
-end
-
-class ReallyComplexDatatableLt < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :lt })
-  end
-end
-
-class ReallyComplexDatatableGt < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :gt })
-  end
-end
-
-class ReallyComplexDatatableLteq < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :lteq })
-  end
-end
-
-class ReallyComplexDatatableGteq < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :gteq })
-  end
-end
-
-class ReallyComplexDatatableIn < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(post_id: { cond: :in })
-  end
-end
-
-class ReallyComplexDatatableProc < ReallyComplexDatatable
-  def view_columns
-    super.deep_merge(username: { cond: custom_filter })
-  end
-
-  private
-
-  def custom_filter
-    ->(column, value) { ::Arel::Nodes::SqlLiteral.new(column.field.to_s).matches("#{value}%") }
+class ComplexDatatableArray < ComplexDatatable
+  def data
+    records.map do |record|
+      [
+        record.username,
+        record.email,
+        record.first_name,
+        record.last_name,
+        record.post_id,
+        record.created_at,
+      ]
+    end
   end
 end

@@ -25,11 +25,6 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'child class implements view_columns' do
-        it 'expects an array based defining columns' do
-          datatable = SampleDatatable.new(view)
-          expect(datatable.view_columns).to be_a(Array)
-        end
-
         it 'expects a hash based defining columns' do
           datatable = ComplexDatatable.new(view)
           expect(datatable.view_columns).to be_a(Hash)
@@ -51,7 +46,7 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'when data is defined as a hash' do
-        let(:datatable) { ComplexDatatableHash.new(view) }
+        let(:datatable) { ComplexDatatable.new(view) }
 
         it 'should return an array of hashes' do
           create_list(:user, 5)
@@ -92,7 +87,7 @@ describe AjaxDatatablesRails::Base do
     end
 
     describe '#as_json' do
-      let(:datatable) { ComplexDatatableHash.new(view) }
+      let(:datatable) { ComplexDatatable.new(view) }
 
       it 'should return a hash' do
         create_list(:user, 5)
