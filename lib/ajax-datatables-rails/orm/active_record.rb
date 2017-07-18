@@ -2,8 +2,6 @@ module AjaxDatatablesRails
   module ORM
     module ActiveRecord
 
-      GLOBAL_SEARCH_DELIMITER = ' '.freeze
-
       def fetch_records
         get_raw_records
       end
@@ -53,9 +51,6 @@ module AjaxDatatablesRails
         datatable.search.value.split(global_search_delimiter)
       end
 
-      def global_search_delimiter
-        GLOBAL_SEARCH_DELIMITER
-      end
     end
   end
 end

@@ -7,6 +7,8 @@ module AjaxDatatablesRails
     attr_reader :view, :options
     def_delegator :@view, :params
 
+    GLOBAL_SEARCH_DELIMITER = ' '.freeze
+
     def initialize(view, options = {})
       @view    = view
       @options = options
@@ -106,6 +108,10 @@ module AjaxDatatablesRails
       else
         nil
       end
+    end
+
+    def global_search_delimiter
+      GLOBAL_SEARCH_DELIMITER
     end
 
     def raw_records_error_text
