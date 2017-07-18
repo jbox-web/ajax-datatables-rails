@@ -234,10 +234,10 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe 'filter conditions' do
-    let(:datatable) { ReallyComplexDatatable.new(view) }
-
     unless AjaxDatatablesRails.old_rails?
       describe 'it can filter records with condition :date_range' do
+        let(:datatable) { DatatableCondDate.new(view) }
+
         before(:each) do
           create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
           create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'Smith', created_at: '01/02/2000')
@@ -318,6 +318,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :start_with' do
+      let(:datatable) { DatatableCondStartWith.new(view) }
+
       before(:each) do
         create(:user, first_name: 'John')
         create(:user, first_name: 'Mary')
@@ -332,6 +334,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :end_with' do
+      let(:datatable) { DatatableCondEndWith.new(view) }
+
       before(:each) do
         create(:user, last_name: 'JOHN')
         create(:user, last_name: 'MARY')
@@ -346,6 +350,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :null_value' do
+      let(:datatable) { DatatableCondNullValue.new(view) }
+
       before(:each) do
         create(:user, first_name: 'john', email: 'foo@bar.com')
         create(:user, first_name: 'mary', email: nil)
@@ -371,7 +377,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :eq' do
-      let(:datatable) { ReallyComplexDatatableEq.new(view) }
+      let(:datatable) { DatatableCondEq.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -387,7 +393,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :not_eq' do
-      let(:datatable) { ReallyComplexDatatableNotEq.new(view) }
+      let(:datatable) { DatatableCondNotEq.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -403,7 +409,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :lt' do
-      let(:datatable) { ReallyComplexDatatableLt.new(view) }
+      let(:datatable) { DatatableCondLt.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -419,7 +425,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :gt' do
-      let(:datatable) { ReallyComplexDatatableGt.new(view) }
+      let(:datatable) { DatatableCondGt.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -435,7 +441,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :lteq' do
-      let(:datatable) { ReallyComplexDatatableLteq.new(view) }
+      let(:datatable) { DatatableCondLteq.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -449,7 +455,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :gteq' do
-      let(:datatable) { ReallyComplexDatatableGteq.new(view) }
+      let(:datatable) { DatatableCondGteq.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -463,7 +469,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :in' do
-      let(:datatable) { ReallyComplexDatatableIn.new(view) }
+      let(:datatable) { DatatableCondIn.new(view) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)

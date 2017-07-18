@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
   let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ReallyComplexDatatable.new(view) }
+  let(:datatable) { DatatableWithFormater.new(view) }
 
   describe 'it can transform search value before asking the database' do
     before(:each) do
