@@ -6,21 +6,21 @@ describe AjaxDatatablesRails::Base do
     let(:view) { double('view', params: sample_params) }
 
     it 'requires a view_context' do
-      expect { AjaxDatatablesRails::Base.new }.to raise_error ArgumentError
+      expect { described_class.new }.to raise_error ArgumentError
     end
 
     it 'accepts an options hash' do
-      datatable = AjaxDatatablesRails::Base.new(view, foo: 'bar')
+      datatable = described_class.new(view, foo: 'bar')
       expect(datatable.options).to eq(foo: 'bar')
     end
   end
 
   context 'Public API' do
     let(:view) { double('view', params: sample_params) }
-    let(:datatable) { AjaxDatatablesRails::Base.new(view) }
 
     describe '#view_columns' do
       it 'raises an error if not defined by the user' do
+        datatable = described_class.new(view)
         expect { datatable.view_columns }.to raise_error AjaxDatatablesRails::NotImplemented
       end
 
@@ -39,18 +39,21 @@ describe AjaxDatatablesRails::Base do
 
     describe '#get_raw_records' do
       it 'raises an error if not defined by the user' do
+        datatable = described_class.new(view)
         expect { datatable.get_raw_records }.to raise_error AjaxDatatablesRails::NotImplemented
       end
     end
 
     describe '#data' do
       it 'raises an error if not defined by the user' do
+        datatable = described_class.new(view)
         expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
       end
 
       context 'when data is defined as a hash' do
+        let(:datatable) { ComplexDatatableHash.new(view) }
+
         it 'should return an array of hashes' do
-          datatable = ComplexDatatableHash.new(view)
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
           expect(datatable.data.size).to eq 5
@@ -59,7 +62,6 @@ describe AjaxDatatablesRails::Base do
         end
 
         it 'should html escape data' do
-          datatable = ComplexDatatableHash.new(view)
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
           data = datatable.send(:sanitize, datatable.data)
           item = data.first
@@ -69,8 +71,9 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'when data is defined as a array' do
+        let(:datatable) { ComplexDatatableArray.new(view) }
+
         it 'should return an array of arrays' do
-          datatable = ComplexDatatableArray.new(view)
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
           expect(datatable.data.size).to eq 5
@@ -79,7 +82,6 @@ describe AjaxDatatablesRails::Base do
         end
 
         it 'should html escape data' do
-          datatable = ComplexDatatableArray.new(view)
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
           data = datatable.send(:sanitize, datatable.data)
           item = data.first
@@ -90,8 +92,9 @@ describe AjaxDatatablesRails::Base do
     end
 
     describe '#as_json' do
+      let(:datatable) { ComplexDatatableHash.new(view) }
+
       it 'should return a hash' do
-        datatable = ComplexDatatableHash.new(view)
         create_list(:user, 5)
         data = datatable.as_json
         expect(data[:recordsTotal]).to eq 5
@@ -102,7 +105,6 @@ describe AjaxDatatablesRails::Base do
 
       context 'with additional_datas' do
         it 'should return a hash' do
-          datatable = ComplexDatatableHash.new(view)
           create_list(:user, 5)
           expect(datatable).to receive(:additional_datas){ { foo: 'bar' } }
           data = datatable.as_json
@@ -154,13 +156,13 @@ describe AjaxDatatablesRails::Base do
       describe '#offset' do
         it 'defaults to 0' do
           default_view = double('view', params: {})
-          datatable = AjaxDatatablesRails::Base.new(default_view)
+          datatable = described_class.new(default_view)
           expect(datatable.datatable.send(:offset)).to eq(0)
         end
 
         it 'matches the value on view params[:start] minus 1' do
           paginated_view = double('view', params: { start: '11' })
-          datatable = AjaxDatatablesRails::Base.new(paginated_view)
+          datatable = described_class.new(paginated_view)
           expect(datatable.datatable.send(:offset)).to eq(10)
         end
       end
@@ -168,20 +170,20 @@ describe AjaxDatatablesRails::Base do
       describe '#page' do
         it 'calculates page number from params[:start] and #per_page' do
           paginated_view = double('view', params: { start: '11' })
-          datatable = AjaxDatatablesRails::Base.new(paginated_view)
+          datatable = described_class.new(paginated_view)
           expect(datatable.datatable.send(:page)).to eq(2)
         end
       end
 
       describe '#per_page' do
         it 'defaults to 10' do
-          datatable = AjaxDatatablesRails::Base.new(view)
+          datatable = described_class.new(view)
           expect(datatable.datatable.send(:per_page)).to eq(10)
         end
 
         it 'matches the value on view params[:length]' do
           other_view = double('view', params: { length: 20 })
-          datatable = AjaxDatatablesRails::Base.new(other_view)
+          datatable = described_class.new(other_view)
           expect(datatable.datatable.send(:per_page)).to eq(20)
         end
       end
