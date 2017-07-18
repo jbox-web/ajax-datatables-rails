@@ -21,7 +21,7 @@ describe AjaxDatatablesRails::Base do
     describe '#view_columns' do
       it 'raises an error if not defined by the user' do
         datatable = described_class.new(view)
-        expect { datatable.view_columns }.to raise_error AjaxDatatablesRails::NotImplemented
+        expect { datatable.view_columns }.to raise_error NotImplementedError
       end
 
       context 'child class implements view_columns' do
@@ -35,14 +35,14 @@ describe AjaxDatatablesRails::Base do
     describe '#get_raw_records' do
       it 'raises an error if not defined by the user' do
         datatable = described_class.new(view)
-        expect { datatable.get_raw_records }.to raise_error AjaxDatatablesRails::NotImplemented
+        expect { datatable.get_raw_records }.to raise_error NotImplementedError
       end
     end
 
     describe '#data' do
       it 'raises an error if not defined by the user' do
         datatable = described_class.new(view)
-        expect { datatable.data }.to raise_error AjaxDatatablesRails::NotImplemented
+        expect { datatable.data }.to raise_error NotImplementedError
       end
 
       context 'when data is defined as a hash' do

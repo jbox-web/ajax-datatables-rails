@@ -1,6 +1,4 @@
 module AjaxDatatablesRails
-  class NotImplemented < StandardError; end
-
   class Base
     extend Forwardable
 
@@ -24,15 +22,15 @@ module AjaxDatatablesRails
     end
 
     def view_columns
-      fail(NotImplemented, view_columns_error_text)
+      fail(NotImplementedError, view_columns_error_text)
     end
 
     def get_raw_records
-      fail(NotImplemented, raw_records_error_text)
+      fail(NotImplementedError, raw_records_error_text)
     end
 
     def data
-      fail(NotImplemented, data_error_text)
+      fail(NotImplementedError, data_error_text)
     end
 
     def additional_datas
