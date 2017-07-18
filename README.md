@@ -13,7 +13,7 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.15 / 4.2.8 / 5.0.3 / 5.1.1
+> * Rails 4.0.13 / 4.1.15 / 4.2.9 / 5.0.4 / 5.1.2
 > * Ruby 2.2.7 / 2.3.4 / 2.4.1
 > * Postgresql
 > * MySQL
