@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { DatatableWithFormater.new(view) }
-
   describe 'it can transform search value before asking the database' do
+    let(:view) { double('view', params: sample_params) }
+    let(:datatable) { DatatableWithFormater.new(view) }
+
     before(:each) do
       create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'DOE')
       create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'SMITH')
