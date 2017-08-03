@@ -98,10 +98,10 @@ describe AjaxDatatablesRails::Base do
         expect(data[:data].size).to eq 5
       end
 
-      context 'with additional_datas' do
+      context 'with additional_data' do
         it 'should return a hash' do
           create_list(:user, 5)
-          expect(datatable).to receive(:additional_datas){ { foo: 'bar' } }
+          expect(datatable).to receive(:additional_data){ { foo: 'bar' } }
           data = datatable.as_json
           expect(data[:recordsTotal]).to eq 5
           expect(data[:recordsFiltered]).to eq 5

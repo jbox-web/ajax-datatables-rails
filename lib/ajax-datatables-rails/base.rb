@@ -33,7 +33,7 @@ module AjaxDatatablesRails
       fail(NotImplementedError, data_error_text)
     end
 
-    def additional_datas
+    def additional_data
       {}
     end
 
@@ -42,7 +42,7 @@ module AjaxDatatablesRails
         recordsTotal: records_total_count,
         recordsFiltered: records_filtered_count,
         data: sanitize(data)
-      }.merge(additional_datas)
+      }.merge(get_additional_data)
     end
 
     def records
@@ -71,6 +71,23 @@ module AjaxDatatablesRails
     end
 
     private
+
+    # This method is necessary for smooth transition from
+    # `additinonal_datas` method to `additional_data`
+    # without breaking change.
+    def get_additional_data
+      if respond_to?(:additional_datas)
+        puts <<-eos
+          `additional_datas` has been deprecated and
+          will be removed in next major version update!
+          Please use `additional_data` instead.
+        eos
+
+        additional_datas
+      else
+        additional_data
+      end
+    end
 
     def sanitize(data)
       data.map do |record|
