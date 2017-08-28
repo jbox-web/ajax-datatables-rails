@@ -320,7 +320,7 @@ end
 __Some comments for the above code:__
 
 1. In the `get_raw_records` method we have quite a complex query having one to
-many and may to many associations using the joins ActiveRecord method.
+many and many to many associations using the joins ActiveRecord method.
 The joins will generate INNER JOIN relations in the SQL query. In this case,
 we do not include all event in the report if we have events which is not
 associated with any model record from the relation.
