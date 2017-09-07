@@ -22,7 +22,7 @@ module AjaxDatatablesRails
       end
       
       def sort_nulls_last(sort_column)
-        return nil unless AjaxDatatablesRails.config.sort_nulls_last
+        return nil unless (AjaxDatatablesRails.config.sort_nulls_last || column.sort_nulls_last?)
         "CASE WHEN #{sort_column} IS NULL THEN 1 ELSE 0 END, "
       end
 

@@ -71,6 +71,11 @@ module AjaxDatatablesRails
         @view_column[:delimiter] || '-'
       end
 
+      # Add option to always sort null values last
+      def sort_nulls_last?
+        @view_column.fetch(:nulls_last, false)
+      end
+
       def table
         model = source.split('.').first.constantize
         model.arel_table rescue model
