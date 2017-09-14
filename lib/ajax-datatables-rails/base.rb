@@ -1,11 +1,11 @@
 module AjaxDatatablesRails
-  class NotImplemented < StandardError; end
-
   class Base
     extend Forwardable
 
     attr_reader :view, :options
     def_delegator :@view, :params
+
+    GLOBAL_SEARCH_DELIMITER = ' '.freeze
 
     def initialize(view, options = {})
       @view    = view
@@ -22,15 +22,15 @@ module AjaxDatatablesRails
     end
 
     def view_columns
-      fail(NotImplemented, view_columns_error_text)
+      fail(NotImplementedError, view_columns_error_text)
     end
 
     def get_raw_records
-      fail(NotImplemented, raw_records_error_text)
+      fail(NotImplementedError, raw_records_error_text)
     end
 
     def data
-      fail(NotImplemented, data_error_text)
+      fail(NotImplementedError, data_error_text)
     end
 
     def additional_datas
@@ -106,6 +106,10 @@ module AjaxDatatablesRails
       else
         nil
       end
+    end
+
+    def global_search_delimiter
+      GLOBAL_SEARCH_DELIMITER
     end
 
     def raw_records_error_text

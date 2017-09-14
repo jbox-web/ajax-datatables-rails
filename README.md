@@ -13,7 +13,7 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.15 / 4.2.8 / 5.0.3 / 5.1.1
+> * Rails 4.0.13 / 4.1.15 / 4.2.9 / 5.0.4 / 5.1.2
 > * Ruby 2.2.7 / 2.3.4 / 2.4.1
 > * Postgresql
 > * MySQL
@@ -320,7 +320,7 @@ end
 __Some comments for the above code:__
 
 1. In the `get_raw_records` method we have quite a complex query having one to
-many and may to many associations using the joins ActiveRecord method.
+many and many to many associations using the joins ActiveRecord method.
 The joins will generate INNER JOIN relations in the SQL query. In this case,
 we do not include all event in the report if we have events which is not
 associated with any model record from the relation.

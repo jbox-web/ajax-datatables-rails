@@ -85,6 +85,7 @@ describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe '#formater' do
+    let(:datatable) { DatatableWithFormater.new(view) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'last_name' } }
 
     it 'should be a proc' do
@@ -93,7 +94,7 @@ describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe '#filter' do
-    let(:datatable) { ReallyComplexDatatableProc.new(view) }
+    let(:datatable) { DatatableCondProc.new(view) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'username' } }
 
     it 'should be a proc' do
