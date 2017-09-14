@@ -72,7 +72,7 @@ module AjaxDatatablesRails
       end
 
       # Add option to always sort null values last
-      def sort_nulls_last?
+      def nulls_last
         @view_column.fetch(:nulls_last, false)
       end
 

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::SimpleOrder do
-
   let(:datatable) { ReallyComplexDatatable.new(double('view', params: sample_params)) }
+  let(:sorted_datatable) { SortedDatatable.new(double('view', params: sample_params)) }
   let(:options) { ActiveSupport::HashWithIndifferentAccess.new({'column'=>'1', 'dir'=>'desc'}) }
   let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(datatable, options) }
 
@@ -13,24 +13,25 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
   end
 
   describe 'option methods with nulls last' do
-    let(:column) { datatable.datatable.columns.first }
-
-    describe 'with global option' do
-      before { AjaxDatatablesRails.config.sort_nulls_last = true }
-      after  { AjaxDatatablesRails.config.sort_nulls_last = false }
-
-      it 'sql query' do
-        expect(simple_order.query('firstname')).to eq('CASE WHEN firstname IS NULL THEN 1 ELSE 0 END, firstname DESC')
-      end
-    end
+    describe 'using global option' do
+      before { AjaxDatatablesRails.config.nulls_last = true }
+      after  { AjaxDatatablesRails.config.nulls_last = false }
     
-    describe 'with column option' do
-
       it 'sql query' do
-        binding.pry
-        expect(simple_order.query('firstname')).to eq('CASE WHEN firstname IS NULL THEN 1 ELSE 0 END, firstname DESC')
+        expect(simple_order.query('email')).to eq(
+        'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
+        )
       end
     end
 
+    describe 'using column option' do
+      let(:simple_order_with_nulls_last) { AjaxDatatablesRails::Datatable::SimpleOrder.new(sorted_datatable, options) }
+
+      it 'sql query' do
+        expect(simple_order_with_nulls_last.query('email')).to eq(
+        'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
+        )
+      end
+    end
   end
 end
