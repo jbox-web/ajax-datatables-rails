@@ -26,7 +26,7 @@ describe AjaxDatatablesRails::Datatable::Column do
     end
 
     it 'should not default to sort nulls last' do
-      expect(column.nulls_last).to eq(false)
+      expect(column.nulls_last).to eq(nil)
     end
 
     it 'should have connected to id column' do
