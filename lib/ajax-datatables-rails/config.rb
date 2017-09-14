@@ -24,6 +24,6 @@ module AjaxDatatablesRails
 
     config_accessor(:orm) { :active_record }
     config_accessor(:db_adapter) { :postgresql }
-    config_accessor(:sort_nulls_last) { false }
+    config_accessor(:nulls_last) { false }
   end
 end
