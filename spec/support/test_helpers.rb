@@ -89,12 +89,6 @@ class ComplexDatatable < SampleDatatable
   end
 end
 
-class NullsLastDatatable < ComplexDatatable
-  def view_columns
-    super.deep_merge(email: { nulls_last: true })
-  end
-end
-
 class ComplexDatatableHash < ComplexDatatable
 end
 

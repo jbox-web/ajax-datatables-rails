@@ -78,4 +78,5 @@ end
 
 load File.dirname(__FILE__) + '/support/schema.rb'
 load File.dirname(__FILE__) + '/support/test_helpers.rb'
+load File.dirname(__FILE__) + '/support/datatable_order_nulls_last.rb'
 require File.dirname(__FILE__) + '/support/test_models.rb'
