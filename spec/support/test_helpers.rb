@@ -89,14 +89,9 @@ class ComplexDatatable < SampleDatatable
   end
 end
 
-class SortedDatatable < ComplexDatatable
+class NullsLastDatatable < ComplexDatatable
   def view_columns
-    @view_columns ||= {
-      username:   { source: 'User.username', nulls_last: true },
-      email:      { source: 'User.email' },
-      first_name: { source: 'User.first_name' },
-      last_name:  { source: 'User.last_name', formater: -> (o) { o.upcase } },
-    }
+    super.deep_merge(email: { nulls_last: true })
   end
 end
 
