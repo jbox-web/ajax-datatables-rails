@@ -71,9 +71,9 @@ module AjaxDatatablesRails
         @view_column[:delimiter] || '-'
       end
 
-      # Add option to always sort null values last
+      # Add option to sort null values last
       def nulls_last
-        @view_column.fetch(:nulls_last, false)
+        @view_column[:nulls_last]
       end
 
       def table
