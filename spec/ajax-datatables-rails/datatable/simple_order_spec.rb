@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::SimpleOrder do
-  let(:datatable) { ReallyComplexDatatable.new(double('view', params: sample_params)) }
-  let(:sorted_datatable) { DatatableOrderNullsLast.new(double('view', params: sample_params)) }
+
+  let(:view) { double('view', params: sample_params) }
+  let(:datatable) { ComplexDatatable.new(view).datatable }
+  let(:sorted_datatable) { DatatableOrderNullsLast.new(view).datatable }
   let(:options) { ActiveSupport::HashWithIndifferentAccess.new({'column'=>'1', 'dir'=>'desc'}) }
   let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(datatable, options) }
 
