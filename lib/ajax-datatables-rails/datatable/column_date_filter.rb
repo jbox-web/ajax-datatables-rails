@@ -21,8 +21,8 @@ module AjaxDatatablesRails
       # Do a range search
       def date_range_search
         return nil if empty_range_search?
-        new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
-        new_end   = range_end.blank?   ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
+        new_start = range_start.blank? ? Time.zone.parse('01/01/1970') : Time.zone.parse(range_start)
+        new_end = range_end.blank? ? Time.current : Time.zone.parse("#{range_end} 23:59:59")
         table[field].between(OpenStruct.new(begin: new_start, end: new_end))
       end
 
