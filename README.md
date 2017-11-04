@@ -545,7 +545,7 @@ a file inside the `config/initializers` directory.
 #### Using view helpers
 
 Sometimes you'll need to use view helper methods like `link_to`, `h`, `mailto`,
-`edit_resource_path` in the returned JSON representation returned by the `data`
+`edit_resource_path`, `check_box_tag` in the returned JSON representation returned by the `data`
 method.
 
 To have these methods available to be used, this is the way to go:
@@ -558,20 +558,44 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   def_delegator :@view, :mail_to
 
   # or define them in one pass
-  def_delegators :@view, :link_to, :h, :mailto, :edit_resource_path, :other_method
+  def_delegators :@view, :link_to, :h, :mailto, :edit_resource_path, :check_box_tag, :other_method
+
+  # Define columns as described above for `id`, `first_name`, `email`, and others
+  def view_columns 
+    ...
+  end
 
   # now, you'll have these methods available to be used anywhere
   # example: mapping the 2d jsonified array returned.
   def data
     records.map do |record|
       {
+        id: check_box_tag('users[]', record.id),
         first_name: link_to(record.fname, edit_resource_path(record)),
-        email:      mail_to(record.email),
+        email:      mail_to(record.email)
         # other attributes
       }
     end
   end
 end
+```
+
+If you want to keep things tidy in the data mapping method, you could use 
+[Draper](https://github.com/drapergem/draper) to define column mappings like below.
+
+```ruby
+...
+  def data
+    records.map do |record|
+      {
+        id: record.decorate.id,
+        first_name: record.decorate.first_name,
+        email: record.decorate.email
+        # other attributes
+      }
+    end
+  end
+...
 ```
 
 
