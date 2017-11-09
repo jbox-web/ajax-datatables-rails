@@ -3,18 +3,18 @@ RAILS_VERSIONS = {
     'mysql2' => '~> 0.3.18',
     'activerecord-oracle_enhanced-adapter' => '~> 1.5.0'
   },
-  '4.1.15' => {
+  '4.1.16' => {
     'mysql2' => '~> 0.3.18',
     'activerecord-oracle_enhanced-adapter' => '~> 1.5.0'
   },
-  '4.2.9' => {
+  '4.2.10' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.6.0'
   },
-  '5.0.4' => {
+  '5.0.6' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.7.0',
     'ruby-oci8' => ''
   },
-  '5.1.2' => {
+  '5.1.4' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
     'ruby-oci8' => ''
   }
