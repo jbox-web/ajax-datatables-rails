@@ -13,8 +13,8 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.15 / 4.2.9 / 5.0.4 / 5.1.2
-> * Ruby 2.2.7 / 2.3.4 / 2.4.1
+> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.6 / 5.1.4
+> * Ruby 2.2.8 / 2.3.5 / 2.4.2
 > * Postgresql
 > * MySQL
 > * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
@@ -561,7 +561,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   def_delegators :@view, :link_to, :h, :mailto, :edit_resource_path, :check_box_tag, :other_method
 
   # Define columns as described above for `id`, `first_name`, `email`, and others
-  def view_columns 
+  def view_columns
     ...
   end
 
@@ -580,7 +580,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
 end
 ```
 
-If you want to keep things tidy in the data mapping method, you could use 
+If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
 
 ```ruby
