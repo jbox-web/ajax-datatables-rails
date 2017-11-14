@@ -1,7 +1,7 @@
 require 'simplecov'
 require 'rspec'
 require 'database_cleaner'
-require 'factory_girl'
+require 'factory_bot'
 require 'faker'
 require 'pry'
 require 'rails'
@@ -15,10 +15,10 @@ end
 
 # Configure RSpec
 RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
-    FactoryGirl.find_definitions
+    FactoryBot.find_definitions
   end
 
   config.after(:each) do
