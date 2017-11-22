@@ -38,16 +38,16 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
         if Rails.version.in? %w[4.0.13 4.1.15 4.2.9]
           expect(datatable.paginate_records(records).to_sql).to include(
-            'rownum <= 50'
+            'rownum <= 51'
           )
         else
           expect(datatable.paginate_records(records).to_sql).to include(
-            'rownum <= (25 + 25)'
+            'rownum <= (26 + 25)'
           )
         end
       else
         expect(datatable.paginate_records(records).to_sql).to include(
-          'LIMIT 25 OFFSET 25'
+          'LIMIT 25 OFFSET 26'
         )
       end
     end

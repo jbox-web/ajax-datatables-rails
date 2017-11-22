@@ -56,7 +56,7 @@ module AjaxDatatablesRails
       end
 
       def offset
-        (page - 1) * per_page
+        options.fetch(:start, 0).to_i
       end
 
       def page
