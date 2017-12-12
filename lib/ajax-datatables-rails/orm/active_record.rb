@@ -7,6 +7,7 @@ module AjaxDatatablesRails
       end
 
       def filter_records(records)
+        binding.pry
         records.where(build_conditions)
       end
 
