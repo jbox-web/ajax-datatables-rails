@@ -128,7 +128,6 @@ module AjaxDatatablesRails
         when :end_with
           casted_column.matches("%#{formated_value}")
         when :like
-          binding.pry
           casted_column.matches("%#{formated_value}%")
         else
           nil
