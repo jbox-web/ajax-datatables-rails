@@ -145,7 +145,6 @@ module AjaxDatatablesRails
       end
 
       def casted_column
-        binding.pry
         ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(typecast)])
       end
 
