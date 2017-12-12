@@ -77,7 +77,7 @@ module AjaxDatatablesRails
       end
 
       def field
-        source.split('.').last.to_sym
+        source.split('.').last.gsub("\"","").to_sym
       end
 
       def search_query
@@ -145,6 +145,7 @@ module AjaxDatatablesRails
       end
 
       def casted_column
+        binding.pry
         ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(typecast)])
       end
 
