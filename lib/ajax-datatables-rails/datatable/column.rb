@@ -52,6 +52,7 @@ module AjaxDatatablesRails
 
       # Add sort_field option to allow overriding of sort field
       def sort_field
+        binding.pry
         @view_column[:sort_field] || field
       end
 
@@ -85,6 +86,7 @@ module AjaxDatatablesRails
       end
 
       def sort_query
+        binding.pry
         custom_field? ? source : "#{table.name}.#{sort_field}"
       end
 
