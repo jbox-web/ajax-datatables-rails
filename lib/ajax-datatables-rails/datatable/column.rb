@@ -77,7 +77,6 @@ module AjaxDatatablesRails
       end
 
       def field
-        binding.pry
         source.split('.').last.delete("\"").to_sym
       end
 
