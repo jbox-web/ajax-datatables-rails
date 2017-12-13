@@ -77,7 +77,7 @@ module AjaxDatatablesRails
       end
 
       def field
-        source.split('.').last.gsub("\"","").to_sym
+        source.split('.').last.delete("\"","").to_sym
       end
 
       def search_query
