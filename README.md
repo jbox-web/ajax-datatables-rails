@@ -353,12 +353,12 @@ end
 ```
 
 
-#### Additional datas
+#### Additional data
 
-You can inject other key/value pairs in the rendered JSON by defining the `#additional_datas` method :
+You can inject other key/value pairs in the rendered JSON by defining the `#additional_data` method :
 
 ```ruby
-def additional_datas
+def additional_data
   {
     foo: 'bar'
   }
