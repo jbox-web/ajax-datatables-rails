@@ -13,7 +13,7 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.6 / 5.1.4
+> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.6 / 5.1.5
 > * Ruby 2.2.8 / 2.3.5 / 2.4.2
 > * Postgresql
 > * MySQL
@@ -243,10 +243,7 @@ This is where your query goes.
 ```ruby
 def get_raw_records
   # suppose we need all User records
-  # Rails 4+
   User.all
-  # Rails 3.x
-  # User.scoped
 end
 ```
 
@@ -570,7 +567,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   def data
     records.map do |record|
       {
-        id: check_box_tag('users[]', record.id),
+        id:         check_box_tag('users[]', record.id),
         first_name: link_to(record.fname, edit_resource_path(record)),
         email:      mail_to(record.email)
         # other attributes
