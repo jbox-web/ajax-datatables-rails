@@ -108,11 +108,11 @@ module AjaxDatatablesRails
     end
 
     def records_total_count
-      get_raw_records.count(:all)
+      fetch_records.count(:all)
     end
 
     def records_filtered_count
-      filter_records(get_raw_records).count(:all)
+      filter_records(fetch_records).count(:all)
     end
 
     # Private helper methods
