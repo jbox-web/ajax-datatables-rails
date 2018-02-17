@@ -73,7 +73,7 @@ describe AjaxDatatablesRails::Datatable::Datatable do
     end
 
     it 'offset' do
-      expect(datatable.offset).to eq(45)
+      expect(datatable.offset).to eq(50)
     end
 
     it 'page' do

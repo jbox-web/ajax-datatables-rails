@@ -155,10 +155,10 @@ describe AjaxDatatablesRails::Base do
           expect(datatable.datatable.send(:offset)).to eq(0)
         end
 
-        it 'matches the value on view params[:start] minus 1' do
+        it 'matches the value on view params[:start]' do
           paginated_view = double('view', params: { start: '11' })
           datatable = described_class.new(paginated_view)
-          expect(datatable.datatable.send(:offset)).to eq(10)
+          expect(datatable.datatable.send(:offset)).to eq(11)
         end
       end
 
