@@ -19,23 +19,9 @@ class <%= datatable_name %> < AjaxDatatablesRails::Base
     end
   end
 
-  private
-
   def get_raw_records
     # insert query here
+    # User.all
   end
 
-  # ==== These methods represent the basic operations to perform on records
-  # and feel free to override them
-
-  # def filter_records(records)
-  # end
-
-  # def sort_records(records)
-  # end
-
-  # def paginate_records(records)
-  # end
-
-  # ==== Insert 'presenter'-like methods below if necessary
 end
