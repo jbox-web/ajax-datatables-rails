@@ -341,11 +341,22 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         create(:user, last_name: 'MARY')
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['3'][:search][:value] = 'ry'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:last_name]).to eq 'MARY'
+      if AjaxDatatablesRails.config.db_adapter == :oracleenhanced
+        context 'when db_adapter is oracleenhanced' do
+          it 'should filter records matching' do
+            datatable.params[:columns]['3'][:search][:value] = 'RY'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'MARY'
+          end
+        end
+      else
+        it 'should filter records matching' do
+          datatable.params[:columns]['3'][:search][:value] = 'ry'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:last_name]).to eq 'MARY'
+        end
       end
     end
 
