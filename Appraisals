@@ -14,7 +14,7 @@ RAILS_VERSIONS = {
     'activerecord-oracle_enhanced-adapter' => '~> 1.7.0',
     'ruby-oci8' => ''
   },
-  '5.1.4' => {
+  '5.1.5' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
     'ruby-oci8' => ''
   }

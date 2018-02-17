@@ -10,7 +10,7 @@ gemfile:
   - gemfiles/rails_4.1.16.gemfile
   - gemfiles/rails_4.2.10.gemfile
   - gemfiles/rails_5.0.6.gemfile
-  - gemfiles/rails_5.1.4.gemfile
+  - gemfiles/rails_5.1.5.gemfile
 matrix:
   include:
     - rvm: 2.4.2
@@ -20,7 +20,7 @@ matrix:
       gemfile: gemfiles/rails_5.0.6.gemfile
       env: DB_ADAPTER=postgresql
     - rvm: 2.4.2
-      gemfile: gemfiles/rails_5.1.4.gemfile
+      gemfile: gemfiles/rails_5.1.5.gemfile
       env: DB_ADAPTER=postgresql
     - rvm: 2.4.2
       gemfile: gemfiles/rails_4.2.10.gemfile
@@ -29,7 +29,7 @@ matrix:
       gemfile: gemfiles/rails_5.0.6.gemfile
       env: DB_ADAPTER=mysql2
     - rvm: 2.4.2
-      gemfile: gemfiles/rails_5.1.4.gemfile
+      gemfile: gemfiles/rails_5.1.5.gemfile
       env: DB_ADAPTER=mysql2
     - rvm: 2.4.2
       gemfile: gemfiles/rails_4.2.10.gemfile
@@ -38,7 +38,7 @@ matrix:
       gemfile: gemfiles/rails_5.0.6.gemfile
       env: DB_ADAPTER=oracle_enhanced
     - rvm: 2.4.2
-      gemfile: gemfiles/rails_5.1.4.gemfile
+      gemfile: gemfiles/rails_5.1.5.gemfile
       env: DB_ADAPTER=oracle_enhanced
 after_success:
   - bundle exec codeclimate-test-reporter
