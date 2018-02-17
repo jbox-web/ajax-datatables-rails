@@ -21,7 +21,7 @@
 
 ## Description
 
-Datatables is a nifty jquery plugin that adds the ability to paginate, sort,
+[Datatables](https://datatables.net/) is a nifty jquery plugin that adds the ability to paginate, sort,
 and search your html tables. When dealing with large tables
 (more than a couple hundred rows) however, we run into performance issues.
 These can be fixed by using server-side pagination, but this breaks some
@@ -32,6 +32,10 @@ synchronization with server-side pagination in a rails app. It was inspired by
 this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to
 implement a similar solution in a couple projects I was working on, so I
 extracted a solution into a gem.
+
+The final goal of this gem is to **generate a JSON** content that will be given to JQuery Datatable.
+All the datatable customizations (header, tr, td, css classes, width, height, etc, etc) **must** take place in the [javascript definition](#wire-up-the-javascript) of the datatable.
+JQuery Datatable is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
 ## ORM support
 
