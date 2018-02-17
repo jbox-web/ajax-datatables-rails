@@ -77,7 +77,7 @@ module AjaxDatatablesRails
       end
 
       def field
-        source.split('.').last.to_sym
+        source.split('.').last.delete("\"").to_sym
       end
 
       def search_query
@@ -85,9 +85,15 @@ module AjaxDatatablesRails
       end
 
       def sort_query
-        custom_field? ? source : "#{table.name}.#{sort_field}"
+        sort_field_as_string=stringify_case_sensitive_symbol(sort_field)
+        custom_field? ? source : "#{table.name}.#{sort_field_as_string}"
       end
-
+      
+      def stringify_case_sensitive_symbol(symbol)
+       /[[:upper:]]/.match(symbol.to_s) ? "\""+symbol.to_s+"\"" : symbol.to_s
+      end
+      
+      
       def formated_value
         formater ? formater.call(search.value) : search.value
       end
