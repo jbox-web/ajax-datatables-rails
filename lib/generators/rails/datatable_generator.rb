@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails/generators'
 
 module Rails
@@ -8,9 +10,7 @@ module Rails
       argument :name, type: :string
 
       def generate_datatable
-        template 'datatable.rb', File.join(
-          'app/datatables', "#{datatable_path}.rb"
-        )
+        template 'datatable.rb', File.join('app', 'datatables', "#{datatable_path}.rb")
       end
 
       def datatable_name
@@ -18,6 +18,7 @@ module Rails
       end
 
       private
+
       def datatable_path
         "#{name.underscore}_datatable"
       end

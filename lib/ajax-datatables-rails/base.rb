@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AjaxDatatablesRails
   class Base
     extend Forwardable
@@ -5,7 +7,7 @@ module AjaxDatatablesRails
     attr_reader :view, :options
     def_delegator :@view, :params
 
-    GLOBAL_SEARCH_DELIMITER = ' '.freeze
+    GLOBAL_SEARCH_DELIMITER = ' '
 
     def initialize(view, options = {})
       @view    = view
@@ -22,15 +24,15 @@ module AjaxDatatablesRails
     end
 
     def view_columns
-      fail(NotImplementedError, view_columns_error_text)
+      raise(NotImplementedError, view_columns_error_text)
     end
 
     def get_raw_records
-      fail(NotImplementedError, raw_records_error_text)
+      raise(NotImplementedError, raw_records_error_text)
     end
 
     def data
-      fail(NotImplementedError, data_error_text)
+      raise(NotImplementedError, data_error_text)
     end
 
     def additional_data
@@ -77,11 +79,11 @@ module AjaxDatatablesRails
     # without breaking change.
     def get_additional_data
       if respond_to?(:additional_datas)
-        puts <<-eos
+        puts <<-WARNING
           `additional_datas` has been deprecated and
           will be removed in next major version update!
           Please use `additional_data` instead.
-        eos
+        WARNING
 
         additional_datas
       else
@@ -94,7 +96,7 @@ module AjaxDatatablesRails
         if record.is_a?(Array)
           record.map { |td| ERB::Util.html_escape(td) }
         else
-          record.update(record){ |_, v| ERB::Util.html_escape(v) }
+          record.update(record) { |_, v| ERB::Util.html_escape(v) }
         end
       end
     end
@@ -118,9 +120,9 @@ module AjaxDatatablesRails
     # Private helper methods
     def load_orm_extension
       case config.orm
-      when :mongoid then nil
-      when :active_record then extend ORM::ActiveRecord
-      else
+      when :active_record
+        extend ORM::ActiveRecord
+      when :mongoid
         nil
       end
     end
@@ -130,30 +132,30 @@ module AjaxDatatablesRails
     end
 
     def raw_records_error_text
-      return <<-eos
+      <<-ERROR
 
         You should implement this method in your class and specify
         how records are going to be retrieved from the database.
-      eos
+      ERROR
     end
 
     def data_error_text
-      return <<-eos
+      <<-ERROR
 
         You should implement this method in your class and return an array
         of arrays, or an array of hashes, as defined in the jQuery.dataTables
         plugin documentation.
-      eos
+      ERROR
     end
 
     def view_columns_error_text
-      return <<-eos
+      <<-ERROR
 
         You should implement this method in your class and return an array
         of database columns based on the columns displayed in the HTML view.
         These columns should be represented in the ModelName.column_name,
         or aliased_join_table.column_name notation.
-      eos
+      ERROR
     end
   end
 end

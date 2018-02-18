@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module AjaxDatatablesRails
   module Datatable
 
-    TRUE_VALUE = 'true'.freeze
+    TRUE_VALUE = 'true'
 
     class Datatable
       attr_reader :datatable, :options

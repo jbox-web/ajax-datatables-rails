@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AjaxDatatablesRails
   module ORM
     module ActiveRecord
@@ -15,7 +17,7 @@ module AjaxDatatablesRails
           column = order.column
           queries << order.query(column.sort_query) if column
         end
-        records.order(sort_by.join(", "))
+        records.order(sort_by.join(', '))
       end
 
       def paginate_records(records)
@@ -34,7 +36,7 @@ module AjaxDatatablesRails
 
       def build_conditions_for_datatable
         criteria = search_for.inject([]) do |crit, atom|
-          search = Datatable::SimpleSearch.new({ value: atom, regex: datatable.search.regexp? })
+          search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
           crit << searchable_columns.map do |simple_column|
             simple_column.search = search
             simple_column.search_query

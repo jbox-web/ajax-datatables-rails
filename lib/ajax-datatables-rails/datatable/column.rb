@@ -1,17 +1,22 @@
+# frozen_string_literal: true
+
 require 'ostruct'
 
 module AjaxDatatablesRails
   module Datatable
     class Column
       attr_reader :datatable, :index, :options
+      attr_writer :search
 
       unless AjaxDatatablesRails.old_rails?
         prepend ColumnDateFilter
       end
 
       def initialize(datatable, index, options)
-        @datatable, @index, @options = datatable, index, options
-        @view_column = datatable.view_columns[options["data"].to_sym]
+        @datatable   = datatable
+        @index       = index
+        @options     = options
+        @view_column = datatable.view_columns[options['data'].to_sym]
       end
 
       def data
@@ -32,10 +37,6 @@ module AjaxDatatablesRails
 
       def searched?
         search.value.present?
-      end
-
-      def search=(value)
-        @search = value
       end
 
       def cond
@@ -129,8 +130,6 @@ module AjaxDatatablesRails
           casted_column.matches("%#{formated_value}")
         when :like
           casted_column.matches("%#{formated_value}%")
-        else
-          nil
         end
       end
 

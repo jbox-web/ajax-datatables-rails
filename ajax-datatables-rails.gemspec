@@ -1,5 +1,7 @@
+# frozen_string_literal: true
 # coding: utf-8
-$:.push File.expand_path('../lib', __FILE__)
+
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'ajax-datatables-rails/version'
 
 Gem::Specification.new do |s|
@@ -9,8 +11,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Joel Quenneville', 'Antonio Antillon']
   s.email       = ['joel.quenneville@collegeplus.org', 'antillas21@gmail.com']
   s.homepage    = 'https://github.com/jbox-web/ajax-datatables-rails'
-  s.summary     = %q{A gem that simplifies using datatables and hundreds of records via ajax}
-  s.description = %q{A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app}
+  s.summary     = 'A gem that simplifies using datatables and hundreds of records via ajax'
+  s.description = "A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app"
   s.license     = 'MIT'
 
   s.add_dependency 'railties', '>= 4.0'
@@ -32,6 +34,6 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
   s.require_paths = ['lib']
 end

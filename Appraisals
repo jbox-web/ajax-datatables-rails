@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RAILS_VERSIONS = {
   '4.0.13' => {
     'mysql2' => '~> 0.3.18',
@@ -18,16 +20,16 @@ RAILS_VERSIONS = {
     'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
     'ruby-oci8' => ''
   }
-}
+}.freeze
 
 RAILS_VERSIONS.each do |version, gems|
   appraise "rails_#{version}" do
     gem 'rails', version
-    gems.each do |name, version|
-      if version.empty?
+    gems.each do |name, gem_version|
+      if gem_version.empty?
         gem name
       else
-        gem name, version
+        gem name, gem_version
       end
     end
   end

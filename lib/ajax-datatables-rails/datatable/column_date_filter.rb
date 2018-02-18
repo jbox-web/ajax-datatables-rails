@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AjaxDatatablesRails
   module Datatable
     module ColumnDateFilter
@@ -26,21 +28,21 @@ module AjaxDatatablesRails
           new_start = range_start.blank? ? Time.zone.parse('01/01/1970') : Time.zone.parse(range_start)
           new_end = range_end.blank? ? Time.current : Time.zone.parse("#{range_end} 23:59:59")
         else
-          new_start = range_start.blank? ? DateTime.parse('01/01/1970') : DateTime.parse(range_start)
-          new_end = range_end.blank? ? DateTime.current : DateTime.parse("#{range_end} 23:59:59")
+          new_start = range_start.blank? ? Time.parse('01/01/1970') : Time.parse(range_start)
+          new_end = range_end.blank? ? Time.current : Time.parse("#{range_end} 23:59:59")
         end
         table[field].between(OpenStruct.new(begin: new_start, end: new_end))
       end
 
       private
 
-        def non_regex_search
-          if cond == :date_range
-            date_range_search
-          else
-            super
-          end
+      def non_regex_search
+        if cond == :date_range
+          date_range_search
+        else
+          super
         end
+      end
 
     end
   end
