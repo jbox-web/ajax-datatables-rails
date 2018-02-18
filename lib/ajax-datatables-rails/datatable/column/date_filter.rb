@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 module AjaxDatatablesRails
   module Datatable
     class Column
       module DateFilter
+
+        class DateRange
+          attr_reader :begin, :end
+
+          def initialize(date_start, date_end)
+            @begin = date_start
+            @end   = date_end
+          end
+
+          def exclude_end?
+            false
+          end
+        end
 
         # Add delimiter option to handle range search
         def delimiter
@@ -31,7 +42,7 @@ module AjaxDatatablesRails
         # Do a range search
         def date_range_search
           return nil if empty_range_search?
-          table[field].between(OpenStruct.new(begin: range_start_casted, end: range_end_casted))
+          table[field].between(DateRange.new(range_start_casted, range_end_casted))
         end
 
         private
