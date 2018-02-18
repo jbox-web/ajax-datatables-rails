@@ -70,12 +70,12 @@ module AjaxDatatablesRails
         @config ||= AjaxDatatablesRails.config
       end
 
-      def typecast
+      def type_cast
         DB_ADAPTER_TYPE_CAST[config.db_adapter] || 'VARCHAR'
       end
 
       def casted_column
-        ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(typecast)])
+        ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(type_cast)])
       end
 
     end
