@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   Exclude:
     - spec/**/*.rb
     - lib/ajax-datatables-rails.rb
@@ -29,17 +29,8 @@ Layout/EmptyLineBetweenDefs:
 Metrics/LineLength:
   Enabled: false
 
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/MethodLength:
-  Max: 12
-
 Metrics/BlockLength:
   Max: 30
-
-Metrics/ModuleLength:
-  Max: 130
 
 Metrics/ClassLength:
   Max: 130
