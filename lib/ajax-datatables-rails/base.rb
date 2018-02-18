@@ -15,10 +15,6 @@ module AjaxDatatablesRails
       load_orm_extension
     end
 
-    def config
-      @config ||= AjaxDatatablesRails.config
-    end
-
     def datatable
       @datatable ||= Datatable::Datatable.new(self)
     end
@@ -119,7 +115,7 @@ module AjaxDatatablesRails
 
     # Private helper methods
     def load_orm_extension
-      case config.orm
+      case AjaxDatatablesRails.config.orm
       when :active_record
         extend ORM::ActiveRecord
       when :mongoid
@@ -157,5 +153,6 @@ module AjaxDatatablesRails
         or aliased_join_table.column_name notation.
       ERROR
     end
+
   end
 end

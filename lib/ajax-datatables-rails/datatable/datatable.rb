@@ -76,6 +76,7 @@ module AjaxDatatablesRails
           options[param].to_unsafe_h.with_indifferent_access
         end
       end
+
     end
   end
 end

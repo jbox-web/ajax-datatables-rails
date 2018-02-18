@@ -66,12 +66,8 @@ module AjaxDatatablesRails
 
       private
 
-      def config
-        @config ||= AjaxDatatablesRails.config
-      end
-
       def type_cast
-        DB_ADAPTER_TYPE_CAST[config.db_adapter] || 'VARCHAR'
+        DB_ADAPTER_TYPE_CAST[AjaxDatatablesRails.config.db_adapter] || 'VARCHAR'
       end
 
       def casted_column
