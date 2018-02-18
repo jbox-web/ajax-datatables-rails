@@ -20,7 +20,7 @@ module AjaxDatatablesRails
       end
 
       def direction
-        DIRECTIONS.find { |dir| dir == @options[:dir].upcase } || 'ASC'
+        DIRECTIONS.find { |dir| dir == column_direction } || 'ASC'
       end
 
       private
@@ -28,6 +28,11 @@ module AjaxDatatablesRails
       def column_index
         @options[:column]
       end
+
+      def column_direction
+        @options[:dir].upcase
+      end
+
     end
   end
 end
