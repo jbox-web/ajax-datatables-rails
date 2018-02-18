@@ -117,9 +117,11 @@ describe AjaxDatatablesRails::Datatable::Column do
       end
     end
 
-    describe '#delimiter' do
-      it 'should be - by default' do
-        expect(column.delimiter).to eq('-')
+    unless AjaxDatatablesRails.old_rails?
+      describe '#delimiter' do
+        it 'should be - by default' do
+          expect(column.delimiter).to eq('-')
+        end
       end
     end
   end
