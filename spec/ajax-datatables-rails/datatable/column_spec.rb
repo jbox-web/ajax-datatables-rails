@@ -29,6 +29,44 @@ describe AjaxDatatablesRails::Datatable::Column do
       expect(column.data).to eq('username')
     end
 
+    describe 'data' do
+      it 'should return the data from params' do
+        expect(column.data).to eq 'username'
+      end
+    end
+
+    describe 'source' do
+      it 'should return the data source from view_column' do
+        expect(column.source).to eq 'User.username'
+      end
+    end
+
+    describe 'table' do
+      context 'with ActiveRecord ORM' do
+        it 'should return the corresponding AR table' do
+          expect(column.table).to eq User.arel_table
+        end
+      end
+      context 'with other ORM' do
+        it 'should return the corresponding model' do
+          expect(User).to receive(:respond_to?).with(:arel_table).and_return(false)
+          expect(column.table).to eq User
+        end
+      end
+    end
+
+    describe 'model' do
+      it 'should return the corresponding AR model' do
+        expect(column.model).to eq User
+      end
+    end
+
+    describe 'field' do
+      it 'should return the corresponding field in DB' do
+        expect(column.field).to eq :username
+      end
+    end
+
     describe '#search' do
       it 'child class' do
         expect(column.search).to be_a(AjaxDatatablesRails::Datatable::SimpleSearch)

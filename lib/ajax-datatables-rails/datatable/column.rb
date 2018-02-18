@@ -10,7 +10,7 @@ module AjaxDatatablesRails
         sqlite:         'TEXT',
         sqlite3:        'TEXT',
         oracle:         'VARCHAR2(4000)',
-        oracleenhanced: 'VARCHAR2(4000)',
+        oracleenhanced: 'VARCHAR2(4000)'
       }.freeze
 
       attr_reader :datatable, :index, :options
@@ -38,19 +38,22 @@ module AjaxDatatablesRails
         @view_column[:source]
       end
 
-      # Add formater option to allow modification of the value
-      # before passing it to the database
-      def formater
-        @view_column[:formater]
+      def table
+        model.respond_to?(:arel_table) ? model.arel_table : model
       end
 
-      def table
-        model = source.split('.').first.constantize
-        model.arel_table rescue model
+      def model
+        source.split('.').first.constantize
       end
 
       def field
         source.split('.').last.to_sym
+      end
+
+      # Add formater option to allow modification of the value
+      # before passing it to the database
+      def formater
+        @view_column[:formater]
       end
 
       def formated_value
