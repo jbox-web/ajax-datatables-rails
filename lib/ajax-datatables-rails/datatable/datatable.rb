@@ -66,7 +66,7 @@ module AjaxDatatablesRails
       end
 
       def page
-        (options[:start].to_i / per_page) + 1
+        (offset / per_page) + 1
       end
 
       def get_param(param)
