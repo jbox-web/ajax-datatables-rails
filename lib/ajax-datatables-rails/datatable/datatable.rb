@@ -57,16 +57,16 @@ module AjaxDatatablesRails
         per_page != -1
       end
 
+      def per_page
+        options.fetch(:length, 10).to_i
+      end
+
       def offset
         options.fetch(:start, 0).to_i
       end
 
       def page
         (options[:start].to_i / per_page) + 1
-      end
-
-      def per_page
-        options.fetch(:length, 10).to_i
       end
 
       def get_param(param)
