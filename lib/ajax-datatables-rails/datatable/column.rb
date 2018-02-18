@@ -67,11 +67,11 @@ module AjaxDatatablesRails
       private
 
       def type_cast
-        DB_ADAPTER_TYPE_CAST[AjaxDatatablesRails.config.db_adapter] || 'VARCHAR'
+        @type_cast ||= (DB_ADAPTER_TYPE_CAST[AjaxDatatablesRails.config.db_adapter] || 'VARCHAR')
       end
 
       def casted_column
-        ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(type_cast)])
+        @casted_column ||= ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(type_cast)])
       end
 
     end
