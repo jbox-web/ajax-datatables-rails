@@ -17,6 +17,7 @@ module AjaxDatatablesRails
       attr_writer :search
 
       include Search
+      include Order
 
       unless AjaxDatatablesRails.old_rails?
         prepend DateFilter
@@ -33,17 +34,8 @@ module AjaxDatatablesRails
         options[:data].presence || options[:name]
       end
 
-      def orderable?
-        @view_column.fetch(:orderable, true)
-      end
-
       def source
         @view_column[:source]
-      end
-
-      # Add sort_field option to allow overriding of sort field
-      def sort_field
-        @view_column[:sort_field] || field
       end
 
       # Add formater option to allow modification of the value
@@ -59,10 +51,6 @@ module AjaxDatatablesRails
 
       def field
         source.split('.').last.to_sym
-      end
-
-      def sort_query
-        custom_field? ? source : "#{table.name}.#{sort_field}"
       end
 
       def formated_value
