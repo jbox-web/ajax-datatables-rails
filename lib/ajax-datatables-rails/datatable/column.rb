@@ -27,7 +27,7 @@ module AjaxDatatablesRails
         @datatable   = datatable
         @index       = index
         @options     = options
-        @view_column = datatable.view_columns[options['data'].to_sym]
+        @view_column = datatable.view_columns[options[:data].to_sym]
       end
 
       def data
@@ -50,6 +50,10 @@ module AjaxDatatablesRails
         source.split('.').last.to_sym
       end
 
+      def custom_field?
+        !source.include?('.')
+      end
+
       # Add formater option to allow modification of the value
       # before passing it to the database
       def formater
@@ -61,10 +65,6 @@ module AjaxDatatablesRails
       end
 
       private
-
-      def custom_field?
-        !source.include?('.')
-      end
 
       def config
         @config ||= AjaxDatatablesRails.config

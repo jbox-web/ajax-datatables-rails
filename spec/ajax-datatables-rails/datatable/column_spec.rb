@@ -29,19 +29,19 @@ describe AjaxDatatablesRails::Datatable::Column do
       expect(column.data).to eq('username')
     end
 
-    describe 'data' do
+    describe '#data' do
       it 'should return the data from params' do
         expect(column.data).to eq 'username'
       end
     end
 
-    describe 'source' do
+    describe '#source' do
       it 'should return the data source from view_column' do
         expect(column.source).to eq 'User.username'
       end
     end
 
-    describe 'table' do
+    describe '#table' do
       context 'with ActiveRecord ORM' do
         it 'should return the corresponding AR table' do
           expect(column.table).to eq User.arel_table
@@ -55,15 +55,21 @@ describe AjaxDatatablesRails::Datatable::Column do
       end
     end
 
-    describe 'model' do
+    describe '#model' do
       it 'should return the corresponding AR model' do
         expect(column.model).to eq User
       end
     end
 
-    describe 'field' do
+    describe '#field' do
       it 'should return the corresponding field in DB' do
         expect(column.field).to eq :username
+      end
+    end
+
+    describe '#custom_field?' do
+      it 'should return false if field is bound to an AR field' do
+        expect(column.custom_field?).to be false
       end
     end
 
