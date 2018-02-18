@@ -3,6 +3,16 @@
 module AjaxDatatablesRails
   module Datatable
     class Column
+
+      DB_ADAPTER_TYPE_CAST = {
+        mysql:          'CHAR',
+        mysql2:         'CHAR',
+        sqlite:         'TEXT',
+        sqlite3:        'TEXT',
+        oracle:         'VARCHAR2(4000)',
+        oracleenhanced: 'VARCHAR2(4000)',
+      }.freeze
+
       attr_reader :datatable, :index, :options
       attr_writer :search
 
@@ -127,13 +137,7 @@ module AjaxDatatablesRails
       end
 
       def typecast
-        case config.db_adapter
-        when :oracle, :oracleenhanced then 'VARCHAR2(4000)'
-        when :mysql, :mysql2   then 'CHAR'
-        when :sqlite, :sqlite3 then 'TEXT'
-        else
-          'VARCHAR'
-        end
+        DB_ADAPTER_TYPE_CAST[config.db_adapter] || 'VARCHAR'
       end
 
       def casted_column
