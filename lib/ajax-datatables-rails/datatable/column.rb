@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 module AjaxDatatablesRails
   module Datatable
     class Column
@@ -9,7 +7,7 @@ module AjaxDatatablesRails
       attr_writer :search
 
       unless AjaxDatatablesRails.old_rails?
-        prepend ColumnDateFilter
+        prepend DateFilter
       end
 
       def initialize(datatable, index, options)
@@ -65,11 +63,6 @@ module AjaxDatatablesRails
       # Add use_regex option to allow bypassing of regex search
       def use_regex?
         @view_column.fetch(:use_regex, true)
-      end
-
-      # Add delimiter option to handle range search
-      def delimiter
-        @view_column[:delimiter] || '-'
       end
 
       def table
