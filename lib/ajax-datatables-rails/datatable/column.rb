@@ -43,11 +43,11 @@ module AjaxDatatablesRails
       end
 
       def model
-        source.split('.').first.constantize
+        @model ||= source.split('.').first.constantize
       end
 
       def field
-        source.split('.').last.to_sym
+        @field ||= source.split('.').last.to_sym
       end
 
       def custom_field?
