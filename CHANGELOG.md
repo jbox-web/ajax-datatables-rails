@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.4.1
+
+* Fix: Restore behavior of #filter method [Comment](https://github.com/jbox-web/ajax-datatables-rails/commit/07795fd26849ff1b3b567f4ce967f722907a45be#comments)
+* Fix: Fix erroneous offset/start behavior [PR #264](https://github.com/jbox-web/ajax-datatables-rails/pull/264)
+* Fix: "orderable" option has no effect [Issue #245](https://github.com/jbox-web/ajax-datatables-rails/issues/245)
+* Change: Rename `additional_datas` method as `additional_data` [PR #251](https://github.com/jbox-web/ajax-datatables-rails/pull/251)
+* Change: Added timezone support for daterange [PR #261](https://github.com/jbox-web/ajax-datatables-rails/pull/261)
+
+**Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
+
+
 ## 0.4.0
 
 **Warning:** this version is a **major break** from v0.3. The core has been rewriten to remove dependency on Kaminari (or WillPaginate).
