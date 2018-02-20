@@ -81,6 +81,7 @@ class ComplexDatatable < AjaxDatatablesRails::Base
   def get_raw_records
     User.all
   end
+end
 
 class ComplexDatatableHash < ComplexDatatable
 end
