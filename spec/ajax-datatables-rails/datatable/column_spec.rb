@@ -10,11 +10,15 @@ describe AjaxDatatablesRails::Datatable::Column do
     let(:column) { datatable.datatable.columns.first }
 
     before do
-      datatable.params[:columns] = {'0'=>{'data'=>'username', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+      datatable.params[:columns] = {'0'=>{'data'=>'username', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}, 'nulls_last'=>'true'}}
     end
 
     it 'should be orderable' do
       expect(column.orderable?).to eq(true)
+    end
+
+    it 'should sort nulls last' do
+      expect(column.nulls_last).to eq(true)
     end
 
     it 'should be searchable' do

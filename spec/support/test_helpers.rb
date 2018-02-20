@@ -83,6 +83,9 @@ class ComplexDatatable < AjaxDatatablesRails::Base
   end
 end
 
+# class ComplexDatatableHash < ComplexDatatable
+# end
+ 
 class ComplexDatatableArray < ComplexDatatable
   def data
     records.map do |record|
