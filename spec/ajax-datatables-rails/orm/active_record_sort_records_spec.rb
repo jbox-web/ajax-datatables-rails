@@ -29,6 +29,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         'ORDER BY users.username ASC, users.email DESC'
       )
     end
+
+    it 'should not sort a column which is not orderable' do
+      datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
+      datatable.params[:order]['1'] = { column: '4', dir: 'desc' }
+      expect(datatable.sort_records(records).to_sql).to_not include(
+        'ORDER BY users.username ASC, users.post_id DESC'
+      )
+    end
   end
 
 end

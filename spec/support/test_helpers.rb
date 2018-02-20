@@ -60,7 +60,7 @@ class ComplexDatatable < AjaxDatatablesRails::Base
       email:      { source: 'User.email'      },
       first_name: { source: 'User.first_name' },
       last_name:  { source: 'User.last_name'  },
-      post_id:    { source: 'User.post_id'    },
+      post_id:    { source: 'User.post_id', orderable: false },
       created_at: { source: 'User.created_at' },
     }
   end
