@@ -5,6 +5,9 @@ module AjaxDatatablesRails
     class Column
       module Search
 
+        SMALLEST_PQ_INTEGER = -2147483648
+        LARGEST_PQ_INTEGER = 2147483647
+
         def searchable?
           @view_column.fetch(:searchable, true)
         end
@@ -82,6 +85,18 @@ module AjaxDatatablesRails
           end
         end
 
+        def is_searchable_integer?
+          return false unless table.respond_to?(:engine)
+          table.engine.columns_hash[field.to_s].sql_type == 'integer' && is_integer?(search.value) && is_out_of_range?(search.value)
+        end
+
+        def is_out_of_range? search_value
+          Integer(search_value) > LARGEST_PQ_INTEGER || Integer(search_value) < SMALLEST_PQ_INTEGER
+        end
+
+        def is_integer?(string)
+          true if Integer(string) rescue false
+        end
       end
     end
   end
