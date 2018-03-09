@@ -52,12 +52,20 @@ module AjaxDatatablesRails
           end
         end
 
+        def empty_search
+          casted_column.matches("")
+        end
+
         def non_regex_search
           case cond
           when Proc
             filter
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-            numeric_search
+            if is_searchable_integer?
+              empty_search
+            else
+              numeric_search
+            end
           when :null_value
             null_value_search
           when :start_with
