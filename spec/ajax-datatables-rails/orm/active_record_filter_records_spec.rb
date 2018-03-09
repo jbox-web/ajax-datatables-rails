@@ -387,6 +387,32 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    describe 'Integer overflows' do
+      let(:largest_postgresql_integer_value) { 2147483647 }
+      let(:smallest_postgresql_integer_value) { -2147483648 }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+        create(:user, first_name: 'phil', post_id: largest_postgresql_integer_value)
+      end
+
+      it 'Returns an empty result if input value is too large' do
+        datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value + 1
+        expect(datatable.data.size).to eq 0
+      end
+
+      it 'Returns an empty result if input value is too small' do
+        datatable.params[:columns]['4'][:search][:value] = smallest_postgresql_integer_value - 1
+        expect(datatable.data.size).to eq 0
+      end
+
+      it 'returns the matching user' do
+        datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value
+        expect(datatable.data.size).to eq 1
+      end
+    end
+
     describe 'it can filter records with condition :eq' do
       let(:datatable) { DatatableCondEq.new(view) }
 
