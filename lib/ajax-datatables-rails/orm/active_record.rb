@@ -18,7 +18,7 @@ module AjaxDatatablesRails
           queries << order.query(column.sort_query) if column && column.orderable?
           queries
         end
-        records.order(sort_by.join(', '))
+        records.order(Arel.sql(sort_by.join(', ')))
       end
 
       def paginate_records(records)
