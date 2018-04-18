@@ -26,6 +26,9 @@ Layout/EmptyLinesAroundModuleBody:
 Layout/EmptyLineBetweenDefs:
   Enabled: false
 
+Metrics/CyclomaticComplexity:
+  Max: 7
+
 Metrics/LineLength:
   Enabled: false
 

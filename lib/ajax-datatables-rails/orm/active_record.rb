@@ -12,6 +12,7 @@ module AjaxDatatablesRails
         records.where(build_conditions)
       end
 
+      # rubocop:disable Style/EachWithObject
       def sort_records(records)
         sort_by = datatable.orders.inject([]) do |queries, order|
           column = order.column
@@ -20,6 +21,7 @@ module AjaxDatatablesRails
         end
         records.order(sort_by.join(', '))
       end
+      # rubocop:enable Style/EachWithObject
 
       def paginate_records(records)
         records.offset(datatable.offset).limit(datatable.per_page)
