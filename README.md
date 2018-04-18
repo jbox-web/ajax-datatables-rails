@@ -15,8 +15,8 @@
 > It's tested against :
 > * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.7 / 5.1.6 / 5.2.0
 > * Ruby 2.2.10 / 2.3.7 / 2.4.4 / 2.5.1
-> * Postgresql
-> * MySQL
+> * Postgresql 9.6
+> * MySQL 5.6
 > * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 
 ## Description
