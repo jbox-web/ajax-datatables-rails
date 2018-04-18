@@ -573,7 +573,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
       {
         id:         check_box_tag('users[]', record.id),
         first_name: link_to(record.fname, edit_resource_path(record)),
-        email:      mail_to(record.email)
+        email:      mail_to(record.email),
         # other attributes
       }
     end
@@ -583,15 +583,16 @@ end
 
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
+On the long term it's much more cleaner than using `def_delegator` since decorators are reusable.
 
 ```ruby
 ...
   def data
     records.map do |record|
       {
-        id: record.decorate.id,
+        id:         record.decorate.id,
         first_name: record.decorate.first_name,
-        email: record.decorate.email
+        email:      record.decorate.email,
         # other attributes
       }
     end
