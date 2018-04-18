@@ -6,7 +6,7 @@ module Rails
   module Generators
     class DatatableGenerator < ::Rails::Generators::Base
       desc 'Creates a *_datatable model in the app/datatables directory.'
-      source_root File.expand_path('../templates', __FILE__)
+      source_root File.expand_path('templates', __dir__)
       argument :name, type: :string
 
       def generate_datatable
