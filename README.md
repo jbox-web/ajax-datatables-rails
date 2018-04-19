@@ -618,8 +618,8 @@ class UserDecorator < ApplicationDecorator
 
   def dt_actions
     links = []
-    links << h.link_to 'Edit',   h.edit_user_path(object)          if h.policy(object).update?
-    links << h.link_to 'Delete', h.user_path(object), remote: true if h.policy(object).destroy?
+    links << h.link_to 'Edit',   h.edit_user_path(object) if h.policy(object).update?
+    links << h.link_to 'Delete', h.user_path(object), method: :delete, remote: true if h.policy(object).destroy?
     h.safe_join(links, '')
   end
 end
