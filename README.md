@@ -583,7 +583,11 @@ end
 
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
-On the long term it's much more cleaner than using `def_delegator` since decorators are reusable.
+On the long term it's much more cleaner than using `def_delegator` since decorators are reusable so we strongly recommand you to
+use Draper decorators. It will help you to keep your DataTables class small and clean and keep focused on what they should do (mostly) : filtering records ;)
+The presentation layer should rely on Decorators class.
+
+Example :
 
 ```ruby
 ...
@@ -591,13 +595,34 @@ On the long term it's much more cleaner than using `def_delegator` since decorat
     records.map do |record|
       {
         id:         record.decorate.id,
-        first_name: record.decorate.first_name,
+        first_name: record.decorate.link_to,
         email:      record.decorate.email,
         # other attributes
+        dt_actions: record.decorate.dt_actions,
+        DT_RowId:   record.id,
       }
     end
   end
 ...
+
+class UserDecorator < ApplicationDecorator
+  delegate :id, :first_name
+
+  def link_to
+    h.link_to first_name, h.user_path(object)
+  end
+
+  def email
+    h.mail_to object.email
+  end
+
+  def dt_actions
+    links = []
+    links << h.link_to 'Edit',   h.edit_user_path(object)          if h.policy(object).update?
+    links << h.link_to 'Delete', h.user_path(object), remote: true if h.policy(object).destroy?
+    h.safe_join(links, '')
+  end
+end
 ```
 
 
