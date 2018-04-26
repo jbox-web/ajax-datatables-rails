@@ -53,7 +53,7 @@ module AjaxDatatablesRails
         end
 
         def empty_search
-          casted_column.matches("")
+          casted_column.matches('')
         end
 
         def non_regex_search
@@ -61,11 +61,7 @@ module AjaxDatatablesRails
           when Proc
             filter
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-            if is_searchable_integer?
-              empty_search
-            else
-              numeric_search
-            end
+            is_searchable_integer? ? numeric_search : empty_search
           when :null_value
             null_value_search
           when :start_with
@@ -94,11 +90,11 @@ module AjaxDatatablesRails
         end
 
         def is_searchable_integer?
-          return false unless table.respond_to?(:engine)
-          table.engine.columns_hash[field.to_s].sql_type == 'integer' && is_integer?(search.value) && is_out_of_range?(search.value)
+          return true unless table.respond_to?(:engine)
+          table.engine.columns_hash[field.to_s].sql_type == 'integer' && is_integer?(search.value) && !is_out_of_range?(search.value)
         end
 
-        def is_out_of_range? search_value
+        def is_out_of_range?(search_value)
           Integer(search_value) > LARGEST_PQ_INTEGER || Integer(search_value) < SMALLEST_PQ_INTEGER
         end
 
