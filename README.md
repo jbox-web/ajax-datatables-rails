@@ -13,10 +13,10 @@
 > This gem is targeted at Datatables version 1.10.x.
 >
 > It's tested against :
-> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.6 / 5.1.5
-> * Ruby 2.2.8 / 2.3.5 / 2.4.2
-> * Postgresql
-> * MySQL
+> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.7 / 5.1.6 / 5.2.0
+> * Ruby 2.2.10 / 2.3.7 / 2.4.4 / 2.5.1
+> * Postgresql 9.6
+> * MySQL 5.6
 > * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 
 ## Description
@@ -573,7 +573,7 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
       {
         id:         check_box_tag('users[]', record.id),
         first_name: link_to(record.fname, edit_resource_path(record)),
-        email:      mail_to(record.email)
+        email:      mail_to(record.email),
         # other attributes
       }
     end
@@ -583,20 +583,46 @@ end
 
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
+On the long term it's much more cleaner than using `def_delegator` since decorators are reusable so we strongly recommand you to
+use Draper decorators. It will help you to keep your DataTables class small and clean and keep focused on what they should do (mostly) : filtering records ;)
+The presentation layer should rely on Decorators class.
+
+Example :
 
 ```ruby
 ...
   def data
     records.map do |record|
       {
-        id: record.decorate.id,
-        first_name: record.decorate.first_name,
-        email: record.decorate.email
+        id:         record.decorate.id,
+        first_name: record.decorate.link_to,
+        email:      record.decorate.email,
         # other attributes
+        dt_actions: record.decorate.dt_actions,
+        DT_RowId:   record.id,
       }
     end
   end
 ...
+
+class UserDecorator < ApplicationDecorator
+  delegate :id, :first_name
+
+  def link_to
+    h.link_to first_name, h.user_path(object)
+  end
+
+  def email
+    h.mail_to object.email
+  end
+
+  def dt_actions
+    links = []
+    links << h.link_to 'Edit',   h.edit_user_path(object) if h.policy(object).update?
+    links << h.link_to 'Delete', h.user_path(object), method: :delete, remote: true if h.policy(object).destroy?
+    h.safe_join(links, '')
+  end
+end
 ```
 
 

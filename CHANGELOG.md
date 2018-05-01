@@ -7,6 +7,7 @@
 * Fix: "orderable" option has no effect [Issue #245](https://github.com/jbox-web/ajax-datatables-rails/issues/245)
 * Change: Rename `additional_datas` method as `additional_data` [PR #251](https://github.com/jbox-web/ajax-datatables-rails/pull/251)
 * Change: Added timezone support for daterange [PR #261](https://github.com/jbox-web/ajax-datatables-rails/pull/261)
+* Various improvements in internal API
 
 **Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
 
