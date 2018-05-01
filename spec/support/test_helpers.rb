@@ -82,9 +82,6 @@ class ComplexDatatable < AjaxDatatablesRails::Base
     User.all
   end
 end
-
-# class ComplexDatatableHash < ComplexDatatable
-# end
  
 class ComplexDatatableArray < ComplexDatatable
   def data
