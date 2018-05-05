@@ -8,57 +8,53 @@
 [![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
 [![Dependency Status](https://gemnasium.com/jbox-web/ajax-datatables-rails.svg)](https://gemnasium.com/jbox-web/ajax-datatables-rails)
 
-> __Important__
->
-> This gem is targeted at Datatables version 1.10.x.
->
-> It's tested against :
-> * Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.7 / 5.1.6 / 5.2.0
-> * Ruby 2.2.10 / 2.3.7 / 2.4.4 / 2.5.1
-> * Postgresql 9.6
-> * MySQL 5.6
-> * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
+**Important : This gem is targeted at DataTables version 1.10.x.**
+
+It's tested against :
+
+* Rails 4.0.13 / 4.1.16 / 4.2.10 / 5.0.7 / 5.1.6 / 5.2.0
+* Ruby 2.2.10 / 2.3.7 / 2.4.4 / 2.5.1
+* Postgresql 9.6
+* MySQL 5.6
+* Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
+* SQLite3
 
 ## Description
 
-[Datatables](https://datatables.net/) is a nifty jquery plugin that adds the ability to paginate, sort,
-and search your html tables. When dealing with large tables
-(more than a couple hundred rows) however, we run into performance issues.
-These can be fixed by using server-side pagination, but this breaks some
-datatables functionality.
+> [DataTables](https://datatables.net/) is a nifty jQuery plugin that adds the ability to paginate, sort, and search your html tables.
+> When dealing with large tables (more than a couple of hundred rows) however, we run into performance issues.
+> These can be fixed by using server-side pagination, but this breaks some DataTables functionality.
+>
+> `ajax-datatables-rails` is a wrapper around DataTables ajax methods that allow synchronization with server-side pagination in a Rails app.
+> It was inspired by this [Railscast](http://railscasts.com/episodes/340-datatables).
+> I needed to implement a similar solution in a couple projects I was working on, so I extracted a solution into a gem.
+>
+> Joel Quenneville (original author)
+>
+> I needed a good gem to manage a lot of DataTables so I chose this one :)
+>
+> Nicolas Rodriguez (current maintainer)
 
-`ajax-datatables-rails` is a wrapper around datatable's ajax methods that allow
-synchronization with server-side pagination in a rails app. It was inspired by
-this [Railscast](http://railscasts.com/episodes/340-datatables). I needed to
-implement a similar solution in a couple projects I was working on, so I
-extracted a solution into a gem.
-
-The final goal of this gem is to **generate a JSON** content that will be given to JQuery Datatable.
-All the datatable customizations (header, tr, td, css classes, width, height, etc, etc) **must** take place in the [javascript definition](#wire-up-the-javascript) of the datatable.
-JQuery Datatable is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
-
-## ORM support
-
-Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for
-performing database queries.
-
-Adding support for `Sequel`, `Mongoid` and `MongoMapper` is a planned feature
-for this gem. If you'd be interested in contributing to speed development,
-please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new)
-and get in touch.
+The final goal of this gem is to **generate a JSON** content that will be given to jQuery DataTables.
+All the datatable customizations (header, tr, td, css classes, width, height, buttons, etc...) **must** take place in the [javascript definition](#5-wire-up-the-javascript) of the datatable.
+jQuery DataTables is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
 
-## Breaking changes
+## Warning
 
-**Warning:** the v0.4 version is a **major break** from v0.3. The core has been rewriten to remove dependency on Kaminari (or WillPaginate).
+**Breaking changes :** the *v0.4* version is a **major break** from *v0.3*.
 
-It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search. [See below](#customize-the-generated-datatables-class) for more infos.
+The core has been rewriten to remove dependency on [Kaminari](https://github.com/kaminari/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+
+It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search.
+
+[See below](#3-customize-the-generated-datatables-class) for more infos.
 
 To migrate on the v0.4 you'll need to :
 
 * update your DataTables classes to remove all the `extend` directives
 * switch to hash definitions of `view_columns`
-* update your views to declare your columns bindings ([See here](#wire-up-the-javascript))
+* update your views to declare your columns bindings ([See here](#5-wire-up-the-javascript))
 
 
 ## Installation
@@ -66,33 +62,81 @@ To migrate on the v0.4 you'll need to :
 Add these lines to your application's Gemfile:
 
 ```ruby
-gem 'jquery-datatables-rails'
 gem 'ajax-datatables-rails'
 ```
 
 And then execute:
 
 ```sh
-$ bundle
+$ bundle install
 ```
 
-The `jquery-datatables-rails` gem is listed as a convenience, to ease adding
-jQuery dataTables to your Rails project. You can always add the plugin assets
-manually via the assets pipeline. If you decide to use the
-`jquery-datatables-rails` gem, please refer to its installation instructions
-[here](https://github.com/rweng/jquery-datatables-rails).
+We assume here that you have already installed [jQuery DataTables](https://datatables.net/).
+
+You can install jQuery DataTables :
+
+* with the [`jquery-datatables-rails`](https://github.com/rweng/jquery-datatables-rails) gem (which is a bit outdated)
+* by adding the assets manually (in `vendor/assets`)
+* with [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
 
 
-## Usage
+## Configuration
 
-*The following examples assume that we are setting up ajax-datatables-rails for
-an index page of users from a `User` model, and that we are using postgresql as
-our db, because you __should be using it__, if not, please refer to the
-[Searching on non text-based columns](#searching-on-non-text-based-columns)
-entry in the Additional Notes section.*
+Generate the `ajax-datatables-rails` config file with this command :
+
+```sh
+$ bundle exec rails generate datatable:config
+```
+
+Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file with the following content :
+
+```ruby
+AjaxDatatablesRails.configure do |config|
+  # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
+  # config.db_adapter = :pg
+
+  # available options for orm are: :active_record, :mongoid
+  # config.orm = :active_record
+end
+```
+
+Uncomment the `config.db_adapter` line and set the corresponding value to your database and gem. This is all you need.
+
+Uncomment the `config.orm` line to set `active_record or mongoid` if included in your project. It defaults to `active_record`.
+
+#### Note
+
+Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
+
+Adding support for `Sequel`, `Mongoid` and `MongoMapper` is (more or less) a planned feature for this gem.
+
+If you'd be interested in contributing to speed development, please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new) and get in touch.
 
 
-### Generate
+## Quick start (in 5 steps)
+
+The following examples assume that we are setting up `ajax-datatables-rails` for an index page of users from a `User` model,
+and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, see above, just be sure to have [configured the right adapter](#configuration))
+
+The goal is to render a users table and display : `id`, `first name`, `last name`, `email`, and `bio` for each user.
+
+Something like this:
+
+|ID |First Name|Last Name|Email                 |Brief Bio|
+|---|----------|---------|----------------------|---------|
+| 1 |John      |Doe      |john.doe@example.net  |Is your default user everywhere|
+| 2 |Jane      |Doe      |jane.doe@example.net  |Is John's wife|
+| 3 |James     |Doe      |james.doe@example.net |Is John's brother and best friend|
+
+Here the steps we're going through :
+
+1. [Generate the datatable class](#1-generate-the-datatable-class)
+2. [Build the View](#2-build-the-view)
+3. [Customize the generated Datatables class](#3-customize-the-generated-datatables-class)
+4. [Setup the Controller action](#4-setup-the-controller-action)
+5. [Wire up the Javascript](#5-wire-up-the-javascript)
+
+### 1) Generate the datatable class
 
 Run the following command:
 
@@ -106,31 +150,24 @@ Open the file and customize in the functions as directed by the comments.
 Take a look [here](#generator-syntax) for an explanation about the generator syntax.
 
 
-### Build the View
+### 2) Build the View
 
-You should always start by the single source of truth, which is your html view. Suppose we need to render a users table and display: first name, last name, and bio for each user.
-
-Something like this:
-
-|First Name|Last Name|Brief Bio|
-|----------|---------|---------|
-|John      |Doe      |Is your default user everywhere|
-|Jane      |Doe      |Is John's wife|
-|James     |Doe      |Is John's brother and best friend|
-
+You should always start by the single source of truth, which is your html view.
 
 * Set up an html `<table>` with a `<thead>` and `<tbody>`
 * Add in your table headers if desired
-* Don't add any rows to the body of the table, datatables does this automatically
+* Don't add any rows to the body of the table, DataTables does this automatically
 * Add a data attribute to the `<table>` tag with the url of the JSON feed, in our case is the `users_path` as we're pointing to the `UsersController#index` action
 
 
 ```html
-<table id="users-table", data-source="<%= users_path(format: :json) %>">
+<table id="users-datatable" data-source="<%= users_path(format: :json) %>">
   <thead>
     <tr>
+      <th>ID</th>
       <th>First Name</th>
       <th>Last Name</th>
+      <th>Email</th>
       <th>Brief Bio</th>
     </tr>
   </thead>
@@ -140,25 +177,22 @@ Something like this:
 ```
 
 
-### Customize the generated Datatables class
+### 3) Customize the generated Datatables class
 
-```ruby
-def view_columns
-  # Declare strings in this format: ModelName.column_name
-  # or in aliased_join_table.column_name format
-  @view_columns ||= {}
-end
-```
+#### a. Declare columns mapping
 
-* In this method, add a list of the model(s) columns mapped to the data you need to present. In this case: `first_name`, `last_name` and `bio`.
+First we need to declare in `view_columns` the list of the model(s) columns mapped to the data we need to present.
+In this case: `id`, `first_name`, `last_name`, `email` and `bio`.
 
 This gives us:
 
 ```ruby
 def view_columns
   @view_columns ||= {
+    id:         { source: "User.id" },
     first_name: { source: "User.first_name", cond: :like, searchable: true, orderable: true },
     last_name:  { source: "User.last_name",  cond: :like },
+    email:      { source: "User.email" },
     bio:        { source: "User.bio" },
   }
 end
@@ -174,47 +208,27 @@ end
 * `:null_value` for nil field
 * `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
 
-[See here](#searching-on-non-text-based-columns) for notes about the `view_columns` settings (if using something different from `postgres`).
-[Read these notes](#columns-syntax) about considerations for the `view_columns` method.
+See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 
+#### b. Map data
 
-#### Map data
-
-```ruby
-def data
-  records.map do |record|
-    {
-      # a hash of key value pairs
-    }
-  end
-end
-```
+Then we need to map the records retrieved by the `get_raw_records` method to the real values we want to display :
 
 ```ruby
 def data
   records.map do |record|
     {
+      id:         record.id,
       first_name: record.first_name,
       last_name:  record.last_name,
+      email:      record.email,
       bio:        record.bio,
-      # 'DT_RowId' => record.id, # This will set the id attribute on the corresponding <tr> in the datatable
+      DT_RowId:   record.id, # This will set the id attribute on the corresponding <tr> in the datatable
     }
   end
 end
 ```
-
 You can either use the v0.3 Array style for your columns :
-
-```ruby
-def data
-  records.map do |record|
-    [
-      # comma separated list of the values for each cell of a table row
-      # example: record.first_name, record.last_name
-    ]
-  end
-end
-```
 
 This method builds a 2d array that is used by datatables to construct the html
 table. Insert the values you want on each column.
@@ -223,30 +237,26 @@ table. Insert the values you want on each column.
 def data
   records.map do |record|
     [
+      record.id,
       record.first_name,
       record.last_name,
+      record.email,
       record.bio
     ]
   end
 end
 ```
 
-[See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, `resource_path`, etc.
+The drawback of this method is that you can't pass the `DT_RowId` so it's tricky to set the id attribute on the corresponding `<tr>` in the datatable (need to be done on JS side).
 
+[See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, etc...
 
-#### Get Raw Records
-
-```ruby
-def get_raw_records
-  # insert query here
-end
-```
+#### c. Get Raw Records
 
 This is where your query goes.
 
 ```ruby
 def get_raw_records
-  # suppose we need all User records
   User.all
 end
 ```
@@ -261,100 +271,12 @@ def get_raw_records
 end
 ```
 
-You can put any logic in `get_raw_records` [based on any parameters you inject](#options) in the `Datatable` object.
+You can put any logic in `get_raw_records` [based on any parameters you inject](#pass-options-to-the-datatable-class) in the `Datatable` object.
 
-> __IMPORTANT:__ Make sure to return an `ActiveRecord::Relation` object
-> as the end product of this method.
->
-> Why? Because the result from this method, will be chained (for now)
-> to `ActiveRecord` methods for sorting, filtering and pagination.
+**IMPORTANT :** Because the result of this method will be chained to `ActiveRecord` methods for sorting, filtering and pagination,
+make sure to return an `ActiveRecord::Relation` object.
 
-
-#### Associated and nested models
-
-The previous example has only one single model. But what about if you have
-some associated nested models and in a report you want to show fields from
-these tables.
-
-Take an example that has an `Event, Course, Coursetype, Allocation, Teacher,
-Contact, Competency and CompetencyType` models. We want to have a datatables
-report which has the following column:
-
-```ruby
-'coursetypes.name',
-'courses.name',
-'events.title',
-'events.event_start',
-'events.event_end',
-'contacts.full_name',
-'competency_types.name',
-'events.status'
-```
-
-We want to sort and search on all columns of the list. The related definition
-would be:
-
-```ruby
-def view_columns
-  @view_columns ||= [
-    'Coursetype.name',
-    'Course.name',
-    'Event.title',
-    'Event.event_start',
-    'Event.event_end',
-    'Contact.last_name',
-    'CompetencyType.name',
-    'Event.status'
-  ]
-end
-
-def get_raw_records
-   Event.joins(
-    { course: :coursetype },
-    { allocations: {
-        teacher: [:contact, {competencies: :competency_type}]
-      }
-    }).distinct
-end
-```
-
-__Some comments for the above code:__
-
-1. In the `get_raw_records` method we have quite a complex query having one to
-many and many to many associations using the joins ActiveRecord method.
-The joins will generate INNER JOIN relations in the SQL query. In this case,
-we do not include all event in the report if we have events which is not
-associated with any model record from the relation.
-
-2. To have all event records in the list we should use the `.includes` method,
-which generate LEFT OUTER JOIN relation of the SQL query.
-__IMPORTANT:__ Make sure to append `.references(:related_model)` with any
-associated model. That forces the eager loading of all the associated models
-by one SQL query, and the search condition for any column works fine.
-Otherwise the `:recordsFiltered => filter_records(get_raw_records).count(:all)`
-will generate 2 SQL queries (one for the Event model, and then another for the
-associated tables). The `:recordsFiltered => filter_records(get_raw_records).count(:all)`
-will use only the first one to return from the ActiveRecord::Relation object
-in `get_raw_records` and you will get an error message of __Unknown column
-'yourtable.yourfield' in 'where clause'__ in case the search field value
-is not empty.
-
-So the query using the `.includes()` method is:
-
-```ruby
-def get_raw_records
-   Event.includes(
-    { course: :coursetype },
-    { allocations: {
-        teacher: [:contact, { competencies: :competency_type }]
-      }
-    }
-    ).references(:course).distinct
-end
-```
-
-
-#### Additional data
+#### d. Additional data
 
 You can inject other key/value pairs in the rendered JSON by defining the `#additional_data` method :
 
@@ -369,7 +291,7 @@ end
 Very useful with https://github.com/vedmack/yadcf to provide values for dropdown filters.
 
 
-### Setup the Controller action
+### 4) Setup the Controller action
 
 Set the controller to respond to JSON
 
@@ -384,9 +306,9 @@ end
 
 Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
-[See here](#options) to inject params in the `UserDatatable`.
+[See here](#pass-options-to-the-datatable-class) if you need to inject params in the `UserDatatable`.
 
-### Wire up the Javascript
+### 5) Wire up the Javascript
 
 Finally, the javascript to tie this all together. In the appropriate `coffee` file:
 
@@ -394,14 +316,16 @@ Finally, the javascript to tie this all together. In the appropriate `coffee` fi
 # users.coffee
 
 $ ->
-  $('#users-table').dataTable
+  $('#users-datatable').dataTable
     processing: true
     serverSide: true
-    ajax: $('#users-table').data('source')
+    ajax: $('#users-datatable').data('source')
     pagingType: 'full_numbers'
     columns: [
+      {data: 'id'}
       {data: 'first_name'}
       {data: 'last_name'}
+      {data: 'email'}
       {data: 'bio'}
     ]
     # pagingType is optional, if you want full pagination controls.
@@ -410,18 +334,21 @@ $ ->
 ```
 
 or, if you're using plain javascript:
+
 ```javascript
 // users.js
 
 jQuery(document).ready(function() {
-  $('#users-table').dataTable({
+  $('#users-datatable').dataTable({
     "processing": true,
     "serverSide": true,
-    "ajax": $('#users-table').data('source'),
+    "ajax": $('#users-datatable').data('source'),
     "pagingType": "full_numbers",
     "columns": [
+      {"data": "id"},
       {"data": "first_name"},
       {"data": "last_name"},
+      {"data": "email"},
       {"data": "bio"}
     ]
     // pagingType is optional, if you want full pagination controls.
@@ -431,150 +358,38 @@ jQuery(document).ready(function() {
 });
 ```
 
+## Advanced usage
 
-### Additional Notes
+### Using view helpers
 
-#### Columns syntax
-
-Since version `0.3.0`, we are implementing a pseudo code way of declaring
-the array columns to use when querying the database.
-
-Example. Suppose we have the following models: `User`, `PurchaseOrder`,
-`Purchase::LineItem` and we need to have several columns from those models
-available in our datatable to search and sort by.
-
-```ruby
-# we use the ModelName.column_name notation to declare our columns
-
-def view_columns
-  @view_columns ||= [
-    'User.first_name',
-    'User.last_name',
-    'PurchaseOrder.number',
-    'PurchaseOrder.created_at',
-    'Purchase::LineItem.quantity',
-    'Purchase::LineItem.unit_price',
-    'Purchase::LineItem.item_total'
-  ]
-end
-```
-
-
-#### What if the datatable itself is namespaced?
-
-Example: what if the datatable is namespaced into an `Admin` module?
-
-```ruby
-module Admin
-  class PurchasesDatatable < AjaxDatatablesRails::Base
-  end
-end
-```
-
-Taking the same models and columns, we would define it like this:
-
-```ruby
-def view_columns
-  @view_columns ||= [
-    '::User.first_name',
-    '::User.last_name',
-    '::PurchaseOrder.number',
-    '::PurchaseOrder.created_at',
-    '::Purchase::LineItem.quantity',
-    '::Purchase::LineItem.unit_price',
-    '::Purchase::LineItem.item_total'
-  ]
-end
-```
-
-Pretty much like you would do it, if you were inside a namespaced controller.
-
-
-#### Searching on non text-based columns
-
-It always comes the time when you need to add a non-string/non-text based
-column to the `@view_columns` array, so you can perform searches against
-these column types (example: numeric, date, time).
-
-We recently added the ability to (automatically) typecast these column types
-and have this scenario covered. Please note however, if you are using
-something different from `postgresql` (with the `:pg` gem), like `mysql` or
-`sqlite`, then you need to add an initializer in your application's
-`config/initializers` directory.
-
-If you don't perform this step (again, if using something different from
-`postgresql`), your database will complain that it does not understand the
-default typecast used to enable such searches.
-
-
-#### Configuration initializer
-
-You have two options to create this initializer:
-
-* use the provided (and recommended) generator (and then just edit the file);
-* create the file from scratch.
-
-To use the generator, from the terminal execute:
-
-```sh
-$ bundle exec rails generate datatable:config
-```
-
-Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file
-with the following content:
-
-```ruby
-AjaxDatatablesRails.configure do |config|
-  # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
-  # config.db_adapter = :pg
-
-  # available options for orm are: :active_record, :mongoid
-  # config.orm = :active_record
-end
-```
-
-Uncomment the `config.db_adapter` line and set the corresponding value to your
-database and gem. This is all you need.
-
-Uncomment the `config.orm` line to set `active_record or mongoid` if
-included in your project. It defaults to `active_record`.
-
-If you want to make the file from scratch, just copy the above code block into
-a file inside the `config/initializers` directory.
-
-
-#### Using view helpers
-
-Sometimes you'll need to use view helper methods like `link_to`, `h`, `mailto`,
-`edit_resource_path`, `check_box_tag` in the returned JSON representation returned by the `data`
-method.
+Sometimes you'll need to use view helper methods like `link_to`, `mail_to`,
+`edit_user_path`, `check_box_tag` and so on in the returned JSON representation returned by the [`data`](#b-map-data) method.
 
 To have these methods available to be used, this is the way to go:
 
 ```ruby
 class MyCustomDatatable < AjaxDatatablesRails::Base
   # either define them one-by-one
+  def_delegator :@view, :check_box_tag
   def_delegator :@view, :link_to
-  def_delegator :@view, :h
   def_delegator :@view, :mail_to
+  def_delegator :@view, :edit_user_path
 
   # or define them in one pass
-  def_delegators :@view, :link_to, :h, :mailto, :edit_resource_path, :check_box_tag, :other_method
+  def_delegators :@view, :check_box_tag, :link_to, :mail_to, :edit_user_path
 
-  # Define columns as described above for `id`, `first_name`, `email`, and others
-  def view_columns
-    ...
-  end
+  # ... other methods (view_columns, get_raw_records...)
 
   # now, you'll have these methods available to be used anywhere
-  # example: mapping the 2d jsonified array returned.
   def data
     records.map do |record|
       {
         id:         check_box_tag('users[]', record.id),
-        first_name: link_to(record.fname, edit_resource_path(record)),
+        first_name: link_to(record.first_name, edit_user_path(record)),
+        last_name:  record.last_name,
         email:      mail_to(record.email),
-        # other attributes
+        bio:        record.bio
+        DT_RowId:   record.id,
       }
     end
   end
@@ -583,9 +398,6 @@ end
 
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
-On the long term it's much more cleaner than using `def_delegator` since decorators are reusable so we strongly recommand you to
-use Draper decorators. It will help you to keep your DataTables class small and clean and keep focused on what they should do (mostly) : filtering records ;)
-The presentation layer should rely on Decorators class.
 
 Example :
 
@@ -594,11 +406,11 @@ Example :
   def data
     records.map do |record|
       {
-        id:         record.decorate.id,
+        id:         record.decorate.check_box,
         first_name: record.decorate.link_to,
+        last_name:  record.decorate.last_name
         email:      record.decorate.email,
-        # other attributes
-        dt_actions: record.decorate.dt_actions,
+        bio:        record.decorate.bio
         DT_RowId:   record.id,
       }
     end
@@ -606,16 +418,23 @@ Example :
 ...
 
 class UserDecorator < ApplicationDecorator
-  delegate :id, :first_name
+  delegate :last_name, :bio
+
+  def check_box
+    h.check_box_tag 'users[]', object.id
+  end
 
   def link_to
-    h.link_to first_name, h.user_path(object)
+    h.link_to object.first_name, h.edit_user_path(object)
   end
 
   def email
     h.mail_to object.email
   end
 
+  # Just an example of a complex method you can add to you decorator
+  # To render it in a datatable just add a column 'dt_actions' in
+  # 'view_columns' and 'data' methods and call record.decorate.dt_actions
   def dt_actions
     links = []
     links << h.link_to 'Edit',   h.edit_user_path(object) if h.policy(object).update?
@@ -625,46 +444,164 @@ class UserDecorator < ApplicationDecorator
 end
 ```
 
+**Note :** On the long term it's much more cleaner than using `def_delegator` since decorators are reusable everywhere in your application :)
 
-#### Options
+So we **strongly recommand you to use Draper decorators.** It will help keeping your DataTables class small and clean and keep focused on what they should do (mostly) : filtering records ;)
 
-An `AjaxDatatablesRails::Base` inherited class can accept an options hash at
-initialization. This provides room for flexibility when required. Example:
+**Note 2 :** The `def_delegator` might disappear in a near future : [#288 [RFC] Remove dependency on view_context](https://github.com/jbox-web/ajax-datatables-rails/issues/288).
+You're invited to give your opinion :)
+
+### Pass options to the datatable class
+
+An `AjaxDatatablesRails::Base` inherited class can accept an options hash at initialization. This provides room for flexibility when required.
+
+Example:
 
 ```ruby
-class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
-  # customized methods here
+# In the controller
+def index
+  respond_to do |format|
+    format.html
+    format.json { render json: UserDatatable.new(view_context, user: current_user, from: 1.month.ago) }
+  end
 end
 
-datatable = UnrespondedMessagesDatatable.new(view_context,
-  { user: current_user, from: 1.month.ago }
-)
+# The datatable class
+class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
+
+  # ... other methods (view_columns, data...)
+
+  def user
+    @user ||= options[:user]
+  end
+
+  def from
+    @from ||= options[:from].beginning_of_day
+  end
+
+  def to
+    @to ||= Date.today.end_of_day
+  end
+
+  # We can now customize the get_raw_records method
+  # with the options we've injected
+  def get_raw_records
+    user.messages.unresponded.where(received_at: from..to)
+  end
+
+end
 ```
 
-So, now inside your class code, you can use those options like this:
+### Columns syntax
 
+You can mix several model in the same datatable.
+
+Suppose we have the following models: `User`, `PurchaseOrder`,
+`Purchase::LineItem` and we need to have several columns from those models
+available in our datatable to search and sort by.
 
 ```ruby
-# let's see an example
-def user
-  @user ||= options[:user]
-end
+# we use the ModelName.column_name notation to declare our columns
 
-def from
-  @from ||= options[:from].beginning_of_day
+def view_columns
+  @view_columns ||= {
+    first_name:       'User.first_name',
+    last_name:        'User.last_name',
+    order_number:     'PurchaseOrder.number',
+    order_created_at: 'PurchaseOrder.created_at',
+    quantity:         'Purchase::LineItem.quantity',
+    unit_price:       'Purchase::LineItem.unit_price',
+    item_total:       'Purchase::LineItem.item_total'
+  }
 end
+```
 
-def to
-  @to ||= Date.today.end_of_day
+### Associated and nested models
+
+The previous example has only one single model. But what about if you have
+some associated nested models and in a report you want to show fields from
+these tables.
+
+Take an example that has an `Event, Course, CourseType, Allocation, Teacher,
+Contact, Competency and CompetencyType` models. We want to have a datatables
+report which has the following column:
+
+```ruby
+'course_types.name'
+'courses.name'
+'contacts.full_name'
+'competency_types.name'
+'events.title'
+'events.event_start'
+'events.event_end'
+'events.status'
+```
+
+We want to sort and search on all columns of the list.
+The related definition would be :
+
+```ruby
+def view_columns
+  @view_columns ||= {
+    course_type:     'CourseType.name',
+    course_name:     'Course.name',
+    contact_name:    'Contact.full_name',
+    competency_type: 'CompetencyType.name',
+    event_title:     'Event.title',
+    event_start:     'Event.event_start',
+    event_end:       'Event.event_end',
+    event_status:    'Event.status',
+  }
 end
 
 def get_raw_records
-  user.messages.unresponded.where(received_at: from..to)
+  Event.joins(
+    { course: :course_type },
+    { allocations: {
+      teacher: [:contact, { competencies: :competency_type }]
+    }
+  }).distinct
 end
 ```
 
+**Some comments for the above code :**
 
-#### Generator Syntax
+1. In the `get_raw_records` method we have quite a complex query having one to
+many and many to many associations using the joins ActiveRecord method.
+The joins will generate INNER JOIN relations in the SQL query. In this case,
+we do not include all event in the report if we have events which is not
+associated with any model record from the relation.
+
+2. To have all event records in the list we should use the `.includes` method,
+which generate LEFT OUTER JOIN relation of the SQL query.
+
+**IMPORTANT :**
+
+Make sure to append `.references(:related_model)` with any
+associated model. That forces the eager loading of all the associated models
+by one SQL query, and the search condition for any column works fine.
+Otherwise the `:recordsFiltered => filter_records(get_raw_records).count(:all)`
+will generate 2 SQL queries (one for the Event model, and then another for the
+associated tables). The `:recordsFiltered => filter_records(get_raw_records).count(:all)`
+will use only the first one to return from the ActiveRecord::Relation object
+in `get_raw_records` and you will get an error message of **Unknown column
+'yourtable.yourfield' in 'where clause'** in case the search field value
+is not empty.
+
+So the query using the `.includes()` method is:
+
+```ruby
+def get_raw_records
+  Event.includes(
+    { course: :course_type },
+    { allocations: {
+      teacher: [:contact, { competencies: :competency_type }]
+    }
+  }).references(:course).distinct
+end
+```
+
+### Generator Syntax
 
 Also, a class that inherits from `AjaxDatatablesRails::Base` is not tied to an
 existing model, module, constant or any type of class in your Rails app.
@@ -686,19 +623,51 @@ In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
 
+### Creating indices for Postgresql
 
+In order to speed up the `ILIKE` queries that are executed when using the default configuration, you might want to consider adding some indices.
+For postgresql, you are advised to use the [gin/gist index type](http://www.postgresql.org/docs/current/interactive/pgtrgm.html).
+This makes it necessary to enable the postgrsql extension `pg_trgm`. Double check that you have this extension installed before trying to enable it.
+A migration for enabling the extension and creating the indices could look like this:
+
+```ruby
+def change
+  enable_extension :pg_trgm
+  TEXT_SEARCH_ATTRIBUTES = ['your', 'attributes']
+  TABLE = 'your_table'
+
+  TEXT_SEARCH_ATTRIBUTES.each do |attr|
+    reversible do |dir|
+      dir.up do
+        execute "CREATE INDEX #{TABLE}_#{attr}_gin ON #{TABLE} USING gin(#{attr} gin_trgm_ops)"
+      end
+
+      dir.down do
+        remove_index TABLE.to_sym, name: "#{TABLE}_#{attr}_gin"
+      end
+    end
+  end
+end
+```
+
+### Speedup JSON rendering
+
+Install [yajl-ruby](https://github.com/brianmario/yajl-ruby), basically :
+
+```ruby
+gem 'yajl-ruby', require: 'yajl'
+```
+
+then
+
+```sh
+$ bundle install
+```
+
+That's all :) ([Automatically prefer Yajl or JSON backend over Yaml, if available](https://github.com/rails/rails/commit/63bb955a99eb46e257655c93dd64e86ebbf05651))
 ## Tutorial
 
-Tutorial for Integrating `ajax-datatables-rails` on  Rails 4.
-
-[Part-1  The-Installation](https://github.com/jbox-web/ajax-datatables-rails/wiki/Part-1----The-Installation)
-
-[Part 2 The Datatables with ajax functionality](https://github.com/jbox-web/ajax-datatables-rails/wiki/Part-2-The-Datatables-with-ajax-functionality)
-
-The complete project code for this tutorial series is available on [github](https://github.com/trkrameshkumar/simple_app).
-
-Another sample project [code](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
-
+You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
 
 ## Contributing
 
