@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
 
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ComplexDatatable.new(view) }
+  let(:datatable) { ComplexDatatable.new(sample_params) }
   let(:records) { User.all }
 
   before(:each) do

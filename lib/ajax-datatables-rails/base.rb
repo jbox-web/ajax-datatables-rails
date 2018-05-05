@@ -2,15 +2,13 @@
 
 module AjaxDatatablesRails
   class Base
-    extend Forwardable
 
-    attr_reader :view, :options
-    def_delegator :@view, :params
+    attr_reader :params, :options
 
     GLOBAL_SEARCH_DELIMITER = ' '
 
-    def initialize(view, options = {})
-      @view    = view
+    def initialize(params, options = {})
+      @params  = params
       @options = options
       load_orm_extension
     end

@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::Datatable do
 
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ComplexDatatable.new(view).datatable }
+  let(:datatable) { ComplexDatatable.new(sample_params).datatable }
   let(:order_option) { {'0'=>{'column'=>'0', 'dir'=>'asc'}, '1'=>{'column'=>'1', 'dir'=>'desc'}} }
 
   describe 'order methods' do

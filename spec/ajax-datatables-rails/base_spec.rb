@@ -3,30 +3,26 @@ require 'spec_helper'
 describe AjaxDatatablesRails::Base do
 
   describe 'an instance' do
-    let(:view) { double('view', params: sample_params) }
-
-    it 'requires a view_context' do
+    it 'requires a hash of params' do
       expect { described_class.new }.to raise_error ArgumentError
     end
 
     it 'accepts an options hash' do
-      datatable = described_class.new(view, foo: 'bar')
+      datatable = described_class.new(sample_params, foo: 'bar')
       expect(datatable.options).to eq(foo: 'bar')
     end
   end
 
   context 'Public API' do
-    let(:view) { double('view', params: sample_params) }
-
     describe '#view_columns' do
       it 'raises an error if not defined by the user' do
-        datatable = described_class.new(view)
+        datatable = described_class.new(sample_params)
         expect { datatable.view_columns }.to raise_error NotImplementedError
       end
 
       context 'child class implements view_columns' do
         it 'expects a hash based defining columns' do
-          datatable = ComplexDatatable.new(view)
+          datatable = ComplexDatatable.new(sample_params)
           expect(datatable.view_columns).to be_a(Hash)
         end
       end
@@ -34,19 +30,19 @@ describe AjaxDatatablesRails::Base do
 
     describe '#get_raw_records' do
       it 'raises an error if not defined by the user' do
-        datatable = described_class.new(view)
+        datatable = described_class.new(sample_params)
         expect { datatable.get_raw_records }.to raise_error NotImplementedError
       end
     end
 
     describe '#data' do
       it 'raises an error if not defined by the user' do
-        datatable = described_class.new(view)
+        datatable = described_class.new(sample_params)
         expect { datatable.data }.to raise_error NotImplementedError
       end
 
       context 'when data is defined as a hash' do
-        let(:datatable) { ComplexDatatable.new(view) }
+        let(:datatable) { ComplexDatatable.new(sample_params) }
 
         it 'should return an array of hashes' do
           create_list(:user, 5)
@@ -66,7 +62,7 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'when data is defined as a array' do
-        let(:datatable) { ComplexDatatableArray.new(view) }
+        let(:datatable) { ComplexDatatableArray.new(sample_params) }
 
         it 'should return an array of arrays' do
           create_list(:user, 5)
@@ -87,7 +83,7 @@ describe AjaxDatatablesRails::Base do
     end
 
     describe '#as_json' do
-      let(:datatable) { ComplexDatatable.new(view) }
+      let(:datatable) { ComplexDatatable.new(sample_params) }
 
       it 'should return a hash' do
         create_list(:user, 5)
@@ -116,8 +112,7 @@ describe AjaxDatatablesRails::Base do
 
   context 'Private API' do
 
-    let(:view) { double('view', params: sample_params) }
-    let(:datatable) { ComplexDatatable.new(view) }
+    let(:datatable) { ComplexDatatable.new(sample_params) }
 
     before(:each) do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
@@ -150,34 +145,31 @@ describe AjaxDatatablesRails::Base do
     describe 'helper methods' do
       describe '#offset' do
         it 'defaults to 0' do
-          default_view = double('view', params: {})
-          datatable = described_class.new(default_view)
+          datatable = described_class.new({})
           expect(datatable.datatable.send(:offset)).to eq(0)
         end
 
         it 'matches the value on view params[:start]' do
-          paginated_view = double('view', params: { start: '11' })
-          datatable = described_class.new(paginated_view)
+          datatable = described_class.new({ start: '11' })
           expect(datatable.datatable.send(:offset)).to eq(11)
         end
       end
 
       describe '#page' do
         it 'calculates page number from params[:start] and #per_page' do
-          paginated_view = double('view', params: { start: '11' })
-          datatable = described_class.new(paginated_view)
+          datatable = described_class.new({ start: '11' })
           expect(datatable.datatable.send(:page)).to eq(2)
         end
       end
 
       describe '#per_page' do
         it 'defaults to 10' do
-          datatable = described_class.new(view)
+          datatable = described_class.new(sample_params)
           expect(datatable.datatable.send(:per_page)).to eq(10)
         end
 
         it 'matches the value on view params[:length]' do
-          other_view = double('view', params: { length: 20 })
+          other_view = { length: 20 }
           datatable = described_class.new(other_view)
           expect(datatable.datatable.send(:per_page)).to eq(20)
         end

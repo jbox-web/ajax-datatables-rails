@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
 
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ComplexDatatable.new(view) }
+  let(:datatable) { ComplexDatatable.new(sample_params) }
   let(:records) { User.all }
 
   describe '#filter_records' do
@@ -184,8 +183,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#type_cast helper method' do
-    let(:view) { double('view', params: sample_params) }
-    let(:column) { ComplexDatatable.new(view).datatable.columns.first }
+    let(:column) { ComplexDatatable.new(sample_params).datatable.columns.first }
 
     it 'returns VARCHAR if :db_adapter is :pg' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :pg }
@@ -235,7 +233,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   describe 'filter conditions' do
     describe 'it can filter records with condition :date_range' do
-      let(:datatable) { DatatableCondDate.new(view) }
+      let(:datatable) { DatatableCondDate.new(sample_params) }
 
       before(:each) do
         create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
@@ -316,7 +314,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :start_with' do
-      let(:datatable) { DatatableCondStartWith.new(view) }
+      let(:datatable) { DatatableCondStartWith.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'John')
@@ -332,7 +330,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :end_with' do
-      let(:datatable) { DatatableCondEndWith.new(view) }
+      let(:datatable) { DatatableCondEndWith.new(sample_params) }
 
       before(:each) do
         create(:user, last_name: 'JOHN')
@@ -359,7 +357,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :like' do
-      let(:datatable) { DatatableCondLike.new(view) }
+      let(:datatable) { DatatableCondLike.new(sample_params) }
 
       before(:each) do
         create(:user, email: 'john@foo.com')
@@ -375,7 +373,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :string_eq' do
-      let(:datatable) { DatatableCondStringEq.new(view) }
+      let(:datatable) { DatatableCondStringEq.new(sample_params) }
 
       before(:each) do
         create(:user, email: 'john@foo.com')
@@ -391,7 +389,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :null_value' do
-      let(:datatable) { DatatableCondNullValue.new(view) }
+      let(:datatable) { DatatableCondNullValue.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', email: 'foo@bar.com')
@@ -418,7 +416,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :eq' do
-      let(:datatable) { DatatableCondEq.new(view) }
+      let(:datatable) { DatatableCondEq.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -434,7 +432,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :not_eq' do
-      let(:datatable) { DatatableCondNotEq.new(view) }
+      let(:datatable) { DatatableCondNotEq.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -450,7 +448,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :lt' do
-      let(:datatable) { DatatableCondLt.new(view) }
+      let(:datatable) { DatatableCondLt.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -466,7 +464,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :gt' do
-      let(:datatable) { DatatableCondGt.new(view) }
+      let(:datatable) { DatatableCondGt.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -482,7 +480,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :lteq' do
-      let(:datatable) { DatatableCondLteq.new(view) }
+      let(:datatable) { DatatableCondLteq.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -496,7 +494,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :gteq' do
-      let(:datatable) { DatatableCondGteq.new(view) }
+      let(:datatable) { DatatableCondGteq.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -510,7 +508,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :in' do
-      let(:datatable) { DatatableCondIn.new(view) }
+      let(:datatable) { DatatableCondIn.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -526,7 +524,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'it can filter records with condition :in with regex' do
-      let(:datatable) { DatatableCondInWithRegex.new(view) }
+      let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
 
       before(:each) do
         create(:user, first_name: 'john', post_id: 1)
@@ -543,7 +541,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     describe 'Integer overflows' do
-      let(:datatable) { DatatableCondEq.new(view) }
+      let(:datatable) { DatatableCondEq.new(sample_params) }
       let(:largest_postgresql_integer_value) { 2147483647 }
       let(:smallest_postgresql_integer_value) { -2147483648 }
 

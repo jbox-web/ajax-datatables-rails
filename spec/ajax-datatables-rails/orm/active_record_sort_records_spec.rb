@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
 
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ComplexDatatable.new(view) }
-  let(:nulls_last_datatable) { DatatableOrderNullsLast.new(view) }
+  let(:datatable) { ComplexDatatable.new(sample_params) }
+  let(:nulls_last_datatable) { DatatableOrderNullsLast.new(sample_params) }
   let(:records) { User.all }
 
   before(:each) do
@@ -48,7 +47,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   describe '#sort_records with nulls last using global config' do
     before { AjaxDatatablesRails.config.nulls_last = true }
     after  { AjaxDatatablesRails.config.nulls_last = false }
-  
+
     it 'can handle multiple sorting columns' do
       # set to order by Users username in ascending order, and
       # by Users email in descending order
@@ -60,7 +59,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       )
     end
   end
-  
+
   describe '#sort_records with nulls last using column config' do
     it 'can handle multiple sorting columns' do
       # set to order by Users username in ascending order, and

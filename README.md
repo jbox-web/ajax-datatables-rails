@@ -317,7 +317,7 @@ Set the controller to respond to JSON
 def index
   respond_to do |format|
     format.html
-    format.json { render json: UserDatatable.new(view_context) }
+    format.json { render json: UserDatatable.new(params) }
   end
 end
 ```
@@ -386,7 +386,9 @@ Sometimes you'll need to use view helper methods like `link_to`, `mail_to`,
 To have these methods available to be used, this is the way to go:
 
 ```ruby
-class MyCustomDatatable < AjaxDatatablesRails::Base
+class UserDatatable < AjaxDatatablesRails::Base
+  extend Forwardable
+
   # either define them one-by-one
   def_delegator :@view, :check_box_tag
   def_delegator :@view, :link_to
@@ -397,6 +399,11 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   def_delegators :@view, :check_box_tag, :link_to, :mail_to, :edit_user_path
 
   # ... other methods (view_columns, get_raw_records...)
+
+  def initialize(params, opts = {})
+    @view = opts[:view_context]
+    super
+  end
 
   # now, you'll have these methods available to be used anywhere
   def data
@@ -410,6 +417,14 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
         DT_RowId:   record.id,
       }
     end
+  end
+end
+
+# and in your controller:
+def index
+  respond_to do |format|
+    format.html
+    format.json { render json: UserDatatable.new(params, view_context: view_context) }
   end
 end
 ```
@@ -464,12 +479,7 @@ class UserDecorator < ApplicationDecorator
 end
 ```
 
-**Note :** On the long term it's much more cleaner than using `def_delegator` since decorators are reusable everywhere in your application :)
-
-So we **strongly recommand you to use Draper decorators.** It will help keeping your DataTables class small and clean and keep focused on what they should do (mostly) : filtering records ;)
-
-**Note 2 :** The `def_delegator` might disappear in a near future : [#288 [RFC] Remove dependency on view_context](https://github.com/jbox-web/ajax-datatables-rails/issues/288).
-You're invited to give your opinion :)
+This way you don't need to inject the `view_context` in the Datatable object to access helpers methods.
 
 ### Pass options to the datatable class
 
@@ -482,7 +492,7 @@ Example:
 def index
   respond_to do |format|
     format.html
-    format.json { render json: UserDatatable.new(view_context, user: current_user, from: 1.month.ago) }
+    format.json { render json: UserDatatable.new(params, user: current_user, from: 1.month.ago) }
   end
 end
 
@@ -728,7 +738,7 @@ then in your controllers :
   end
 
   def datatable
-    render json: PostDatatable.new(view_context)
+    render json: PostDatatable.new(params)
   end
 
 # UsersController
@@ -736,7 +746,7 @@ then in your controllers :
   end
 
   def datatable
-    render json: UserDatatable.new(view_context)
+    render json: UserDatatable.new(params)
   end
 ```
 

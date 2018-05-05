@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::Column do
 
-  let(:view) { double('view', params: sample_params) }
-  let(:datatable) { ComplexDatatable.new(view) }
+  let(:datatable) { ComplexDatatable.new(sample_params) }
 
   describe 'username column' do
 
@@ -129,7 +128,7 @@ describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe '#formatter' do
-    let(:datatable) { DatatableWithFormater.new(view) }
+    let(:datatable) { DatatableWithFormater.new(sample_params) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'last_name' } }
 
     it 'should be a proc' do
@@ -138,7 +137,7 @@ describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe '#filter' do
-    let(:datatable) { DatatableCondProc.new(view) }
+    let(:datatable) { DatatableCondProc.new(sample_params) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'username' } }
 
     it 'should be a proc' do
