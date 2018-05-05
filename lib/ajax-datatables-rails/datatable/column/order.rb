@@ -20,7 +20,7 @@ module AjaxDatatablesRails
 
         # Add option to sort null values last
         def nulls_last?
-          @view_column[:nulls_last] || @options[:nulls_last] == 'true'
+          @view_column.fetch(:nulls_last, false)
         end
 
       end
