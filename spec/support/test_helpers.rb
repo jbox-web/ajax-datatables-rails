@@ -82,7 +82,7 @@ class ComplexDatatable < AjaxDatatablesRails::Base
     User.all
   end
 end
- 
+
 class ComplexDatatableArray < ComplexDatatable
   def data
     records.map do |record|

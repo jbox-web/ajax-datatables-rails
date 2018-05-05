@@ -38,7 +38,7 @@ module AjaxDatatablesRails
       end
 
       def sort_nulls_last?
-        column.nulls_last == true || AjaxDatatablesRails.config.nulls_last == true
+        column.nulls_last? || AjaxDatatablesRails.config.nulls_last == true
       end
 
     end

@@ -18,7 +18,7 @@ describe AjaxDatatablesRails::Datatable::Column do
     end
 
     it 'should sort nulls last' do
-      expect(column.nulls_last).to eq(true)
+      expect(column.nulls_last?).to eq(true)
     end
 
     it 'should be searchable' do
