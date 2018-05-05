@@ -18,6 +18,11 @@ module AjaxDatatablesRails
           custom_field? ? source : "#{table.name}.#{sort_field}"
         end
 
+        # Add option to sort null values last
+        def nulls_last
+          @view_column[:nulls_last] || (@options[:nulls_last] == 'true')
+        end
+
       end
     end
   end

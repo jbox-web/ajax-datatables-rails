@@ -4,6 +4,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   let(:view) { double('view', params: sample_params) }
   let(:datatable) { ComplexDatatable.new(view) }
+  let(:nulls_last_datatable) { DatatableOrderNullsLast.new(view) }
   let(:records) { User.all }
 
   before(:each) do
@@ -40,6 +41,35 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       expect(datatable.sort_records(records).to_sql).to_not include(
         'users.post_id DESC'
+      )
+    end
+  end
+
+  describe '#sort_records with nulls last using global config' do
+    before { AjaxDatatablesRails.config.nulls_last = true }
+    after  { AjaxDatatablesRails.config.nulls_last = false }
+  
+    it 'can handle multiple sorting columns' do
+      # set to order by Users username in ascending order, and
+      # by Users email in descending order
+      datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
+      datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
+      expect(datatable.sort_records(records).to_sql).to include(
+        'ORDER BY CASE WHEN users.username IS NULL THEN 1 ELSE 0 END, users.username ASC, ' +
+        'CASE WHEN users.email IS NULL THEN 1 ELSE 0 END, users.email DESC'
+      )
+    end
+  end
+  
+  describe '#sort_records with nulls last using column config' do
+    it 'can handle multiple sorting columns' do
+      # set to order by Users username in ascending order, and
+      # by Users email in descending order
+      nulls_last_datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
+      nulls_last_datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
+      expect(nulls_last_datatable.sort_records(records).to_sql).to include(
+        'ORDER BY users.username ASC, ' +
+        'CASE WHEN users.email IS NULL THEN 1 ELSE 0 END, users.email DESC'
       )
     end
   end
