@@ -5,6 +5,8 @@
 * Fix: Restore behavior of #filter method [Comment](https://github.com/jbox-web/ajax-datatables-rails/commit/07795fd26849ff1b3b567f4ce967f722907a45be#comments)
 * Fix: Fix erroneous offset/start behavior [PR #264](https://github.com/jbox-web/ajax-datatables-rails/pull/264)
 * Fix: "orderable" option has no effect [Issue #245](https://github.com/jbox-web/ajax-datatables-rails/issues/245)
+* Fix: Fix undefined method #and [PR #235](https://github.com/jbox-web/ajax-datatables-rails/pull/235)
+* Add: Add "order nulls last" option [PR #79](https://github.com/jbox-web/ajax-datatables-rails/pull/279)
 * Change: Rename `additional_datas` method as `additional_data` [PR #251](https://github.com/jbox-web/ajax-datatables-rails/pull/251)
 * Change: Added timezone support for daterange [PR #261](https://github.com/jbox-web/ajax-datatables-rails/pull/261)
 * Various improvements in internal API
