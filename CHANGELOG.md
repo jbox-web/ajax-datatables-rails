@@ -12,7 +12,7 @@
 * Change: Add # frozen_string_literal: true pragma
 * Various improvements in internal API
 
-**Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
+**Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x and Ruby 2.2.x.
 
 
 ## 0.4.0 (2017-05-21)

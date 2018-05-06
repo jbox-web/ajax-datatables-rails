@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# coding: utf-8
 
 $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'ajax-datatables-rails/version'
@@ -15,9 +14,9 @@ Gem::Specification.new do |s|
   s.description = "A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app"
   s.license     = 'MIT'
 
-  s.add_dependency 'railties', '>= 4.0'
+  s.add_dependency 'railties', '>= 4.2'
 
-  s.add_development_dependency 'rails', '>= 4.0'
+  s.add_development_dependency 'rails', '>= 4.2'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'pg', '< 1.0'
   s.add_development_dependency 'mysql2'

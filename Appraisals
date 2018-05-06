@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 RAILS_VERSIONS = {
-  '4.0.13' => {
-    'mysql2' => '~> 0.3.18',
-    'activerecord-oracle_enhanced-adapter' => '~> 1.5.0'
-  },
-  '4.1.16' => {
-    'mysql2' => '~> 0.3.18',
-    'activerecord-oracle_enhanced-adapter' => '~> 1.5.0'
-  },
   '4.2.10' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.6.0'
   },

@@ -70,11 +70,7 @@ module AjaxDatatablesRails
       end
 
       def get_param(param)
-        if AjaxDatatablesRails.old_rails?
-          options[param]
-        else
-          options[param].to_unsafe_h.with_indifferent_access
-        end
+        options[param].to_unsafe_h.with_indifferent_access
       end
 
     end
