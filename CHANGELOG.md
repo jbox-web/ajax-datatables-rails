@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.4.1
+## 0.4.1 (to come)
 
 * Fix: Restore behavior of #filter method [Comment](https://github.com/jbox-web/ajax-datatables-rails/commit/07795fd26849ff1b3b567f4ce967f722907a45be#comments)
 * Fix: Fix erroneous offset/start behavior [PR #264](https://github.com/jbox-web/ajax-datatables-rails/pull/264)
@@ -14,16 +14,16 @@
 **Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
 
 
-## 0.4.0
+## 0.4.0 (2017-05-21)
 
 **Warning:** this version is a **major break** from v0.3. The core has been rewriten to remove dependency on Kaminari (or WillPaginate).
 
 It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search. Take a look at the [README](https://github.com/jbox-web/ajax-datatables-rails#customize-the-generated-datatables-class) for more infos.
 
-## 0.3.1
+## 0.3.1 (2015-07-13)
 * Adds `:oracle` as supported `db_adapter`. Thanks to [lutechspa](https://github.com/lutechspa) for this contribution.
 
-## 0.3.0
+## 0.3.0 (2015-01-30)
 * Changes to the `sortable_columns` and `searchable_columns` syntax as it
   required us to do unnecessary guessing. New syntax is `ModelName.column_name`
   or `Namespace::ModelName.column_name`. Old syntax of `table_name.column_name`
@@ -34,7 +34,7 @@ It also brings a new (more natural) way of defining columns, based on hash defin
   for this contribution.
 * Moves paginator settings to configuration initializer.
 
-## 0.2.1
+## 0.2.1 (2014-11-26)
 * Fix count method to work with select statements under Rails 4.1. Thanks to
 [Jason Mitchell](https://github.com/mitchej123) for the contribution.
 * Edits to `README` documentation about the `options` hash. Thanks to
@@ -52,22 +52,22 @@ text-based columns and perform searches depending on the use of `:mysql2`,
 `:sqlite3` or `:pg`. Thanks to [M. Saiqul Haq](https://github.com/saiqulhaq)
 for contributing this feature.
 
-## 0.2.0
+## 0.2.0 (2014-06-19)
 * This version works with jQuery dataTables ver. 1.10 and it's new API syntax.
 * Added `legacy` branch to repo. If your project is working with jQuery
   dataTables ver. 1.9, this is the branch you need to pull, or use the last
   `0.1.x` version of this gem.
 
-## 0.1.2
+## 0.1.2 (2014-06-18)
 * Fixes `where` clause being built even when search term is an empty string.
   Thanks to [e-fisher](https://github.com/e-fisher) for spotting and fixing this.
 
-## 0.1.1
+## 0.1.1 (2014-06-13)
 * Fixes problem on `searchable_columns` where the corresponding model is
 a composite model name, e.g. `UserData`, `BillingAddress`.
 Thanks to [iruca3](https://github.com/iruca3) for the fix.
 
-## 0.1.0
+## 0.1.0 (2014-05-21)
 * A fresh start. Sets base class name to: `AjaxDatatablesRails::Base`.
 * Extracts pagination functions to mixable modules.
   * A user would have the option to stick to the base
@@ -85,3 +85,7 @@ Thanks to [iruca3](https://github.com/iruca3) for the fix.
 * Sets generator inside the `Rails` namespace. To generate an
   `AjaxDatatablesRails` child class, just execute the
   generator like this: `$ rails generate datatable NAME`.
+
+## 0.0.1 (2012-09-10)
+
+First release!
