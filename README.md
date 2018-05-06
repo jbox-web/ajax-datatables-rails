@@ -665,9 +665,12 @@ $ bundle install
 ```
 
 That's all :) ([Automatically prefer Yajl or JSON backend over Yaml, if available](https://github.com/rails/rails/commit/63bb955a99eb46e257655c93dd64e86ebbf05651))
+
 ## Tutorial
 
 You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
+
+Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277)
 
 ## Contributing
 
