@@ -95,6 +95,9 @@ AjaxDatatablesRails.configure do |config|
   # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
   # config.db_adapter = :pg
 
+  # Or you can use your rails environment adapter if you want a generic dev and production
+  # config.db_adapter = Rails.configuration.database_configuration[Rails.env]['adapter'].to_sym
+
   # available options for orm are: :active_record, :mongoid
   # config.orm = :active_record
 end
@@ -204,7 +207,7 @@ end
 
 * `:like`, `:start_with`, `:end_with` for string or full text search
 * `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
-* `:date_range` for date range (only for Rails > 4.2.x)
+* `:date_range` for date range (only for Rails > 4.2.x, see [here](#daterange-search))
 * `:null_value` for nil field
 * `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
 
@@ -600,6 +603,21 @@ def get_raw_records
   }).references(:course).distinct
 end
 ```
+
+### Default scope
+
+See [DefaultScope is evil](https://rails-bestpractices.com/posts/2013/06/15/default_scope-is-evil/) and [#223](https://github.com/jbox-web/ajax-datatables-rails/issues/223) and [#233](https://github.com/jbox-web/ajax-datatables-rails/issues/233).
+
+### DateRange search
+
+This feature works with [yadcf](https://github.com/vedmack/yadcf).
+
+To enable the date range search, for example `created_at` :
+
+* add a 'created_at' `<th>` in your html
+* declare your column in `view_columns` : `created_at: { source: 'Post.created_at', cond: :date_range, delimiter: '-yadcf_delim-' }`
+* add it in `data` : `created_at: record.decorate.created_at`
+* setup yadcf to make `created_at` search field a range
 
 ### Generator Syntax
 
