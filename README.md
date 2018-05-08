@@ -75,7 +75,7 @@ We assume here that you have already installed [jQuery DataTables](https://datat
 
 You can install jQuery DataTables :
 
-* with the [`jquery-datatables-rails`](https://github.com/rweng/jquery-datatables-rails) gem (which is a bit outdated)
+* with the [`jquery-datatables`](https://github.com/mkhairi/jquery-datatables) gem
 * by adding the assets manually (in `vendor/assets`)
 * with [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
 
