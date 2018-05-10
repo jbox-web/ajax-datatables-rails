@@ -212,7 +212,7 @@ end
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 
-You can customize or sanitize the search value passed to the DB by using the `:formatter` option :
+You can customize or sanitize the search value passed to the DB by using the `:formatter` option with a lambda :
 
 ```ruby
 def view_columns
@@ -225,6 +225,8 @@ def view_columns
   }
 end
 ```
+
+The object passed to the lambda is the search value.
 
 #### b. Map data
 
