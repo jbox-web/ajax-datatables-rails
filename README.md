@@ -212,7 +212,7 @@ end
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 
-You can customize or sanitize the search value passed to the DB by using the `:formater` option :
+You can customize or sanitize the search value passed to the DB by using the `:formatter` option :
 
 ```ruby
 def view_columns
@@ -220,7 +220,7 @@ def view_columns
     id:         { source: "User.id" },
     first_name: { source: "User.first_name" },
     last_name:  { source: "User.last_name" },
-    email:      { source: "User.email", formater: -> (o) { o.upcase } },
+    email:      { source: "User.email", formatter: -> (o) { o.upcase } },
     bio:        { source: "User.bio" },
   }
 end

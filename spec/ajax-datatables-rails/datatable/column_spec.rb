@@ -128,12 +128,12 @@ describe AjaxDatatablesRails::Datatable::Column do
     end
   end
 
-  describe '#formater' do
+  describe '#formatter' do
     let(:datatable) { DatatableWithFormater.new(view) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'last_name' } }
 
     it 'should be a proc' do
-      expect(column.formater).to be_a(Proc)
+      expect(column.formatter).to be_a(Proc)
     end
   end
 

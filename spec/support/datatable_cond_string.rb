@@ -18,6 +18,6 @@ end
 
 class DatatableWithFormater < ComplexDatatable
   def view_columns
-    super.deep_merge(last_name: { formater: -> (o) { o.upcase } })
+    super.deep_merge(last_name: { formatter: -> (o) { o.upcase } })
   end
 end

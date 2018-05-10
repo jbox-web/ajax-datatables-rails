@@ -52,14 +52,14 @@ module AjaxDatatablesRails
         !source.include?('.')
       end
 
-      # Add formater option to allow modification of the value
+      # Add formatter option to allow modification of the value
       # before passing it to the database
-      def formater
-        @view_column[:formater]
+      def formatter
+        @view_column[:formatter]
       end
 
       def formated_value
-        formater ? formater.call(search.value) : search.value
+        formatter ? formatter.call(search.value) : search.value
       end
 
       private
