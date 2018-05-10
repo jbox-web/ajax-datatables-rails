@@ -212,6 +212,20 @@ end
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 
+You can customize or sanitize the search value passed to the DB by using the `:formater` option :
+
+```ruby
+def view_columns
+  @view_columns ||= {
+    id:         { source: "User.id" },
+    first_name: { source: "User.first_name" },
+    last_name:  { source: "User.last_name" },
+    email:      { source: "User.email", formater: -> (o) { o.upcase } },
+    bio:        { source: "User.bio" },
+  }
+end
+```
+
 #### b. Map data
 
 Then we need to map the records retrieved by the `get_raw_records` method to the real values we want to display :
@@ -225,7 +239,7 @@ def data
       last_name:  record.last_name,
       email:      record.email,
       bio:        record.bio,
-      DT_RowId:   record.id, # This will set the id attribute on the corresponding <tr> in the datatable
+      DT_RowId:   record.id, # This will automagically set the id attribute on the corresponding <tr> in the datatable
     }
   end
 end
@@ -397,6 +411,8 @@ class MyCustomDatatable < AjaxDatatablesRails::Base
   end
 end
 ```
+
+### Using view decorators
 
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
@@ -640,7 +656,9 @@ In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
 
-### Creating indices for Postgresql
+## Pro Tips
+
+### Create indices for Postgresql
 
 In order to speed up the `ILIKE` queries that are executed when using the default configuration, you might want to consider adding some indices.
 For postgresql, you are advised to use the [gin/gist index type](http://www.postgresql.org/docs/current/interactive/pgtrgm.html).
@@ -682,6 +700,71 @@ $ bundle install
 ```
 
 That's all :) ([Automatically prefer Yajl or JSON backend over Yaml, if available](https://github.com/rails/rails/commit/63bb955a99eb46e257655c93dd64e86ebbf05651))
+
+### Use HTTP `POST` method
+
+Use HTTP `POST` method to avoid `414 Request-URI Too Large` error. See : [#278](https://github.com/jbox-web/ajax-datatables-rails/issues/278).
+
+You can easily define a route concern in `config/routes.rb` and reuse it when you need it :
+
+```ruby
+Rails.application.routes.draw do
+  concern :with_datatable do
+    post 'datatable', on: :collection
+  end
+
+  resources :posts, concerns: [:with_datatable]
+  resources :users, concerns: [:with_datatable]
+end
+```
+
+then in your controllers :
+
+```ruby
+# PostsController
+  def index
+  end
+
+  def datatable
+    render json: PostDatatable.new(view_context)
+  end
+
+# UsersController
+  def index
+  end
+
+  def datatable
+    render json: UserDatatable.new(view_context)
+  end
+```
+
+then in your views :
+
+```html
+# posts/index.html.erb
+<table id="posts-datatable" data-source="<%= datatable_posts_path(format: :json) %>">
+
+# users/index.html.erb
+<table id="users-datatable" data-source="<%= datatable_users_path(format: :json) %>">
+```
+
+then in your Coffee/JS :
+
+```coffee
+$ ->
+  $('#posts-datatable').dataTable
+    ajax:
+      url: $('#posts-datatable').data('source')
+      type: 'POST'
+    # ...others options, see [here](#5-wire-up-the-javascript)
+
+$ ->
+  $('#users-datatable').dataTable
+    ajax:
+      url: $('#users-datatable').data('source')
+      type: 'POST'
+    # ...others options, see [here](#5-wire-up-the-javascript)
+```
 
 ## Tutorial
 
