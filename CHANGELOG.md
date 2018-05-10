@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.2 (2018-05-11)
+
+* Fix: Integer out of range [PR #289](https://github.com/jbox-web/ajax-datatables-rails/pull/289) from [PR #284](https://github.com/jbox-web/ajax-datatables-rails/pull/284)
+
 ## 0.4.1 (2018-05-06)
 
 * Fix: Restore behavior of #filter method [Comment](https://github.com/jbox-web/ajax-datatables-rails/commit/07795fd26849ff1b3b567f4ce967f722907a45be#comments)
