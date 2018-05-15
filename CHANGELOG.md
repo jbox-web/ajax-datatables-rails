@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.4.2 (2018-05-11)
+## 0.4.2 (2018-05-15)
 
 * Fix: Integer out of range [PR #289](https://github.com/jbox-web/ajax-datatables-rails/pull/289) from [PR #284](https://github.com/jbox-web/ajax-datatables-rails/pull/284)
 
