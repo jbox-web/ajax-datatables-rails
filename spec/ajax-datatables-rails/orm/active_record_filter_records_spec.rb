@@ -503,6 +503,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       it 'should filter records matching' do
         datatable.params[:columns]['4'][:search][:value] = '1|2'
+        datatable.params[:order]['0'] = { column: '4', dir: 'asc' }
         expect(datatable.data.size).to eq 2
         item = datatable.data.first
         expect(item[:first_name]).to eq 'john'

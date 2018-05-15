@@ -42,7 +42,7 @@ end
 
 class DatatableCondInWithRegex < DatatableCondIn
   def view_columns
-    super.deep_merge(post_id: { cond: :in, use_regex: false, formatter: ->(str) { cast_regex_value(str) } })
+    super.deep_merge(post_id: { cond: :in, use_regex: false, orderable: true, formatter: ->(str) { cast_regex_value(str) } })
   end
 
   def cast_regex_value(value)
