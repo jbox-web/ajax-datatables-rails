@@ -17,7 +17,7 @@ module AjaxDatatablesRails
         end
 
         def filter
-          @view_column[:cond].call(self, formated_value)
+          @view_column[:cond].call(self, formatted_value)
         end
 
         def search
@@ -46,7 +46,7 @@ module AjaxDatatablesRails
         # The solution is to bypass regex_search and use non_regex_search with :in operator
         def regex_search
           if use_regex?
-            ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(formated_value))
+            ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(formatted_value))
           else
             non_regex_search
           end
@@ -61,16 +61,16 @@ module AjaxDatatablesRails
           when :null_value
             null_value_search
           when :start_with
-            casted_column.matches("#{formated_value}%")
+            casted_column.matches("#{formatted_value}%")
           when :end_with
-            casted_column.matches("%#{formated_value}")
+            casted_column.matches("%#{formatted_value}")
           when :like
-            casted_column.matches("%#{formated_value}%")
+            casted_column.matches("%#{formatted_value}%")
           end
         end
 
         def null_value_search
-          if formated_value == '!NULL'
+          if formatted_value == '!NULL'
             table[field].not_eq(nil)
           else
             table[field].eq(nil)
@@ -79,9 +79,9 @@ module AjaxDatatablesRails
 
         def numeric_search
           if custom_field?
-            ::Arel::Nodes::SqlLiteral.new(field).eq(formated_value)
+            ::Arel::Nodes::SqlLiteral.new(field).eq(formatted_value)
           else
-            table[field].send(cond, formated_value)
+            table[field].send(cond, formatted_value)
           end
         end
 

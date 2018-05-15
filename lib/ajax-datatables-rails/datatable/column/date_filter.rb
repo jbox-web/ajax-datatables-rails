@@ -24,19 +24,19 @@ module AjaxDatatablesRails
         end
 
         def empty_range_search?
-          (formated_value == delimiter) || (range_start.blank? && range_end.blank?)
+          (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
         end
 
         # A range value is in form '<range_start><delimiter><range_end>'
         # This returns <range_start>
         def range_start
-          @range_start ||= formated_value.split(delimiter)[0]
+          @range_start ||= formatted_value.split(delimiter)[0]
         end
 
         # A range value is in form '<range_start><delimiter><range_end>'
         # This returns <range_end>
         def range_end
-          @range_end ||= formated_value.split(delimiter)[1]
+          @range_end ||= formatted_value.split(delimiter)[1]
         end
 
         # Do a range search

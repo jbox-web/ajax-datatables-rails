@@ -145,7 +145,7 @@ describe AjaxDatatablesRails::Datatable::Column do
       config = column.instance_variable_get('@view_column')
       filter = config[:cond]
       expect(filter).to be_a(Proc)
-      expect(filter).to receive(:call).with(column, column.formated_value)
+      expect(filter).to receive(:call).with(column, column.formatted_value)
       column.filter
     end
   end

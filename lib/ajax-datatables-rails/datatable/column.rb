@@ -58,7 +58,7 @@ module AjaxDatatablesRails
         @view_column[:formatter]
       end
 
-      def formated_value
+      def formatted_value
         formatter ? formatter.call(search.value) : search.value
       end
 
