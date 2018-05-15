@@ -493,6 +493,22 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    describe 'it can filter records with condition :in with regex' do
+      let(:datatable) { DatatableCondInWithRegex.new(view) }
+
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['4'][:search][:value] = '1|2'
+        expect(datatable.data.size).to eq 2
+        item = datatable.data.first
+        expect(item[:first_name]).to eq 'john'
+      end
+    end
+
     describe 'Integer overflows' do
       let(:datatable) { DatatableCondEq.new(view) }
       let(:largest_postgresql_integer_value) { 2147483647 }
