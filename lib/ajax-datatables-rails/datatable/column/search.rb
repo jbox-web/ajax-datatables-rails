@@ -90,11 +90,11 @@ module AjaxDatatablesRails
         end
 
         def is_searchable_integer?
-          if search.value.is_a?(Array)
-            valids = search.value.map { |v| is_integer?(v) && !is_out_of_range?(v) }
+          if formated_value.is_a?(Array)
+            valids = formated_value.map { |v| is_integer?(v) && !is_out_of_range?(v) }
             !valids.include?(false)
           else
-            is_integer?(search.value) && !is_out_of_range?(search.value)
+            is_integer?(formated_value) && !is_out_of_range?(formated_value)
           end
         end
 

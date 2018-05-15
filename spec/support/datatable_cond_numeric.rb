@@ -39,3 +39,13 @@ class DatatableCondIn < ComplexDatatable
     super.deep_merge(post_id: { cond: :in })
   end
 end
+
+class DatatableCondInWithRegex < DatatableCondIn
+  def view_columns
+    super.deep_merge(post_id: { cond: :in, use_regex: false, orderable: true, formater: ->(str) { cast_regex_value(str) } })
+  end
+
+  def cast_regex_value(value)
+    value.split('|').map(&:to_i)
+  end
+end
