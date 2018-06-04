@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.3 (2018-06-05)
+
+* Add: Add `:string_eq` condition on columns filter [Issue #291](https://github.com/jbox-web/ajax-datatables-rails/issues/291)
+
+**Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
+
 ## 0.4.2 (2018-05-11)
 
 * Fix: Integer out of range [PR #289](https://github.com/jbox-web/ajax-datatables-rails/pull/289) from [PR #284](https://github.com/jbox-web/ajax-datatables-rails/pull/284)
@@ -15,9 +21,6 @@
 * Change: Added timezone support for daterange [PR #261](https://github.com/jbox-web/ajax-datatables-rails/pull/261)
 * Change: Add # frozen_string_literal: true pragma
 * Various improvements in internal API
-
-**Note :** This is the last version to support Rails 4.0.x and Rails 4.1.x
-
 
 ## 0.4.0 (2017-05-21)
 
