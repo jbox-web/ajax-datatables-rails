@@ -11,7 +11,7 @@ module AjaxDatatablesRails
 
         # Add sort_field option to allow overriding of sort field
         def sort_field
-          @view_column[:sort_field] || field
+          @view_column.fetch(:sort_field, field)
         end
 
         def sort_query

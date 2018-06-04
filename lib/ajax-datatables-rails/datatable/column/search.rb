@@ -13,7 +13,7 @@ module AjaxDatatablesRails
         end
 
         def cond
-          @view_column[:cond] || :like
+          @view_column.fetch(:cond, :like)
         end
 
         def filter
