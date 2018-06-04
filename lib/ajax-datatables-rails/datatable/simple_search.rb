@@ -4,6 +4,8 @@ module AjaxDatatablesRails
   module Datatable
     class SimpleSearch
 
+      TRUE_VALUE = 'true'
+
       def initialize(options = {})
         @options = options
       end

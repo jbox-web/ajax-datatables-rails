@@ -3,8 +3,6 @@
 module AjaxDatatablesRails
   module Datatable
 
-    TRUE_VALUE = 'true'
-
     class Datatable
       attr_reader :datatable, :options
 

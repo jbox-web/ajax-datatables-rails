@@ -6,7 +6,9 @@ module AjaxDatatablesRails
       module Search
 
         SMALLEST_PQ_INTEGER = -2147483648
-        LARGEST_PQ_INTEGER = 2147483647
+        LARGEST_PQ_INTEGER  = 2147483647
+        NOT_NULL_VALUE      = '!NULL'
+        EMPTY_VALUE         = ''
 
         def searchable?
           @view_column.fetch(:searchable, true)
@@ -74,7 +76,7 @@ module AjaxDatatablesRails
         end
 
         def null_value_search
-          if formatted_value == '!NULL'
+          if formatted_value == NOT_NULL_VALUE
             table[field].not_eq(nil)
           else
             table[field].eq(nil)
@@ -90,7 +92,7 @@ module AjaxDatatablesRails
         end
 
         def empty_search
-          casted_column.matches('')
+          casted_column.matches(EMPTY_VALUE)
         end
 
         def is_searchable_integer?

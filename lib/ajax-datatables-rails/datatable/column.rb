@@ -4,13 +4,18 @@ module AjaxDatatablesRails
   module Datatable
     class Column
 
+      TYPE_CAST_DEFAULT = 'VARCHAR'
+      TYPE_CAST_MYSQL   = 'CHAR'
+      TYPE_CAST_SQLITE  = 'TEXT'
+      TYPE_CAST_ORACLE  = 'VARCHAR2(4000)'
+
       DB_ADAPTER_TYPE_CAST = {
-        mysql:          'CHAR',
-        mysql2:         'CHAR',
-        sqlite:         'TEXT',
-        sqlite3:        'TEXT',
-        oracle:         'VARCHAR2(4000)',
-        oracleenhanced: 'VARCHAR2(4000)'
+        mysql:          TYPE_CAST_MYSQL,
+        mysql2:         TYPE_CAST_MYSQL,
+        sqlite:         TYPE_CAST_SQLITE,
+        sqlite3:        TYPE_CAST_SQLITE,
+        oracle:         TYPE_CAST_ORACLE,
+        oracleenhanced: TYPE_CAST_ORACLE
       }.freeze
 
       attr_reader :datatable, :index, :options
@@ -65,7 +70,7 @@ module AjaxDatatablesRails
       private
 
       def type_cast
-        @type_cast ||= (DB_ADAPTER_TYPE_CAST[AjaxDatatablesRails.config.db_adapter] || 'VARCHAR')
+        @type_cast ||= DB_ADAPTER_TYPE_CAST.fetch(AjaxDatatablesRails.config.db_adapter, TYPE_CAST_DEFAULT)
       end
 
       def casted_column

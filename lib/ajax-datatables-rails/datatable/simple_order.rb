@@ -4,7 +4,9 @@ module AjaxDatatablesRails
   module Datatable
     class SimpleOrder
 
-      DIRECTIONS = %w[DESC ASC].freeze
+      DIRECTION_ASC  = 'ASC'
+      DIRECTION_DESC = 'DESC'
+      DIRECTIONS     = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
       def initialize(datatable, options = {})
         @datatable = datatable
@@ -24,7 +26,7 @@ module AjaxDatatablesRails
       end
 
       def direction
-        DIRECTIONS.find { |dir| dir == column_direction } || 'ASC'
+        DIRECTIONS.find { |dir| dir == column_direction } || DIRECTION_ASC
       end
 
       private
