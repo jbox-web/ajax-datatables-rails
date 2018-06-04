@@ -10,6 +10,18 @@ class DatatableCondEndWith < ComplexDatatable
   end
 end
 
+class DatatableCondLike < ComplexDatatable
+  def view_columns
+    super.deep_merge(email: { cond: :like })
+  end
+end
+
+class DatatableCondStringEq < ComplexDatatable
+  def view_columns
+    super.deep_merge(email: { cond: :string_eq })
+  end
+end
+
 class DatatableCondNullValue < ComplexDatatable
   def view_columns
     super.deep_merge(email: { cond: :null_value })

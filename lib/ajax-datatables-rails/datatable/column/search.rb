@@ -57,7 +57,7 @@ module AjaxDatatablesRails
           when Proc
             filter
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-            is_searchable_integer? ? numeric_search : empty_search
+            is_searchable_integer? ? raw_search(cond) : empty_search
           when :null_value
             null_value_search
           when :start_with
@@ -66,6 +66,8 @@ module AjaxDatatablesRails
             casted_column.matches("%#{formatted_value}")
           when :like
             casted_column.matches("%#{formatted_value}%")
+          when :string_eq
+            raw_search(:eq)
           end
         end
 
@@ -77,7 +79,7 @@ module AjaxDatatablesRails
           end
         end
 
-        def numeric_search
+        def raw_search(cond)
           if custom_field?
             ::Arel::Nodes::SqlLiteral.new(field).eq(formatted_value)
           else
