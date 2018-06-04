@@ -47,14 +47,6 @@ module AjaxDatatablesRails
 
         private
 
-        def non_regex_search
-          if cond == :date_range
-            date_range_search
-          else
-            super
-          end
-        end
-
         def range_start_casted
           range_start.blank? ? parse_date('01/01/1970') : parse_date(range_start)
         end

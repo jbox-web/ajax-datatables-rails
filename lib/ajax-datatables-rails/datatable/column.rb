@@ -18,7 +18,7 @@ module AjaxDatatablesRails
 
       include Search
       include Order
-      prepend DateFilter
+      include DateFilter
 
 
       def initialize(datatable, index, options)

@@ -68,6 +68,8 @@ module AjaxDatatablesRails
             casted_column.matches("%#{formatted_value}%")
           when :string_eq
             raw_search(:eq)
+          when :date_range
+            date_range_search
           end
         end
 
