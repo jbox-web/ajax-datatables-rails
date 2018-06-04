@@ -360,6 +360,38 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    describe 'it can filter records with condition :like' do
+      let(:datatable) { DatatableCondLike.new(view) }
+
+      before(:each) do
+        create(:user, email: 'john@foo.com')
+        create(:user, email: 'mary@bar.com')
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['1'][:search][:value] = 'foo'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:email]).to eq 'john@foo.com'
+      end
+    end
+
+    describe 'it can filter records with condition :string_eq' do
+      let(:datatable) { DatatableCondStringEq.new(view) }
+
+      before(:each) do
+        create(:user, email: 'john@foo.com')
+        create(:user, email: 'mary@bar.com')
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:email]).to eq 'john@foo.com'
+      end
+    end
+
     describe 'it can filter records with condition :null_value' do
       let(:datatable) { DatatableCondNullValue.new(view) }
 
