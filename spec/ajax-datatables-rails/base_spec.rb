@@ -107,16 +107,63 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
+
+    describe '#filter_records' do
+      let(:records) { User.all }
+
+      let(:datatable) do
+        datatable = Class.new(ComplexDatatable) do
+          def filter_records(records)
+            raise NotImplementedError
+          end
+        end
+        datatable.new(sample_params)
+      end
+
+      it 'should allow method override' do
+        expect { datatable.filter_records(records) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#sort_records' do
+      let(:records) { User.all }
+
+      let(:datatable) do
+        datatable = Class.new(ComplexDatatable) do
+          def sort_records(records)
+            raise NotImplementedError
+          end
+        end
+        datatable.new(sample_params)
+      end
+
+      it 'should allow method override' do
+        expect { datatable.sort_records(records) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#paginate_records' do
+      let(:records) { User.all }
+
+      let(:datatable) do
+        datatable = Class.new(ComplexDatatable) do
+          def paginate_records(records)
+            raise NotImplementedError
+          end
+        end
+        datatable.new(sample_params)
+      end
+
+      it 'should allow method override' do
+        expect { datatable.paginate_records(records) }.to raise_error(NotImplementedError)
+      end
+    end
   end
 
 
   context 'Private API' do
     context 'when orm is not implemented' do
-      before do
-        allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
-      end
-
-      let(:datatable) { ComplexDatatable.new(sample_params) }
+      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
 
       describe '#fetch_records' do
         it 'raises an error if it does not include an ORM module' do

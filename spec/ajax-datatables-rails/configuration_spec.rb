@@ -20,10 +20,6 @@ describe AjaxDatatablesRails::Configuration do
   let(:config) { AjaxDatatablesRails::Configuration.new }
 
   describe 'default config' do
-    it 'default orm should :active_record' do
-      expect(config.orm).to eq(:active_record)
-    end
-
     it 'default db_adapter should :postgresql' do
       expect(config.db_adapter).to eq(:postgresql)
     end
@@ -33,11 +29,6 @@ describe AjaxDatatablesRails::Configuration do
     it 'should accept db_adapter custom value' do
       config.db_adapter = :mysql
       expect(config.db_adapter).to eq(:mysql)
-    end
-
-    it 'accepts a custom orm value' do
-      config.orm = :mongoid
-      expect(config.orm).to eq(:mongoid)
     end
   end
 end

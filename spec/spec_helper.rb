@@ -24,7 +24,6 @@ RSpec.configure do |config|
   config.after(:each) do
     AjaxDatatablesRails.configure do |c|
       c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
-      c.orm = :active_record
     end
   end
 
@@ -73,7 +72,6 @@ ActiveRecord::Base.establish_connection(options)
 
 AjaxDatatablesRails.configure do |c|
   c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
-  c.orm = :active_record
 end
 
 load File.dirname(__FILE__) + '/support/schema.rb'

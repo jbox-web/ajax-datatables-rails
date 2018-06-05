@@ -8,9 +8,8 @@ module AjaxDatatablesRails
     GLOBAL_SEARCH_DELIMITER = ' '
 
     def initialize(params, options = {})
-      @params  = params
-      @options = options
-      load_orm_extension
+      @params    = params
+      @options   = options
       @datatable = Datatable::Datatable.new(self)
     end
 
@@ -106,16 +105,6 @@ module AjaxDatatablesRails
 
     def records_filtered_count
       filter_records(fetch_records).count(:all)
-    end
-
-    # Private helper methods
-    def load_orm_extension
-      case AjaxDatatablesRails.config.orm
-      when :active_record
-        extend ORM::ActiveRecord
-      when :mongoid
-        nil
-      end
     end
 
     def global_search_delimiter

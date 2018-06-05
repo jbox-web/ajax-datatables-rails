@@ -12,4 +12,5 @@ module AjaxDatatablesRails
   require 'ajax-datatables-rails/datatable/column/date_filter'
   require 'ajax-datatables-rails/datatable/column'
   require 'ajax-datatables-rails/orm/active_record'
+  require 'ajax-datatables-rails/active_record'
 end

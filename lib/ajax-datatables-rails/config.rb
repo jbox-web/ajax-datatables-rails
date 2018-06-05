@@ -22,7 +22,6 @@ module AjaxDatatablesRails
   class Configuration
     include ActiveSupport::Configurable
 
-    config_accessor(:orm) { :active_record }
     config_accessor(:db_adapter) { :postgresql }
     config_accessor(:nulls_last) { false }
   end

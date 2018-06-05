@@ -53,7 +53,7 @@ def sample_params
 end
 # rubocop:enable Metrics/MethodLength
 
-class ComplexDatatable < AjaxDatatablesRails::Base
+class ComplexDatatable < AjaxDatatablesRails::ActiveRecord
   def view_columns
     @view_columns ||= {
       username:   { source: 'User.username'   },

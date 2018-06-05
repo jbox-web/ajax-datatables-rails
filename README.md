@@ -96,15 +96,10 @@ AjaxDatatablesRails.configure do |config|
 
   # Or you can use your rails environment adapter if you want a generic dev and production
   # config.db_adapter = Rails.configuration.database_configuration[Rails.env]['adapter'].to_sym
-
-  # available options for orm are: :active_record, :mongoid
-  # config.orm = :active_record
 end
 ```
 
 Uncomment the `config.db_adapter` line and set the corresponding value to your database and gem. This is all you need.
-
-Uncomment the `config.orm` line to set `active_record or mongoid` if included in your project. It defaults to `active_record`.
 
 #### Note
 
@@ -386,7 +381,7 @@ Sometimes you'll need to use view helper methods like `link_to`, `mail_to`,
 To have these methods available to be used, this is the way to go:
 
 ```ruby
-class UserDatatable < AjaxDatatablesRails::Base
+class UserDatatable < AjaxDatatablesRails::ActiveRecord
   extend Forwardable
 
   # either define them one-by-one
@@ -483,7 +478,7 @@ This way you don't need to inject the `view_context` in the Datatable object to 
 
 ### Pass options to the datatable class
 
-An `AjaxDatatablesRails::Base` inherited class can accept an options hash at initialization. This provides room for flexibility when required.
+An `AjaxDatatablesRails::ActiveRecord` inherited class can accept an options hash at initialization. This provides room for flexibility when required.
 
 Example:
 
@@ -497,7 +492,7 @@ def index
 end
 
 # The datatable class
-class UnrespondedMessagesDatatable < AjaxDatatablesRails::Base
+class UnrespondedMessagesDatatable < AjaxDatatablesRails::ActiveRecord
 
   # ... other methods (view_columns, data...)
 
@@ -648,7 +643,7 @@ To enable the date range search, for example `created_at` :
 
 ### Generator Syntax
 
-Also, a class that inherits from `AjaxDatatablesRails::Base` is not tied to an
+Also, a class that inherits from `AjaxDatatablesRails::ActiveRecord` is not tied to an
 existing model, module, constant or any type of class in your Rails app.
 You can pass a name to your datatable class like this:
 
