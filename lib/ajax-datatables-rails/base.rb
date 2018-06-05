@@ -3,7 +3,7 @@
 module AjaxDatatablesRails
   class Base
 
-    attr_reader :params, :options
+    attr_reader :params, :options, :datatable
 
     GLOBAL_SEARCH_DELIMITER = ' '
 
@@ -11,10 +11,7 @@ module AjaxDatatablesRails
       @params  = params
       @options = options
       load_orm_extension
-    end
-
-    def datatable
-      @datatable ||= Datatable::Datatable.new(self)
+      @datatable = Datatable::Datatable.new(self)
     end
 
     def view_columns
