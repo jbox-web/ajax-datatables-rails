@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.5.0 (to come)
+
+* Breaking change: Remove dependency on view_context [Issue #288](https://github.com/jbox-web/ajax-datatables-rails/issues/288)
+
 ## 0.4.3 (2018-06-05)
 
 * Add: Add `:string_eq` condition on columns filter [Issue #291](https://github.com/jbox-web/ajax-datatables-rails/issues/291)
