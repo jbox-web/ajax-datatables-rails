@@ -112,33 +112,35 @@ describe AjaxDatatablesRails::Base do
 
   context 'Private API' do
 
-    let(:datatable) { ComplexDatatable.new(sample_params) }
-
-    before(:each) do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
-    end
-
-    describe '#fetch_records' do
-      it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:fetch_records) }.to raise_error NoMethodError
+    context 'when orm is not implemented' do
+      before do
+        allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
       end
-    end
 
-    describe '#filter_records' do
-      it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:filter_records) }.to raise_error NoMethodError
+      let(:datatable) { ComplexDatatable.new(sample_params) }
+
+      describe '#fetch_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.send(:fetch_records) }.to raise_error NoMethodError
+        end
       end
-    end
 
-    describe '#sort_records' do
-      it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:sort_records) }.to raise_error NoMethodError
+      describe '#filter_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.send(:filter_records) }.to raise_error NoMethodError
+        end
       end
-    end
 
-    describe '#paginate_records' do
-      it 'raises an error if it does not include an ORM module' do
-        expect { datatable.send(:paginate_records) }.to raise_error NoMethodError
+      describe '#sort_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.send(:sort_records) }.to raise_error NoMethodError
+        end
+      end
+
+      describe '#paginate_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.send(:paginate_records) }.to raise_error NoMethodError
+        end
       end
     end
 
