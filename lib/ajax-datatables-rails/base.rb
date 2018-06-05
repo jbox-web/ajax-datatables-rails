@@ -32,9 +32,9 @@ module AjaxDatatablesRails
 
     def as_json(*)
       {
-        recordsTotal: records_total_count,
+        recordsTotal:    records_total_count,
         recordsFiltered: records_filtered_count,
-        data: sanitize(data)
+        data:            sanitize(data)
       }.merge(get_additional_data)
     end
 

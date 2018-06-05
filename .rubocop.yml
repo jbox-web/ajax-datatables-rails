@@ -1,6 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
+    - gemfiles/*
     - spec/**/*.rb
     - lib/ajax-datatables-rails.rb
     - lib/generators/rails/templates/*.rb

@@ -5,8 +5,8 @@ module AjaxDatatablesRails
     class Column
       module Search
 
-        SMALLEST_PQ_INTEGER = -2147483648
-        LARGEST_PQ_INTEGER  = 2147483647
+        SMALLEST_PQ_INTEGER = -2_147_483_648
+        LARGEST_PQ_INTEGER  = 2_147_483_647
         NOT_NULL_VALUE      = '!NULL'
         EMPTY_VALUE         = ''
 
@@ -54,12 +54,13 @@ module AjaxDatatablesRails
           end
         end
 
+        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
         def non_regex_search
           case cond
           when Proc
             filter
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
-            is_searchable_integer? ? raw_search(cond) : empty_search
+            searchable_integer? ? raw_search(cond) : empty_search
           when :null_value
             null_value_search
           when :start_with
@@ -74,6 +75,7 @@ module AjaxDatatablesRails
             date_range_search
           end
         end
+        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/CyclomaticComplexity
 
         def null_value_search
           if formatted_value == NOT_NULL_VALUE
@@ -95,21 +97,24 @@ module AjaxDatatablesRails
           casted_column.matches(EMPTY_VALUE)
         end
 
-        def is_searchable_integer?
+        def searchable_integer?
           if formatted_value.is_a?(Array)
-            valids = formatted_value.map { |v| is_integer?(v) && !is_out_of_range?(v) }
+            valids = formatted_value.map { |v| integer?(v) && !out_of_range?(v) }
             !valids.include?(false)
           else
-            is_integer?(formatted_value) && !is_out_of_range?(formatted_value)
+            integer?(formatted_value) && !out_of_range?(formatted_value)
           end
         end
 
-        def is_out_of_range?(search_value)
+        def out_of_range?(search_value)
           Integer(search_value) > LARGEST_PQ_INTEGER || Integer(search_value) < SMALLEST_PQ_INTEGER
         end
 
-        def is_integer?(string)
-          true if Integer(string) rescue false
+        def integer?(string)
+          Integer(string)
+          true
+        rescue ArgumentError
+          false
         end
 
       end
