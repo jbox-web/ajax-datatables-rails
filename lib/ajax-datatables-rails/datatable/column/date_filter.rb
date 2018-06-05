@@ -5,6 +5,8 @@ module AjaxDatatablesRails
     class Column
       module DateFilter
 
+        RANGE_DELIMITER = '-'
+
         class DateRange
           attr_reader :begin, :end
 
@@ -20,11 +22,7 @@ module AjaxDatatablesRails
 
         # Add delimiter option to handle range search
         def delimiter
-          @view_column[:delimiter] || '-'
-        end
-
-        def empty_range_search?
-          (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
+          @delimiter ||= @view_column.fetch(:delimiter, RANGE_DELIMITER)
         end
 
         # A range value is in form '<range_start><delimiter><range_end>'
@@ -37,6 +35,10 @@ module AjaxDatatablesRails
         # This returns <range_end>
         def range_end
           @range_end ||= formatted_value.split(delimiter)[1]
+        end
+
+        def empty_range_search?
+          (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
         end
 
         # Do a range search
@@ -56,11 +58,7 @@ module AjaxDatatablesRails
         end
 
         def parse_date(date)
-          if Time.zone
-            Time.zone.parse(date)
-          else
-            Time.parse(date)
-          end
+          Time.zone ? Time.zone.parse(date) : Time.parse(date)
         end
 
       end
