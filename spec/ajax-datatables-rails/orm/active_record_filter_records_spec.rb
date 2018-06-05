@@ -7,19 +7,19 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   describe '#filter_records' do
     it 'requires a records collection as argument' do
-      expect { datatable.send(:filter_records) }.to raise_error(ArgumentError)
+      expect { datatable.filter_records() }.to raise_error(ArgumentError)
     end
 
     it 'performs a simple search first' do
       datatable.params[:search] = { value: 'msmith' }
       expect(datatable).to receive(:build_conditions_for_datatable)
-      datatable.send(:filter_records, records)
+      datatable.filter_records(records)
     end
 
     it 'performs a composite search second' do
       datatable.params[:search] = { value: '' }
       expect(datatable).to receive(:build_conditions_for_selected_columns)
-      datatable.send(:filter_records, records)
+      datatable.filter_records(records)
     end
   end
 
@@ -31,14 +31,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     it 'returns an Arel object' do
       datatable.params[:search] = { value: 'msmith' }
-      result = datatable.send(:build_conditions_for_datatable)
+      result = datatable.build_conditions_for_datatable
       expect(result).to be_a(Arel::Nodes::Grouping)
     end
 
     context 'no search query' do
       it 'returns empty query' do
         datatable.params[:search] = { value: '' }
-        expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+        expect(datatable.build_conditions_for_datatable).to be_blank
       end
     end
 
@@ -53,11 +53,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'returns empty query result' do
-          expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+          expect(datatable.build_conditions_for_datatable).to be_blank
         end
 
         it 'returns filtered results' do
-          query = datatable.send(:build_conditions_for_datatable)
+          query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to eq ['johndoe', 'msmith']
         end
@@ -69,11 +69,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'returns empty query result' do
-          expect(datatable.send(:build_conditions_for_datatable)).to be_blank
+          expect(datatable.build_conditions_for_datatable).to be_blank
         end
 
         it 'returns filtered results' do
-          query = datatable.send(:build_conditions_for_datatable)
+          query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to eq ['johndoe', 'msmith']
         end
@@ -87,7 +87,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'returns a filtering query' do
-          query = datatable.send(:build_conditions_for_datatable)
+          query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to include('johndoe')
           expect(results).not_to include('msmith')
@@ -100,7 +100,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'returns a filtering query' do
-          query = datatable.send(:build_conditions_for_datatable)
+          query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to eq ['johndoe']
           expect(results).not_to include('msmith')
@@ -122,14 +122,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       it 'returns an Arel object' do
-        result = datatable.send(:build_conditions_for_selected_columns)
+        result = datatable.build_conditions_for_selected_columns
         expect(result).to be_a(Arel::Nodes::And)
       end
 
       if AjaxDatatablesRails.config.db_adapter == :postgresql
         context 'when db_adapter is postgresql' do
           it 'can call #to_sql on returned object' do
-            result = datatable.send(:build_conditions_for_selected_columns)
+            result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
               "CAST(\"users\".\"username\" AS VARCHAR) ILIKE '%doe%' AND CAST(\"users\".\"email\" AS VARCHAR) ILIKE '%example%'"
@@ -141,7 +141,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
         context 'when db_adapter is oracle' do
           it 'can call #to_sql on returned object' do
-            result = datatable.send(:build_conditions_for_selected_columns)
+            result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
               "CAST(\"USERS\".\"USERNAME\" AS VARCHAR2(4000)) LIKE '%doe%' AND CAST(\"USERS\".\"EMAIL\" AS VARCHAR2(4000)) LIKE '%example%'"
@@ -153,7 +153,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       if AjaxDatatablesRails.config.db_adapter.in? %i[mysql2 sqlite3]
         context 'when db_adapter is mysql2' do
           it 'can call #to_sql on returned object' do
-            result = datatable.send(:build_conditions_for_selected_columns)
+            result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
               "CAST(`users`.`username` AS CHAR) LIKE '%doe%' AND CAST(`users`.`email` AS CHAR) LIKE '%example%'"
@@ -165,7 +165,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     it 'calls #build_conditions_for_selected_columns' do
       expect(datatable).to receive(:build_conditions_for_selected_columns)
-      datatable.send(:build_conditions)
+      datatable.build_conditions
     end
 
     context 'with search values in columns' do
@@ -174,60 +174,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       it 'returns a filtered set of records' do
-        query = datatable.send(:build_conditions_for_selected_columns)
+        query = datatable.build_conditions_for_selected_columns
         results = records.where(query).map(&:username)
         expect(results).to include('johndoe')
         expect(results).not_to include('msmith')
       end
-    end
-  end
-
-  describe '#type_cast helper method' do
-    let(:column) { ComplexDatatable.new(sample_params).datatable.columns.first }
-
-    it 'returns VARCHAR if :db_adapter is :pg' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :pg }
-      expect(column.send(:type_cast)).to eq('VARCHAR')
-    end
-
-    it 'returns VARCHAR if :db_adapter is :postgre' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgre }
-      expect(column.send(:type_cast)).to eq('VARCHAR')
-    end
-
-    it 'returns VARCHAR if :db_adapter is :postgresql' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgresql }
-      expect(column.send(:type_cast)).to eq('VARCHAR')
-    end
-
-    it 'returns VARCHAR if :db_adapter is :oracle' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracle }
-      expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
-    end
-
-    it 'returns VARCHAR if :db_adapter is :oracleenhanced' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracleenhanced }
-      expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
-    end
-
-    it 'returns CHAR if :db_adapter is :mysql2' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql2 }
-      expect(column.send(:type_cast)).to eq('CHAR')
-    end
-
-    it 'returns CHAR if :db_adapter is :mysql' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql }
-      expect(column.send(:type_cast)).to eq('CHAR')
-    end
-
-    it 'returns TEXT if :db_adapter is :sqlite' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite }
-      expect(column.send(:type_cast)).to eq('TEXT')
-    end
-
-    it 'returns TEXT if :db_adapter is :sqlite3' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite3 }
-      expect(column.send(:type_cast)).to eq('TEXT')
     end
   end
 
