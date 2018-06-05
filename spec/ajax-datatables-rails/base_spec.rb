@@ -111,7 +111,6 @@ describe AjaxDatatablesRails::Base do
 
 
   context 'Private API' do
-
     context 'when orm is not implemented' do
       before do
         allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:orm) { nil }
