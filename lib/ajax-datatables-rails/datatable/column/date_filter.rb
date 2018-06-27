@@ -50,11 +50,27 @@ module AjaxDatatablesRails
         private
 
         def range_start_casted
-          range_start.blank? ? parse_date('01/01/1970') : parse_date(range_start)
+          if range_start.blank?
+            parse_date('01/01/1970')
+          else
+            begin
+              parse_date(range_start)
+            rescue ArgumentError
+              parse_date('01/01/1970')
+            end
+          end
         end
 
         def range_end_casted
-          range_end.blank? ? Time.current : parse_date("#{range_end} 23:59:59")
+          if range_end.blank?
+            Time.current
+          else
+            begin
+              parse_date("#{range_end} 23:59:59")
+            rescue ArgumentError
+              Time.current
+            end
+          end
         end
 
         def parse_date(date)
