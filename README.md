@@ -451,7 +451,8 @@ It also helps in separating view/presentation logic from filtering logic (the on
 Example :
 
 ```ruby
-...
+class UserDatatable < AjaxDatatablesRails::ActiveRecord
+  ...
   def data
     records.map do |record|
       {
@@ -464,7 +465,8 @@ Example :
       }
     end
   end
-...
+  ...
+end
 
 class UserDecorator < ApplicationDecorator
   delegate :last_name, :bio
