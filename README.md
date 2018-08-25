@@ -39,7 +39,14 @@ All the datatable customizations (header, tr, td, css classes, width, height, bu
 jQuery DataTables is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
 
-## Warning
+## Warnings
+
+**Breaking changes :** the *v1.0.0* version is a **major break** from *v0.4*.
+
+* Datatables no longer inherits from `AjaxDatatablesRails::Base` but from `AjaxDatatablesRails::ActiveRecord` (this solves [#228](https://github.com/jbox-web/ajax-datatables-rails/issues/228))
+* The `view_context` is no longer injected in Datatables but only the `params` hash (see the [example](#4-setup-the-controller-action)). This will break calls to helpers methods.
+
+To mitigate this 2 changes see the [migration doc](/doc/migrate.md).
 
 **Breaking changes :** the *v0.4* version is a **major break** from *v0.3*.
 
