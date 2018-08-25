@@ -807,6 +807,8 @@ Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datat
 
 Use [has_scope](https://github.com/plataformatec/has_scope) gem with `ajax-datatables-rails` : [#280](https://github.com/jbox-web/ajax-datatables-rails/issues/280)
 
+Use [Datatable orthogonal data](https://datatables.net/manual/data/orthogonal-data) : see [#269](https://github.com/jbox-web/ajax-datatables-rails/issues/269#issuecomment-387940478)
+
 ## Contributing
 
 1. Fork it
