@@ -12,6 +12,8 @@ class PostDatatable < ApplicationDatatable
 end
 ```
 
+**Note :** This is now in the [ProTips™](https://github.com/jbox-web/ajax-datatables-rails#protips) section of the documentation.
+
 2) To mitigate the second change (The `view_context` is no longer injected in Datatables)
 
 Update the `ApplicationDatatable` class :
@@ -30,8 +32,19 @@ end
 and update your controllers :
 
 ```ruby
+# before
+respond_to do |format|
+  format.json { render json: UserDatatable.new(view_context) }
+end
+
+# after
 respond_to do |format|
   format.json { render json: UserDatatable.new(params, view_context: view_context) }
+end
+
+# if you need to inject some options
+respond_to do |format|
+  format.json { render json: UserDatatable.new(params, view_context: view_context, my: 'options') }
 end
 ```
 

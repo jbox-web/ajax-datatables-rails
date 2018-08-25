@@ -672,7 +672,7 @@ In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
 
-## Pro Tips
+## ProTips™
 
 ### Create a master parent class
 
