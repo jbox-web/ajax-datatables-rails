@@ -438,6 +438,9 @@ end
 If you want to keep things tidy in the data mapping method, you could use
 [Draper](https://github.com/drapergem/draper) to define column mappings like below.
 
+**Note :** This is the recommanded way as you don't need to inject the `view_context` in the Datatable object to access helpers methods.
+It also helps in separating view/presentation logic from filtering logic (the only one that really matters in a datatable class).
+
 Example :
 
 ```ruby
@@ -482,8 +485,6 @@ class UserDecorator < ApplicationDecorator
   end
 end
 ```
-
-This way you don't need to inject the `view_context` in the Datatable object to access helpers methods.
 
 ### Pass options to the datatable class
 
