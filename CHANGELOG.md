@@ -1,9 +1,11 @@
 # CHANGELOG
 
-## 1.0.0 (to come)
+## 1.0.0 (2018-08-28)
 
 * Breaking change: Remove dependency on view_context [Issue #288](https://github.com/jbox-web/ajax-datatables-rails/issues/288)
-* Breaking change: Replace `config.orm = :active_record` by a class : `AjaxDatatablesRails::ActiveRecord`
+* Breaking change: Replace `config.orm = :active_record` by a class : `AjaxDatatablesRails::ActiveRecord` [Fix #228](https://github.com/jbox-web/ajax-datatables-rails/issues/228)
+
+To mitigate this 2 changes see the [migration doc](/doc/migrate.md).
 
 ## 0.4.3 (2018-06-05)
 
