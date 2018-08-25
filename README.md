@@ -65,6 +65,13 @@ To migrate on the v0.4 you'll need to :
 * update your views to declare your columns bindings ([See here](#5-wire-up-the-javascript))
 
 
+## Documentation version
+
+This documentation is about the `v1.x.x` release (master branch) of this gem.
+
+You can still have access to the `v0.4.x` documentation on the [v0.4.x branch](https://github.com/jbox-web/ajax-datatables-rails/tree/v0.4.x).
+
+
 ## Installation
 
 Add these lines to your application's Gemfile:
