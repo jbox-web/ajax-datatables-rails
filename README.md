@@ -665,6 +665,22 @@ database.
 
 ## Pro Tips
 
+### Create a master parent class
+
+In the same spirit of Rails `ApplicationController` and `ApplicationRecord`, you can create an `ApplicationDatatable` class (in `app/datatables/application_datatable.rb`)
+that will be inherited from other classes :
+
+```ruby
+class ApplicationDatatable < AjaxDatatablesRails::ActiveRecord
+  # puts commonly used methods here
+end
+
+class PostDatatable < ApplicationDatatable
+end
+```
+
+This way it will be easier to DRY you datatables.
+
 ### Create indices for Postgresql
 
 In order to speed up the `ILIKE` queries that are executed when using the default configuration, you might want to consider adding some indices.
