@@ -38,4 +38,6 @@ env:
   matrix:
     - DB_ADAPTER=postgresql
     - DB_ADAPTER=mysql2
+matrix:
+  allow_failures:
     - DB_ADAPTER=oracle_enhanced
