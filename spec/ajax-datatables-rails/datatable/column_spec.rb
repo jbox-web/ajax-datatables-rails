@@ -167,12 +167,12 @@ describe AjaxDatatablesRails::Datatable::Column do
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
-    it 'returns VARCHAR if :db_adapter is :oracle' do
+    it 'returns VARCHAR2(4000) if :db_adapter is :oracle' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracle }
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
 
-    it 'returns VARCHAR if :db_adapter is :oracleenhanced' do
+    it 'returns VARCHAR2(4000) if :db_adapter is :oracleenhanced' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracleenhanced }
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
@@ -195,6 +195,11 @@ describe AjaxDatatablesRails::Datatable::Column do
     it 'returns TEXT if :db_adapter is :sqlite3' do
       allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite3 }
       expect(column.send(:type_cast)).to eq('TEXT')
+    end
+
+    it 'returns VARCHAR(4000) if :db_adapter is :sqlserver' do
+      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlserver }
+      expect(column.send(:type_cast)).to eq('VARCHAR(4000)')
     end
   end
 end
