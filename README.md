@@ -684,7 +684,7 @@ database.
 
 ## ProTips™
 
-### Create a master parent class
+### Create a master parent class (Easy)
 
 In the same spirit of Rails `ApplicationController` and `ApplicationRecord`, you can create an `ApplicationDatatable` class (in `app/datatables/application_datatable.rb`)
 that will be inherited from other classes :
@@ -700,34 +700,7 @@ end
 
 This way it will be easier to DRY you datatables.
 
-### Create indices for Postgresql
-
-In order to speed up the `ILIKE` queries that are executed when using the default configuration, you might want to consider adding some indices.
-For postgresql, you are advised to use the [gin/gist index type](http://www.postgresql.org/docs/current/interactive/pgtrgm.html).
-This makes it necessary to enable the postgrsql extension `pg_trgm`. Double check that you have this extension installed before trying to enable it.
-A migration for enabling the extension and creating the indices could look like this:
-
-```ruby
-def change
-  enable_extension :pg_trgm
-  TEXT_SEARCH_ATTRIBUTES = ['your', 'attributes']
-  TABLE = 'your_table'
-
-  TEXT_SEARCH_ATTRIBUTES.each do |attr|
-    reversible do |dir|
-      dir.up do
-        execute "CREATE INDEX #{TABLE}_#{attr}_gin ON #{TABLE} USING gin(#{attr} gin_trgm_ops)"
-      end
-
-      dir.down do
-        remove_index TABLE.to_sym, name: "#{TABLE}_#{attr}_gin"
-      end
-    end
-  end
-end
-```
-
-### Speedup JSON rendering
+### Speedup JSON rendering (Easy)
 
 Install [yajl-ruby](https://github.com/brianmario/yajl-ruby), basically :
 
@@ -743,9 +716,9 @@ $ bundle install
 
 That's all :) ([Automatically prefer Yajl or JSON backend over Yaml, if available](https://github.com/rails/rails/commit/63bb955a99eb46e257655c93dd64e86ebbf05651))
 
-### Use HTTP `POST` method
+### Use HTTP `POST` method (Medium)
 
-Use HTTP `POST` method to avoid `414 Request-URI Too Large` error. See : [#278](https://github.com/jbox-web/ajax-datatables-rails/issues/278).
+Use HTTP `POST` method to avoid `414 Request-URI Too Large` error. See : [#278](https://github.com/jbox-web/ajax-datatables-rails/issues/278) and [#308](https://github.com/jbox-web/ajax-datatables-rails/issues/308#issuecomment-424897335).
 
 You can easily define a route concern in `config/routes.rb` and reuse it when you need it :
 
@@ -806,6 +779,33 @@ $ ->
       url: $('#users-datatable').data('source')
       type: 'POST'
     # ...others options, see [here](#5-wire-up-the-javascript)
+```
+
+### Create indices for Postgresql (Expert)
+
+In order to speed up the `ILIKE` queries that are executed when using the default configuration, you might want to consider adding some indices.
+For postgresql, you are advised to use the [gin/gist index type](http://www.postgresql.org/docs/current/interactive/pgtrgm.html).
+This makes it necessary to enable the postgrsql extension `pg_trgm`. Double check that you have this extension installed before trying to enable it.
+A migration for enabling the extension and creating the indices could look like this:
+
+```ruby
+def change
+  enable_extension :pg_trgm
+  TEXT_SEARCH_ATTRIBUTES = ['your', 'attributes']
+  TABLE = 'your_table'
+
+  TEXT_SEARCH_ATTRIBUTES.each do |attr|
+    reversible do |dir|
+      dir.up do
+        execute "CREATE INDEX #{TABLE}_#{attr}_gin ON #{TABLE} USING gin(#{attr} gin_trgm_ops)"
+      end
+
+      dir.down do
+        remove_index TABLE.to_sym, name: "#{TABLE}_#{attr}_gin"
+      end
+    end
+  end
+end
 ```
 
 ## Tutorial
