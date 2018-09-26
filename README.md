@@ -337,6 +337,8 @@ Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
 [See here](#pass-options-to-the-datatable-class) if you need to inject params in the `UserDatatable`.
 
+**Note :** If you have more than **2** datatables in your application, don't forget to read [this](#use-http-post-method-medium).
+
 ### 5) Wire up the Javascript
 
 Finally, the javascript to tie this all together. In the appropriate `coffee` file:
@@ -681,6 +683,18 @@ $ rails generate datatable UnrespondedMessages
 In the end, it's up to the developer which model(s), scope(s), relationship(s)
 (or else) to employ inside the datatable class to retrieve records from the
 database.
+
+## Tests
+
+Datatables can be tested with Capybara provided you don't use Webrick during integration tests.
+
+Long story short and as a rule of thumb : use the same webserver everywhere (dev, prod, staging, test, etc...).
+
+If you use Puma (the Rails default webserver), use Puma everywhere, even in CI/test environment. The same goes for Thin.
+
+You will avoid the usual story : it works in dev but not in test environment...
+
+If you want to test datatables with a lot of data you might need this kind of tricks : https://robots.thoughtbot.com/automatically-wait-for-ajax-with-capybara. (thanks CharlieIGG)
 
 ## ProTips™
 
