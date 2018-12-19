@@ -1,7 +1,6 @@
-dist: trusty
 language: ruby
-sudo: required
 cache: bundler
+sudo: required
 rvm:
   - 2.5.3
   - 2.4.5
@@ -25,7 +24,7 @@ addons:
     - mysql-client-5.6
 before_install:
   - gem update --system
-  - gem install bundler
+  - gem install bundler --no-document
   - sh -c "if [ '$DB_ADAPTER' = 'mysql2' ]; then mysql -e 'create database ajax_datatables_rails;'; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'postgresql' ]; then psql -c 'create database ajax_datatables_rails;' -U postgres; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'oracle_enhanced' ]; then ./spec/install_oracle.sh; fi"
