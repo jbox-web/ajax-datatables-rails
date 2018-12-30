@@ -68,6 +68,7 @@ module AjaxDatatablesRails
       end
 
       def get_param(param)
+        return {} if options[param].nil?
         options[param].to_unsafe_h.with_indifferent_access
       end
 
