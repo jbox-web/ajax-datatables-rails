@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.push File.expand_path('lib', __dir__)
+lib = File.expand_path('lib', __dir__)
+$LOAD_PATH.push(lib) unless $LOAD_PATH.include?(lib)
 require 'ajax-datatables-rails/version'
 
 Gem::Specification.new do |s|
