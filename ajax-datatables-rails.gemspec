@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.push(lib) unless $LOAD_PATH.include?(lib)
-require 'ajax-datatables-rails/version'
+require_relative 'lib/ajax-datatables-rails/version'
 
 Gem::Specification.new do |s|
   s.name        = 'ajax-datatables-rails'
@@ -15,7 +13,9 @@ Gem::Specification.new do |s|
   s.description = "A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app"
   s.license     = 'MIT'
 
-  s.add_dependency 'railties', '>= 4.2'
+  s.files = `git ls-files`.split("\n")
+
+  s.add_runtime_dependency 'railties', '>= 4.2'
 
   s.add_development_dependency 'rails', '>= 4.2'
   s.add_development_dependency 'rake'
@@ -31,9 +31,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'faker'
   s.add_development_dependency 'appraisal'
-
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
-  s.require_paths = ['lib']
 end
