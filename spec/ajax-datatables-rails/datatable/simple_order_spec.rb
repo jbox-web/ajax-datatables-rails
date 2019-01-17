@@ -51,12 +51,6 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
           expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
         end
       end
-
-      # it 'sql query' do
-      #   expect(nulls_last_order.query('email')).to eq(
-      #     'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
-      #   )
-      # end
     end
   end
 end
