@@ -19,7 +19,7 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
       it 'sql query' do
         expect(simple_order.query('email')).to eq(
-          'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
+          'email DESC NULLS LAST'
         )
       end
     end
@@ -28,12 +28,35 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
       let(:sorted_datatable) { DatatableOrderNullsLast.new(sample_params).datatable }
       let(:nulls_last_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(sorted_datatable, options) }
 
-      it 'sql query' do
-        expect(nulls_last_order.query('email')).to eq(
-          'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
-        )
+      context 'with postgres database adapter' do
+        before { AjaxDatatablesRails.config.db_adapter = :pg }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC NULLS LAST')
+        end
       end
+
+      context 'with sqlite database adapter' do
+        before { AjaxDatatablesRails.config.db_adapter = :sqlite }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
+        end
+      end
+
+      context 'with mysql database adapter' do
+        before { AjaxDatatablesRails.config.db_adapter = :mysql }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
+        end
+      end
+
+      # it 'sql query' do
+      #   expect(nulls_last_order.query('email')).to eq(
+      #     'CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC'
+      #   )
+      # end
     end
   end
-
 end

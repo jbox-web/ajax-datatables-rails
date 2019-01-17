@@ -14,11 +14,7 @@ module AjaxDatatablesRails
       end
 
       def query(sort_column)
-        if sort_nulls_last?
-          "CASE WHEN #{sort_column} IS NULL THEN 1 ELSE 0 END, #{sort_column} #{direction}"
-        else
-          "#{sort_column} #{direction}"
-        end
+        [sort_column, direction, nulls_last_sql].compact.join(" ")
       end
 
       def column
@@ -41,6 +37,19 @@ module AjaxDatatablesRails
 
       def sort_nulls_last?
         column.nulls_last? || AjaxDatatablesRails.config.nulls_last == true
+      end
+
+      def nulls_last_sql
+        return unless sort_nulls_last?
+
+        case AjaxDatatablesRails.config.db_adapter
+        when -> (a) { a.in?([:pg, :postgresql, :postgres, :oracle]) }
+          "NULLS LAST"
+        when -> (a) { a.in?([:mysql, :mysql2, :sqlite, :sqlite3]) }
+          "IS NULL"
+        else
+          raise 'unsupported database adapter'
+        end
       end
 
     end
