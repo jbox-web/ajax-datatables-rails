@@ -9,7 +9,7 @@ AllCops:
 Documentation:
   Enabled: false
 
-Gemspec/OrderedDependencies:
+Layout/AlignHash:
   Enabled: false
 
 Layout/EmptyLines:
@@ -45,5 +45,8 @@ Metrics/ClassLength:
 Naming/AccessorMethodName:
   Enabled: false
 
-Style/NumericPredicate:
-  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma

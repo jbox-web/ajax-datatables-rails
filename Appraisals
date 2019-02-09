@@ -2,20 +2,20 @@
 
 RAILS_VERSIONS = {
   '4.2.11' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 1.6.0'
+    'activerecord-oracle_enhanced-adapter' => '~> 1.6.0',
   },
   '5.0.7' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.7.0',
-    'ruby-oci8' => ''
+    'ruby-oci8' => '',
   },
   '5.1.6' => {
     'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
-    'ruby-oci8' => ''
+    'ruby-oci8' => '',
   },
   '5.2.2' => {
     'activerecord-oracle_enhanced-adapter' => '~> 5.2.0',
-    'ruby-oci8' => ''
-  }
+    'ruby-oci8' => '',
+  },
 }.freeze
 
 RAILS_VERSIONS.each do |version, gems|
