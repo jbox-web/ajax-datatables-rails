@@ -26,7 +26,7 @@ addons:
     - mysql-client-5.6
 before_install:
   - gem update --system
-  - gem install bundler --no-document
+  # - gem install bundler --no-document
   - sh -c "if [ '$DB_ADAPTER' = 'mysql2' ]; then mysql -e 'create database ajax_datatables_rails;'; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'postgresql' ]; then psql -c 'create database ajax_datatables_rails;' -U postgres; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'oracle_enhanced' ]; then ./spec/install_oracle.sh; fi"
