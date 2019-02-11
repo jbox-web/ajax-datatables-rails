@@ -10,6 +10,7 @@ task :console do
   require 'pry'
   require 'rails'
   require 'ajax-datatables-rails'
+  puts 'Loaded AjaxDatatablesRails'
   ARGV.clear
   Pry.start
 end
