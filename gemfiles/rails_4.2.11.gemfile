@@ -7,8 +7,4 @@ gem "mysql2", "0.4.10"
 gem "activerecord-oracle_enhanced-adapter", "~> 1.6.0"
 gem "ruby-oci8" if ENV["DB_ADAPTER"] == "oracle_enhanced"
 
-group :test do
-  gem "codeclimate-test-reporter", "~> 1.0.0"
-end
-
 gemspec path: "../"
