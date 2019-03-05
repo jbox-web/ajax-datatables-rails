@@ -2,17 +2,16 @@ language: ruby
 cache: bundler
 sudo: required
 rvm:
-  - 2.6.0
+  - 2.6.1
   - 2.5.3
   - 2.4.5
   - 2.3.8
+  - ruby-head
 gemfile:
   - gemfiles/rails_4.2.11.gemfile
   - gemfiles/rails_5.0.7.gemfile
   - gemfiles/rails_5.1.6.gemfile
   - gemfiles/rails_5.2.2.gemfile
-after_success:
-  - bundle exec codeclimate-test-reporter
 services:
   - postgresql
   - mysql
@@ -25,7 +24,7 @@ addons:
     - mysql-client-5.6
 before_install:
   - gem update --system
-  - gem install bundler --no-document
+  # - gem install bundler --no-document
   - sh -c "if [ '$DB_ADAPTER' = 'mysql2' ]; then mysql -e 'create database ajax_datatables_rails;'; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'postgresql' ]; then psql -c 'create database ajax_datatables_rails;' -U postgres; fi"
   - sh -c "if [ '$DB_ADAPTER' = 'oracle_enhanced' ]; then ./spec/install_oracle.sh; fi"
@@ -43,3 +42,9 @@ env:
 matrix:
   allow_failures:
     - env: DB_ADAPTER=oracle_enhanced
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

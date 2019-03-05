@@ -44,6 +44,7 @@ module AjaxDatatablesRails
         # Do a range search
         def date_range_search
           return nil if empty_range_search?
+
           table[field].between(DateRange.new(range_start_casted, range_end_casted))
         end
 
