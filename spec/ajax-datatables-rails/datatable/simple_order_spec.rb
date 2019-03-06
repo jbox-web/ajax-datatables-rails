@@ -19,7 +19,7 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
       it 'sql query' do
         expect(simple_order.query('email')).to eq(
-          'email DESC NULLS LAST'
+          "email DESC #{nulls_last_sql}"
         )
       end
     end
