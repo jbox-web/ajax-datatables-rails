@@ -100,9 +100,9 @@ end
 
 def nulls_last_sql
   case AjaxDatatablesRails.config.db_adapter
-  when -> (a) { a.in?([:pg, :postgresql, :postgres, :oracle]) }
+  when :pg, :postgresql, :postgres, :oracle
     "NULLS LAST"
-  when -> (a) { a.in?([:mysql, :mysql2, :sqlite, :sqlite3]) }
+  when :mysql, :mysql2, :sqlite, :sqlite3
     "IS NULL"
   else
     raise 'unsupported database adapter'
