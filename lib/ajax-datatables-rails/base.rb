@@ -33,7 +33,7 @@ module AjaxDatatablesRails
       {
         recordsTotal:    records_total_count,
         recordsFiltered: records_filtered_count,
-        data:            sanitize(data),
+        data:            AjaxDatatablesRails::Base.instance_method(:sanitize).bind(self).call(data),
       }.merge(get_additional_data)
     end
 
