@@ -54,8 +54,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(datatable.sort_records(records).to_sql).to include(
-        'ORDER BY CASE WHEN users.username IS NULL THEN 1 ELSE 0 END, users.username ASC, ' +
-        'CASE WHEN users.email IS NULL THEN 1 ELSE 0 END, users.email DESC'
+        "ORDER BY users.username ASC #{nulls_last_sql}, users.email DESC #{nulls_last_sql}"
       )
     end
   end
@@ -67,8 +66,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       nulls_last_datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       nulls_last_datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(nulls_last_datatable.sort_records(records).to_sql).to include(
-        'ORDER BY users.username ASC, ' +
-        'CASE WHEN users.email IS NULL THEN 1 ELSE 0 END, users.email DESC'
+        "ORDER BY users.username ASC, users.email DESC #{nulls_last_sql}"
       )
     end
   end
