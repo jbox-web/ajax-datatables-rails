@@ -22,6 +22,12 @@ class DatatableCondStringEq < ComplexDatatable
   end
 end
 
+class DatatableCondStringIn < ComplexDatatable
+  def view_columns
+    super.deep_merge(email: { cond: :string_in, formatter: -> (o) { o.split("|") } })
+  end
+end
+
 class DatatableCondNullValue < ComplexDatatable
   def view_columns
     super.deep_merge(email: { cond: :null_value })

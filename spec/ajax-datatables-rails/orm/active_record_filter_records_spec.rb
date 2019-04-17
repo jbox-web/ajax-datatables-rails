@@ -339,6 +339,39 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    describe 'it can filter records with condition :string_in' do
+      let(:datatable) { DatatableCondStringIn.new(sample_params) }
+
+      before(:each) do
+        create(:user, email: 'john@foo.com')
+        create(:user, email: 'mary@bar.com')
+        create(:user, email: 'henry@baz.com')
+      end
+
+      it 'should filter records matching' do
+        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:email]).to eq 'john@foo.com'
+      end
+
+      it 'should filter records matching with multiple' do
+        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry@baz.com'
+        expect(datatable.data.size).to eq 2
+        item_first = datatable.data.first
+        item_last = datatable.data.last
+        expect(item_first[:email]).to eq 'john@foo.com'
+        expect(item_last[:email]).to eq 'henry@baz.com'
+      end
+
+      it 'should filter records matching with multiple contains not found' do
+        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry_not@baz.com'
+        expect(datatable.data.size).to eq 1
+        item = datatable.data.first
+        expect(item[:email]).to eq 'john@foo.com'
+      end
+    end
+
     describe 'it can filter records with condition :null_value' do
       let(:datatable) { DatatableCondNullValue.new(sample_params) }
 
