@@ -358,10 +358,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       it 'should filter records matching with multiple' do
         datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry@baz.com'
         expect(datatable.data.size).to eq 2
-        item_first = datatable.data.first
-        item_last = datatable.data.last
-        expect(item_first[:email]).to eq 'john@foo.com'
-        expect(item_last[:email]).to eq 'henry@baz.com'
+        items = datatable.data.sort_by { |h| h[:email] }
+        item_first = items.first
+        item_last = items.last
+        expect(item_first[:email]).to eq 'henry@baz.com'
+        expect(item_last[:email]).to eq 'john@foo.com'
       end
 
       it 'should filter records matching with multiple contains not found' do
