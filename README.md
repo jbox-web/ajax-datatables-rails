@@ -11,8 +11,8 @@
 
 It's tested against :
 
-* Rails 4.2.11 / 5.0.7 / 5.1.6 / 5.2.2
-* Ruby 2.3.8 / 2.4.5 / 2.5.3
+* Rails 4.2.11 / 5.0.7 / 5.1.7 / 5.2.3
+* Ruby 2.3.8 / 2.4.5 / 2.5.3 / 2.6.2
 * Postgresql 9.6
 * MySQL 5.6
 * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
