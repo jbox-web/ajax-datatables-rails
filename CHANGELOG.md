@@ -3,7 +3,9 @@
 ## 1.1.0 (2019-04-18)
 
 * Add rudimentary support for Microsoft SQL Server
-* Fixes errors when options[param] is nil (thanks @allard)
+* Fixes errors when options[param] is nil [PR 315](https://github.com/jbox-web/ajax-datatables-rails/pull/315) (thanks @allard)
+* Add :string_in cond [PR 323](https://github.com/jbox-web/ajax-datatables-rails/pull/323) (thanks @donnguyen)
+* Update documentation
 * Test with latest Rails and Ruby versions
 
 This is the last version to support Rails 4.x and Ruby 2.3.x.
