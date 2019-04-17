@@ -350,7 +350,8 @@ $ ->
   $('#users-datatable').dataTable
     processing: true
     serverSide: true
-    ajax: {url: $('#users-datatable').data('source')}
+    ajax:
+      url: $('#users-datatable').data('source')
     pagingType: 'full_numbers'
     columns: [
       {data: 'id'}
@@ -373,7 +374,9 @@ jQuery(document).ready(function() {
   $('#users-datatable').dataTable({
     "processing": true,
     "serverSide": true,
-    "ajax": {"url": $('#users-datatable').data('source')},
+    "ajax": {
+      "url": $('#users-datatable').data('source')
+    },
     "pagingType": "full_numbers",
     "columns": [
       {"data": "id"},
@@ -657,7 +660,7 @@ This feature works with [yadcf](https://github.com/vedmack/yadcf).
 
 To enable the date range search, for example `created_at` :
 
-* add a 'created_at' `<th>` in your html
+* add a `created_at` `<th>` in your html
 * declare your column in `view_columns` : `created_at: { source: 'Post.created_at', cond: :date_range, delimiter: '-yadcf_delim-' }`
 * add it in `data` : `created_at: record.decorate.created_at`
 * setup yadcf to make `created_at` search field a range
