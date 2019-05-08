@@ -6,6 +6,7 @@
 * Fixes errors when options[param] is nil [PR 315](https://github.com/jbox-web/ajax-datatables-rails/pull/315) (thanks @allard)
 * Improve query performance when nulls_last option is enabled [PR 317](https://github.com/jbox-web/ajax-datatables-rails/pull/317) (thanks @natebird)
 * Add :string_in cond [PR 323](https://github.com/jbox-web/ajax-datatables-rails/pull/323) (thanks @donnguyen)
+* Rename `sanitize` private method [PR 326](https://github.com/jbox-web/ajax-datatables-rails/pull/326) (thanks @epipheus)
 * Update documentation
 * Test with latest Rails and Ruby versions
 
