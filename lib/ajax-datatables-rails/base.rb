@@ -33,7 +33,7 @@ module AjaxDatatablesRails
       {
         recordsTotal:    records_total_count,
         recordsFiltered: records_filtered_count,
-        data:            sanitize(data),
+        data:            sanitize_data(data),
       }.merge(get_additional_data)
     end
 
@@ -81,7 +81,7 @@ module AjaxDatatablesRails
       end
     end
 
-    def sanitize(data)
+    def sanitize_data(data)
       data.map do |record|
         if record.is_a?(Array)
           record.map { |td| ERB::Util.html_escape(td) }
