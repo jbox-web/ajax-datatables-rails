@@ -54,7 +54,7 @@ describe AjaxDatatablesRails::Base do
 
         it 'should html escape data' do
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
-          data = datatable.send(:sanitize, datatable.data)
+          data = datatable.send(:sanitize_data, datatable.data)
           item = data.first
           expect(item[:first_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
           expect(item[:last_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
@@ -74,7 +74,7 @@ describe AjaxDatatablesRails::Base do
 
         it 'should html escape data' do
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
-          data = datatable.send(:sanitize, datatable.data)
+          data = datatable.send(:sanitize_data, datatable.data)
           item = data.first
           expect(item[2]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
           expect(item[3]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
