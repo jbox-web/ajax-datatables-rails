@@ -650,6 +650,56 @@ def get_raw_records
 end
 ```
 
+### Example: Sorting and Searching on same column twice
+
+The Models involved:
+
+```ruby
+class Transaction < ApplicationRecord
+  belongs_to :seller, class_name: 'User'
+  belongs_to :buyer, class_name: 'User'
+end
+
+class User < ApplicationRecord
+  has_many :sales, class_name: 'Transaction', foreign_key: 'seller_id'
+  has_many :purchases, class_name: 'Transaction', foreign_key: 'buyer_id'
+end
+```
+
+Datatable:
+
+```ruby
+class TransactionDatatable < AjaxDatatablesRails::Base
+
+  def view_columns
+    @view_columns ||= {
+      id: { source: 'Transaction.id', cond: :eq },
+      seller: { source: 'User.email', cond: :like, custom_table_name: 'sellers_transactions'},
+      buyer: { source: 'User.email', cond: :like, custom_table_name: 'buyers_transactions'},
+      amount: { source: 'Transaction.amount', searchable: false, orderable: true }
+    }
+  end
+
+  def data
+    records.map do |transaction|
+      {
+        id: transaction.id,
+        seller: transaction.seller.try(:email),
+        buyer: transaction.buyer.try(:email),
+        amount: transaction.amount
+      }
+    end
+  end
+
+  private
+
+  def get_raw_records
+    Transaction.includes(:seller).includes(:buyer)
+  end
+
+end
+```
+
 ### Default scope
 
 See [DefaultScope is evil](https://rails-bestpractices.com/posts/2013/06/15/default_scope-is-evil/) and [#223](https://github.com/jbox-web/ajax-datatables-rails/issues/223) and [#233](https://github.com/jbox-web/ajax-datatables-rails/issues/233).

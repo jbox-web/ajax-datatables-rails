@@ -15,7 +15,11 @@ module AjaxDatatablesRails
         end
 
         def sort_query
-          custom_field? ? source : "#{table.name}.#{sort_field}"
+          if @custom_table_name.present?
+            "#{@custom_table_name}.#{sort_field}"
+          else
+            custom_field? ? source : "#{table.name}.#{sort_field}"
+          end
         end
 
         # Add option to sort null values last

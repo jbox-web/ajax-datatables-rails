@@ -20,7 +20,7 @@ module AjaxDatatablesRails
         sqlserver:      TYPE_CAST_SQLSERVER,
       }.freeze
 
-      attr_reader :datatable, :index, :options
+      attr_reader :datatable, :index, :options, :custom_table_name
       attr_writer :search
 
       include Search
@@ -29,10 +29,11 @@ module AjaxDatatablesRails
 
 
       def initialize(datatable, index, options)
-        @datatable   = datatable
-        @index       = index
-        @options     = options
-        @view_column = datatable.view_columns[options[:data].to_sym]
+        @datatable         = datatable
+        @index             = index
+        @options           = options
+        @view_column       = datatable.view_columns[options[:data].to_sym]
+        @custom_table_name = @view_column[:custom_table_name] if @view_column
       end
 
       def data
@@ -44,7 +45,11 @@ module AjaxDatatablesRails
       end
 
       def table
-        model.respond_to?(:arel_table) ? model.arel_table : model
+        if @custom_table_name
+          model.respond_to?(:arel_table) ? model.arel_table.alias(@custom_table_name) : model
+        else
+          model.respond_to?(:arel_table) ? model.arel_table : model
+        end
       end
 
       def model
