@@ -5,7 +5,9 @@ We assume here that Bootstrap and FontAwesome are already installed with Webpack
 Inspired by https://datatables.net/download and completed :
 
 Add npm packages :
-
+```sh
+$ yarn add imports-loader
+```
 ```sh
 $ yarn add datatables.net
 $ yarn add datatables.net-bs
