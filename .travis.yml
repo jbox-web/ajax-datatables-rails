@@ -17,11 +17,6 @@ services:
   - mysql
 addons:
   postgresql: '9.6'
-  apt:
-    packages:
-    - mysql-server-5.6
-    - mysql-client-core-5.6
-    - mysql-client-5.6
 before_install:
   - gem update --system
   # - gem install bundler --no-document
