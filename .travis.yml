@@ -37,6 +37,9 @@ env:
 matrix:
   allow_failures:
     - env: DB_ADAPTER=oracle_enhanced
+  exclude:
+    - rvm: ruby-head
+      gemfile: gemfiles/rails_4.2.11.gemfile
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
