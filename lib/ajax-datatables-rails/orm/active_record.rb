@@ -30,20 +30,21 @@ module AjaxDatatablesRails
       # ----------------- SEARCH HELPER METHODS --------------------
 
       def build_conditions
-        if datatable.searchable?
-          build_conditions_for_datatable
-        else
-          build_conditions_for_selected_columns
+        @criteria ||= begin
+          criteria = [build_conditions_for_selected_columns]
+          criteria << build_conditions_for_datatable if datatable.searchable?
+          criteria.compact.reduce(:and)
         end
       end
 
       def build_conditions_for_datatable
+        columns  = searchable_columns.reject(&:searched?)
         criteria = search_for.inject([]) do |crit, atom|
           search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
-          crit << searchable_columns.map do |simple_column|
+          crit << columns.map do |simple_column|
             simple_column.search = search
             simple_column.search_query
-          end.reduce(:or)
+          end.compact.reduce(:or)
         end.compact.reduce(:and)
         criteria
       end
