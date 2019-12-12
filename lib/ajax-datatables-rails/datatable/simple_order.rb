@@ -14,7 +14,7 @@ module AjaxDatatablesRails
       end
 
       def query(sort_column)
-        [sort_column, direction, nulls_last_sql].compact.join(" ")
+        [sort_column, direction, nulls_last_sql].compact.join(' ')
       end
 
       def column
@@ -44,9 +44,9 @@ module AjaxDatatablesRails
 
         case AjaxDatatablesRails.config.db_adapter
         when :pg, :postgresql, :postgres, :oracle
-          "NULLS LAST"
+          'NULLS LAST'
         when :mysql, :mysql2, :sqlite, :sqlite3
-          "IS NULL"
+          'IS NULL'
         else
           raise 'unsupported database adapter'
         end

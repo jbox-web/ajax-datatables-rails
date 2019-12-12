@@ -1,15 +1,15 @@
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4
   Exclude:
+    - bin/*
+    - lib/generators/**/*.rb
     - gemfiles/*
-    - spec/**/*.rb
-    - lib/ajax-datatables-rails.rb
-    - lib/generators/rails/templates/*.rb
+    - spec/**/*
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 
 Layout/EmptyLines:
@@ -44,6 +44,10 @@ Metrics/ClassLength:
 
 Naming/AccessorMethodName:
   Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - lib/ajax-datatables-rails.rb
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma

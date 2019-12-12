@@ -8,7 +8,7 @@ generators = "#{__dir__}/generators"
 loader.ignore(generators)
 loader.inflector.inflect(
   'orm'                   => 'ORM',
-  'ajax-datatables-rails' => 'AjaxDatatablesRails',
+  'ajax-datatables-rails' => 'AjaxDatatablesRails'
 )
 loader.setup
 
