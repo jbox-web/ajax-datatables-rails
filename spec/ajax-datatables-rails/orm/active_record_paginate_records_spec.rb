@@ -16,8 +16,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     it 'paginates records properly' do
-      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
-        if Rails.version.in? %w[4.0.13 4.1.16 4.2.10]
+      if ENV['DB_ADAPTER'] == 'oracle_enhanced'
+        if Rails.version.in? %w[4.2.11]
           expect(datatable.paginate_records(records).to_sql).to include(
             'rownum <= 10'
           )
@@ -34,8 +34,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       datatable.params[:start] = '26'
       datatable.params[:length] = '25'
-      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
-        if Rails.version.in? %w[4.0.13 4.1.16 4.2.10]
+      if ENV['DB_ADAPTER'] == 'oracle_enhanced'
+        if Rails.version.in? %w[4.2.11]
           expect(datatable.paginate_records(records).to_sql).to include(
             'rownum <= 51'
           )

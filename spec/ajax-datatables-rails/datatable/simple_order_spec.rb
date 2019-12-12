@@ -18,6 +18,8 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
       after  { AjaxDatatablesRails.config.nulls_last = false }
 
       it 'sql query' do
+        skip('unsupported database adapter') if ENV['DB_ADAPTER'] == 'oracle_enhanced'
+
         expect(simple_order.query('email')).to eq(
           "email DESC #{nulls_last_sql}"
         )

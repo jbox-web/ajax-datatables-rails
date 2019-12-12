@@ -126,7 +126,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         expect(result).to be_a(Arel::Nodes::And)
       end
 
-      if AjaxDatatablesRails.config.db_adapter == :postgresql
+      if ENV['DB_ADAPTER'] == 'postgresql'
         context 'when db_adapter is postgresql' do
           it 'can call #to_sql on returned object' do
             result = datatable.build_conditions_for_selected_columns
@@ -138,7 +138,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
-      if AjaxDatatablesRails.config.db_adapter.in? %i[oracle oracleenhanced]
+      if ENV['DB_ADAPTER'] == 'oracle_enhanced'
         context 'when db_adapter is oracle' do
           it 'can call #to_sql on returned object' do
             result = datatable.build_conditions_for_selected_columns
@@ -150,7 +150,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
-      if AjaxDatatablesRails.config.db_adapter.in? %i[mysql2 sqlite3]
+      if ENV['DB_ADAPTER'] == 'mysql2'
         context 'when db_adapter is mysql2' do
           it 'can call #to_sql on returned object' do
             result = datatable.build_conditions_for_selected_columns
@@ -288,7 +288,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         create(:user, last_name: 'MARY')
       end
 
-      if AjaxDatatablesRails.config.db_adapter == :oracleenhanced
+      if ENV['DB_ADAPTER'] == 'oracle_enhanced'
         context 'when db_adapter is oracleenhanced' do
           it 'should filter records matching' do
             datatable.params[:columns]['3'][:search][:value] = 'RY'
