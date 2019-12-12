@@ -4,7 +4,7 @@ require_relative 'lib/ajax-datatables-rails/version'
 
 Gem::Specification.new do |s|
   s.name        = 'ajax-datatables-rails'
-  s.version     = AjaxDatatablesRails::VERSION
+  s.version     = AjaxDatatablesRails::VERSION::STRING
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Joel Quenneville', 'Antonio Antillon']
   s.email       = ['joel.quenneville@collegeplus.org', 'antillas21@gmail.com']
