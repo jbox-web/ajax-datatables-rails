@@ -12,6 +12,7 @@ fi
 
 ~/.travis/oracle/install.sh
 
+# in dev env: sqlplus system/password@localhost/XE
 "$ORACLE_HOME/bin/sqlplus" -L -S / AS SYSDBA <<SQL
 ALTER USER $USER IDENTIFIED BY $USER;
 SQL
