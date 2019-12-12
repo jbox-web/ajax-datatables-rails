@@ -23,12 +23,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'faker'
   s.add_development_dependency 'generator_spec'
-  s.add_development_dependency 'mysql2'
   s.add_development_dependency 'pg', '< 1.0'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rails', '>= 4.2'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sqlite3', '~> 1.3.0'
 end
