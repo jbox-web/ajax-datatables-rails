@@ -34,7 +34,7 @@ module AjaxDatatablesRails
         recordsTotal:    records_total_count,
         recordsFiltered: records_filtered_count,
         data:            sanitize_data(data),
-      }.merge(get_additional_data)
+      }.merge(additional_data)
     end
 
     def records
@@ -63,23 +63,6 @@ module AjaxDatatablesRails
     end
 
     private
-
-    # This method is necessary for smooth transition from
-    # `additinonal_datas` method to `additional_data`
-    # without breaking change.
-    def get_additional_data
-      if respond_to?(:additional_datas)
-        puts <<-WARNING
-          `additional_datas` has been deprecated and
-          will be removed in next major version update!
-          Please use `additional_data` instead.
-        WARNING
-
-        additional_datas
-      else
-        additional_data
-      end
-    end
 
     def sanitize_data(data)
       data.map do |record|
