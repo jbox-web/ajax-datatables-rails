@@ -4,6 +4,7 @@
 
 * Drop support of Rails 4.x
 * Drop support of Ruby 2.3
+* Use [zeitwerk](https://github.com/fxn/zeitwerk) to load gem files
 
 ## 1.1.0 (2019-12-12)
 
