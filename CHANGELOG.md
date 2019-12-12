@@ -8,7 +8,7 @@
 * Add :string_in cond [PR 323](https://github.com/jbox-web/ajax-datatables-rails/pull/323) (thanks @donnguyen)
 * Rename `sanitize` private method [PR 326](https://github.com/jbox-web/ajax-datatables-rails/pull/326) (thanks @epipheus)
 * Update documentation
-* Test with latest Rails and Ruby versions
+* Test with latest Rails (6.x) and Ruby versions (2.6)
 
 This is the last version to support Rails 4.x and Ruby 2.3.x.
 
