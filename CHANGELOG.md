@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.0 (to come)
+## 1.1.0 (2019-12-12)
 
 * Add rudimentary support for Microsoft SQL Server
 * Fixes errors when options[param] is nil [PR 315](https://github.com/jbox-web/ajax-datatables-rails/pull/315) (thanks @allard)
