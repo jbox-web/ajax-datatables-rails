@@ -34,8 +34,6 @@ env:
     - DB_ADAPTER=sqlite3
     - DB_ADAPTER=oracle_enhanced
 matrix:
-  allow_failures:
-    - env: DB_ADAPTER=oracle_enhanced
   exclude:
     - rvm: ruby-head
       gemfile: gemfiles/rails_4.2.11.gemfile
