@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.2.0 (to come)
+
+* Drop support of Rails 4.x
+* Drop support of Ruby 2.3
+
 ## 1.1.0 (2019-12-12)
 
 * Add rudimentary support for Microsoft SQL Server
