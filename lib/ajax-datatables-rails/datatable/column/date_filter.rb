@@ -55,7 +55,7 @@ module AjaxDatatablesRails
         end
 
         def range_end_casted
-          range_end.blank? ? Time.current : parse_date("#{range_end} 23:59:59")
+          range_end.blank? ? parse_date("9999-12-31 23:59:59") : parse_date("#{range_end} 23:59:59")
         end
 
         def parse_date(date)
