@@ -3,9 +3,11 @@ require 'spec_helper'
 describe AjaxDatatablesRails::Datatable::Datatable do
 
   let(:datatable) { ComplexDatatable.new(sample_params).datatable }
+  let(:datatable_json) { ComplexDatatable.new(sample_params_json).datatable }
   let(:order_option) { {'0'=>{'column'=>'0', 'dir'=>'asc'}, '1'=>{'column'=>'1', 'dir'=>'desc'}} }
+  let(:order_option_json) { [{'column'=>'0', 'dir'=>'asc'}, {'column'=>'1', 'dir'=>'desc'}] }
 
-  describe 'order methods' do
+  shared_examples 'order methods' do
     it 'should be orderable' do
       expect(datatable.orderable?).to eq(true)
     end
@@ -35,6 +37,28 @@ describe AjaxDatatablesRails::Datatable::Datatable do
     end
   end
 
+  shared_examples 'columns methods' do
+    it 'should have 4 columns' do
+      expect(datatable.columns.count).to eq(6)
+    end
+
+    it 'child class' do
+      expect(datatable.columns.first).to be_a(AjaxDatatablesRails::Datatable::Column)
+    end
+  end
+
+  describe 'with query params' do
+    it_behaves_like 'order methods'
+    it_behaves_like 'columns methods'
+  end
+
+  describe 'with json params' do
+    let(:order_option) { order_option_json }
+    let(:datatable) { datatable_json }
+    it_behaves_like 'order methods'
+    it_behaves_like 'columns methods'
+  end
+
   describe 'search methods' do
     it 'should be searchable' do
       datatable.options[:search][:value] = 'atom'
@@ -48,16 +72,6 @@ describe AjaxDatatablesRails::Datatable::Datatable do
 
     it 'child class' do
       expect(datatable.search).to be_a(AjaxDatatablesRails::Datatable::SimpleSearch)
-    end
-  end
-
-  describe 'columns methods' do
-    it 'should have 4 columns' do
-      expect(datatable.columns.count).to eq(6)
-    end
-
-    it 'child class' do
-      expect(datatable.columns.first).to be_a(AjaxDatatablesRails::Datatable::Column)
     end
   end
 
