@@ -787,14 +787,20 @@ $ ->
   $('#posts-datatable').dataTable
     ajax:
       url: $('#posts-datatable').data('source')
+      contentType: 'application/json'
       type: 'POST'
+      data: (d) ->
+        JSON.stringify d
     # ...others options, see [here](#5-wire-up-the-javascript)
 
 $ ->
   $('#users-datatable').dataTable
     ajax:
       url: $('#users-datatable').data('source')
+      contentType: 'application/json'
       type: 'POST'
+      data: (d) ->
+        JSON.stringify d
     # ...others options, see [here](#5-wire-up-the-javascript)
 ```
 
