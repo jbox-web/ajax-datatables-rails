@@ -2,10 +2,10 @@ language: ruby
 cache: bundler
 sudo: required
 rvm:
-  - 2.7.0
-  - 2.6.5
-  - 2.5.7
-  - 2.4.9
+  - 2.7.1
+  - 2.6.6
+  - 2.5.8
+  - 2.4.10
   - ruby-head
 gemfile:
   - gemfiles/rails_5.0.7.gemfile
@@ -34,7 +34,7 @@ env:
     - DB_ADAPTER=oracle_enhanced
 matrix:
   exclude:
-    - rvm: 2.4.9
+    - rvm: 2.4.10
       gemfile: gemfiles/rails_6.0.1.gemfile
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
