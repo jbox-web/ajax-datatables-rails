@@ -45,6 +45,8 @@ jobs:
   exclude:
     - rvm: 2.4.10
       gemfile: gemfiles/rails_6.0.1.gemfile
+  allow_failures:
+    - rvm: ruby-head
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
