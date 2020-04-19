@@ -11,7 +11,7 @@
 
 It's tested against :
 
-* Rails 5.0.7 / 5.1.7 / 5.2.3 / 6.0.1
+* Rails 5.1.7 / 5.2.3 / 6.0.1
 * Ruby 2.5.8 / 2.6.6 / 2.7.1
 * Postgresql 9.6
 * MySQL 5.6

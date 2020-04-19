@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files`.split("\n")
 
-  s.add_runtime_dependency 'railties', '>= 5.0'
+  s.add_runtime_dependency 'railties', '>= 5.1'
   s.add_runtime_dependency 'zeitwerk'
 
   s.add_development_dependency 'activerecord-oracle_enhanced-adapter'
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'pg', '< 1.0'
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'rails', '>= 5.0'
+  s.add_development_dependency 'rails', '>= 5.1'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rubocop'
