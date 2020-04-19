@@ -7,13 +7,13 @@ RAILS_VERSIONS = {
     'mysql2' => '',
     'ruby-oci8' => '',
   },
-  '5.2.3' => {
+  '5.2.4' => {
     'activerecord-oracle_enhanced-adapter' => '~> 5.2.0',
     'sqlite3' => '~> 1.3.0',
     'mysql2' => '',
     'ruby-oci8' => '',
   },
-  '6.0.1' => {
+  '6.0.2' => {
     'activerecord-oracle_enhanced-adapter' => '~> 6.0.0',
     'sqlite3' => '~> 1.4.0',
     'mysql2' => '',
