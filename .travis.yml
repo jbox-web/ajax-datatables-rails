@@ -1,6 +1,6 @@
 ---
 os: linux
-dist: bionic
+dist: xenial
 
 language: ruby
 cache: bundler
