@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## 1.2.0 (to come)
+## 1.3.0 (to come)
+
+* Drop support of Rails 5.0.x
+* Drop support of Ruby 2.4
+
+## 1.2.0 (2020-04-19)
 
 * Drop support of Rails 4.x
 * Drop support of Ruby 2.3
