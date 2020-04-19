@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = "A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app"
   s.license     = 'MIT'
 
-  s.required_ruby_version = '>= 2.4.4'
+  s.required_ruby_version = '>= 2.5.0'
 
   s.files = `git ls-files`.split("\n")
 
