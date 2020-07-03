@@ -694,7 +694,7 @@ class TransactionDatatable < AjaxDatatablesRails::Base
   private
 
   def get_raw_records
-    Transaction.includes(:seller).includes(:buyer)
+    Transaction.includes(:seller, :buyer)
   end
 
 end
