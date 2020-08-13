@@ -43,7 +43,7 @@ module AjaxDatatablesRails
           crit << searchable_columns.map do |simple_column|
             simple_column.search = search
             simple_column.search_query
-          end.reduce(:or)
+          end.compact.reduce(:or)
         end.compact.reduce(:and)
         criteria
       end

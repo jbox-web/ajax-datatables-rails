@@ -41,8 +41,13 @@ module AjaxDatatablesRails
           (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
         end
 
+        def without_delimiter?
+          formatted_value.exclude?(delimiter)
+        end
+
         # Do a range search
         def date_range_search
+          return nil if without_delimiter?
           return nil if empty_range_search?
 
           table[field].between(DateRange.new(range_start_casted, range_end_casted))
