@@ -19,6 +19,12 @@ RAILS_VERSIONS = {
     'mysql2' => '',
     'ruby-oci8' => '',
   },
+  '6.1.0' => {
+    'activerecord-oracle_enhanced-adapter' => '~> 6.1.0.rc1',
+    'sqlite3' => '~> 1.4.0',
+    'mysql2' => '',
+    'ruby-oci8' => '',
+  },
 }.freeze
 
 RAILS_VERSIONS.each do |version, gems|
