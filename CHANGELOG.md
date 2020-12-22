@@ -12,7 +12,7 @@
 * Use [zeitwerk](https://github.com/fxn/zeitwerk) to load gem files
 * Add binstubs to ease development
 
-This is the last version to support Rails 5.0.x and Ruby 2.4.x.
+This is the last version to support Rails 5.0.x, Rails 5.1.x and Ruby 2.4.x.
 
 ## 1.1.0 (2019-12-12)
 
