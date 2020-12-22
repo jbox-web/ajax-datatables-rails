@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'rspec'
+require 'rspec/retry'
 require 'database_cleaner'
 require 'factory_bot'
 require 'faker'
@@ -51,6 +52,12 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
+  end
+
+  if ENV.key?('GITHUB_ACTIONS')
+    config.around(:each) do |ex|
+      ex.run_with_retry retry: 3
+    end
   end
 end
 
