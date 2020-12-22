@@ -2,7 +2,7 @@
 
 ## 1.3.0 (to come)
 
-* Drop support of Rails 5.0.x
+* Drop support of Rails 5.0.x and 5.1.x
 * Drop support of Ruby 2.4
 
 ## 1.2.0 (2020-04-19)

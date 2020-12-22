@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 RAILS_VERSIONS = {
-  '5.1.7' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
-    'sqlite3' => '~> 1.3.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
   '5.2.4' => {
     'activerecord-oracle_enhanced-adapter' => '~> 5.2.0',
     'sqlite3' => '~> 1.3.0',
