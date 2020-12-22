@@ -22,8 +22,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      # Using docker image fails with
+      # invalid reference format
       # mariadb:
-      #   image: 'mariadb:10.5'
+      #   image: 'mariadb:10.3'
       #   ports: ['3306:3306']
       #   env:
       #     MYSQL_ROOT_PASSWORD: root
@@ -49,7 +51,7 @@ jobs:
         adapter:
           - sqlite3
           - postgresql
-          # - mysql2
+          - mysql2
 
     steps:
       - name: Checkout
@@ -77,6 +79,17 @@ jobs:
           gem install bundler
           bundle config path "${GITHUB_WORKSPACE}/vendor/bundle"
           bundle install --jobs 4 --retry 3
+
+      - name: Set DB Adapter
+        env:
+          RAILS_VERSION: ${{ matrix.rails }}
+          DB_ADAPTER: ${{ matrix.adapter }}
+        # See: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#mysql
+        run: |
+          if [ "${DB_ADAPTER}" = "mysql2" ]; then
+            sudo systemctl start mysql.service
+            mysql -u root -proot -e 'create database ajax_datatables_rails;'
+          fi
 
       - name: RSpec
         env:
