@@ -72,7 +72,7 @@ module AjaxDatatablesRails
       private
 
       def type_cast
-        @type_cast ||= DB_ADAPTER_TYPE_CAST.fetch(AjaxDatatablesRails.config.db_adapter, TYPE_CAST_DEFAULT)
+        @type_cast ||= DB_ADAPTER_TYPE_CAST.fetch(datatable.db_adapter, TYPE_CAST_DEFAULT)
       end
 
       def casted_column

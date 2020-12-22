@@ -22,12 +22,6 @@ RSpec.configure do |config|
     FactoryBot.find_definitions
   end
 
-  config.after(:each) do
-    AjaxDatatablesRails.configure do |c|
-      c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
-    end
-  end
-
   config.color = true
   config.fail_fast = false
 
@@ -77,10 +71,6 @@ options = options.merge(username: ENV['USER'], password: ENV['USER'], database: 
 options = options.merge(database: ':memory:') if adapter == 'sqlite3'
 
 ActiveRecord::Base.establish_connection(options)
-
-AjaxDatatablesRails.configure do |c|
-  c.db_adapter = ActiveRecord::Base.connection.adapter_name.downcase.to_sym
-end
 
 load File.dirname(__FILE__) + '/support/schema.rb'
 load File.dirname(__FILE__) + '/support/test_helpers.rb'

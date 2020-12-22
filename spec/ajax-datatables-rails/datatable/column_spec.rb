@@ -153,52 +153,52 @@ describe AjaxDatatablesRails::Datatable::Column do
     let(:column) { datatable.datatable.columns.first }
 
     it 'returns VARCHAR if :db_adapter is :pg' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :pg }
+      expect(datatable).to receive(:db_adapter) { :pg }
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR if :db_adapter is :postgre' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgre }
+      expect(datatable).to receive(:db_adapter) { :postgre }
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR if :db_adapter is :postgresql' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :postgresql }
+      expect(datatable).to receive(:db_adapter) { :postgresql }
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR2(4000) if :db_adapter is :oracle' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracle }
+      expect(datatable).to receive(:db_adapter) { :oracle }
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
 
     it 'returns VARCHAR2(4000) if :db_adapter is :oracleenhanced' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :oracleenhanced }
+      expect(datatable).to receive(:db_adapter) { :oracleenhanced }
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
 
     it 'returns CHAR if :db_adapter is :mysql2' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql2 }
+      expect(datatable).to receive(:db_adapter) { :mysql2 }
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
     it 'returns CHAR if :db_adapter is :mysql' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :mysql }
+      expect(datatable).to receive(:db_adapter) { :mysql }
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
     it 'returns TEXT if :db_adapter is :sqlite' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite }
+      expect(datatable).to receive(:db_adapter) { :sqlite }
       expect(column.send(:type_cast)).to eq('TEXT')
     end
 
     it 'returns TEXT if :db_adapter is :sqlite3' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlite3 }
+      expect(datatable).to receive(:db_adapter) { :sqlite3 }
       expect(column.send(:type_cast)).to eq('TEXT')
     end
 
     it 'returns VARCHAR(4000) if :db_adapter is :sqlserver' do
-      allow_any_instance_of(AjaxDatatablesRails::Configuration).to receive(:db_adapter) { :sqlserver }
+      expect(datatable).to receive(:db_adapter) { :sqlserver }
       expect(column.send(:type_cast)).to eq('VARCHAR(4000)')
     end
   end

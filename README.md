@@ -95,29 +95,7 @@ You can install jQuery DataTables :
 * with [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
 
 
-## Configuration
-
-Generate the `ajax-datatables-rails` config file with this command :
-
-```sh
-$ bundle exec rails generate datatable:config
-```
-
-Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file with the following content :
-
-```ruby
-AjaxDatatablesRails.configure do |config|
-  # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
-  # config.db_adapter = :pg
-
-  # Or you can use your rails environment adapter if you want a generic dev and production
-  # config.db_adapter = Rails.configuration.database_configuration[Rails.env]['adapter'].to_sym
-end
-```
-
-Uncomment the `config.db_adapter` line and set the corresponding value to your database and gem. This is all you need.
-
-#### Note
+## Note
 
 Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
 
@@ -538,6 +516,24 @@ class UnrespondedMessagesDatatable < AjaxDatatablesRails::ActiveRecord
     user.messages.unresponded.where(received_at: from..to)
   end
 
+end
+```
+
+### Change the DB adapter for a datatable class
+
+If you have models from different databases you can set the `db_adapter` on the datatable class :
+
+```ruby
+class MySharedModelDatatable < AjaxDatatablesRails::ActiveRecord
+  self.db_adapter = :oracle_enhanced
+
+  # ... other methods (view_columns, data...)
+
+  def get_raw_records
+    AnimalsRecord.connected_to(role: :reading) do
+      Dog.all
+    end
+  end
 end
 ```
 

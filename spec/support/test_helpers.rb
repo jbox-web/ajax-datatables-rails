@@ -98,8 +98,8 @@ class ComplexDatatableArray < ComplexDatatable
   end
 end
 
-def nulls_last_sql
-  case AjaxDatatablesRails.config.db_adapter
+def nulls_last_sql(datatable)
+  case datatable.db_adapter
   when :pg, :postgresql, :postgres, :oracle
     "NULLS LAST"
   when :mysql, :mysql2, :sqlite, :sqlite3

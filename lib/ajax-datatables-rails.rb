@@ -16,7 +16,7 @@ module AjaxDatatablesRails
   # Configure AjaxDatatablesRails global settings
   #
   #   AjaxDatatablesRails.configure do |config|
-  #     config.db_adapter = :postgresql
+  #     config.nulls_last = true
   #   end
 
   def self.configure

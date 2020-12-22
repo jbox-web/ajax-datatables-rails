@@ -3,6 +3,8 @@
 module AjaxDatatablesRails
   class Base
 
+    class_attribute :db_adapter, default: ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+
     attr_reader :params, :options, :datatable
 
     GLOBAL_SEARCH_DELIMITER = ' '

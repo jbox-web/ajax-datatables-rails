@@ -4,6 +4,7 @@
 
 * Drop support of Rails 5.0.x and 5.1.x
 * Drop support of Ruby 2.4
+* `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
 
 ## 1.2.0 (2020-04-19)
 
