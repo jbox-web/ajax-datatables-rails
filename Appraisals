@@ -20,7 +20,7 @@ RAILS_VERSIONS = {
     'ruby-oci8' => '',
   },
   '6.1.0' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 6.1.0.rc1',
+    'activerecord-oracle_enhanced-adapter' => '~> 6.1.0',
     'sqlite3' => '~> 1.4.0',
     'mysql2' => '',
     'ruby-oci8' => '',
