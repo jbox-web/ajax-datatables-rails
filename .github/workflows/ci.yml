@@ -9,6 +9,12 @@ jobs:
   rspec:
     runs-on: ubuntu-latest
 
+    env:
+      ORACLE_COOKIE: sqldev
+      ORACLE_FILE: oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
+      ORACLE_HOME: /u01/app/oracle/product/11.2.0/xe
+      ORACLE_SID: XE
+
     services:
       postgres:
         image: 'postgres:13'
@@ -52,6 +58,7 @@ jobs:
           - sqlite3
           - postgresql
           - mysql2
+          - oracle_enhanced
 
     steps:
       - name: Checkout
@@ -61,6 +68,25 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+
+      - name: Set DB Adapter
+        env:
+          RAILS_VERSION: ${{ matrix.rails }}
+          DB_ADAPTER: ${{ matrix.adapter }}
+          CUSTOM_ORACLE_FILE: ${{ secrets.CUSTOM_ORACLE_FILE }}
+
+        # See: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#mysql
+        run: |
+          if [ "${DB_ADAPTER}" = "mysql2" ]; then
+            sudo systemctl start mysql.service
+            mysql -u root -proot -e 'create database ajax_datatables_rails;'
+          fi
+
+          if [ "${DB_ADAPTER}" = "oracle_enhanced" ]; then
+            ./spec/install_oracle.sh
+            # Fix error : libnnz11.so: cannot open shared object file: No such file or directory
+            sudo ln -s ${ORACLE_HOME}/lib/libnnz11.so /usr/lib/libnnz11.so
+          fi
 
       - name: Setup Ruby cache
         uses: actions/cache@v2
@@ -77,19 +103,8 @@ jobs:
         run: |
           export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/${RAILS_VERSION}.gemfile"
           gem install bundler
-          bundle config path "${GITHUB_WORKSPACE}/vendor/bundle"
+          # bundle config path "${GITHUB_WORKSPACE}/vendor/bundle"
           bundle install --jobs 4 --retry 3
-
-      - name: Set DB Adapter
-        env:
-          RAILS_VERSION: ${{ matrix.rails }}
-          DB_ADAPTER: ${{ matrix.adapter }}
-        # See: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#mysql
-        run: |
-          if [ "${DB_ADAPTER}" = "mysql2" ]; then
-            sudo systemctl start mysql.service
-            mysql -u root -proot -e 'create database ajax_datatables_rails;'
-          fi
 
       - name: RSpec
         env:
