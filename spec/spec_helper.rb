@@ -64,6 +64,7 @@ options = {
   encoding: 'utf8'
 }
 
+options = options.merge(host: '127.0.0.1', port: 5432, user: 'postgres', password: 'postgres') if adapter == 'postgresql'
 options = options.merge(username: 'root') if adapter == 'mysql2'
 options = options.merge(username: ENV['USER'], password: ENV['USER'], database: 'xe', host: '127.0.0.1/xe') if adapter == 'oracle_enhanced'
 options = options.merge(database: ':memory:') if adapter == 'sqlite3'

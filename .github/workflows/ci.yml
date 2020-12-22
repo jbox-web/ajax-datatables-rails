@@ -1,0 +1,87 @@
+---
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: 'postgres:13'
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ajax_datatables_rails
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      # mariadb:
+      #   image: 'mariadb:10.5'
+      #   ports: ['3306:3306']
+      #   env:
+      #     MYSQL_ROOT_PASSWORD: root
+      #     MYSQL_DATABASE: ajax_datatables_rails
+      #   options: >-
+      #     --health-cmd 'mysqladmin ping'
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - 2.7.x
+          - 2.6.x
+          - 2.5.x
+        rails:
+          - rails_5.1.7
+          - rails_5.2.4
+          - rails_6.0.3
+          - rails_6.1.0
+        adapter:
+          - sqlite3
+          - postgresql
+          # - mysql2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Setup Ruby cache
+        uses: actions/cache@v2
+        with:
+          path: "${GITHUB_WORKSPACE}/vendor/bundle"
+          key: ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-
+
+      - name: Bundle
+        env:
+          RAILS_VERSION: ${{ matrix.rails }}
+          DB_ADAPTER: ${{ matrix.adapter }}
+        run: |
+          export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/${RAILS_VERSION}.gemfile"
+          gem install bundler
+          bundle config path "${GITHUB_WORKSPACE}/vendor/bundle"
+          bundle install --jobs 4 --retry 3
+
+      - name: RSpec
+        env:
+          RAILS_VERSION: ${{ matrix.rails }}
+          DB_ADAPTER: ${{ matrix.adapter }}
+        run: |
+          export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/${RAILS_VERSION}.gemfile"
+          bundle exec rake

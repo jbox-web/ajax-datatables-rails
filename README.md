@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
-[![Build Status](https://travis-ci.com/jbox-web/ajax-datatables-rails.svg?branch=master)](https://travis-ci.com/jbox-web/ajax-datatables-rails)
+[![CI](https://github.com/jbox-web/ajax-datatables-rails/workflows/CI/badge.svg)](https://github.com/jbox-web/ajax-datatables-rails/actions)
 [![Code Climate](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails)
 [![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
 
