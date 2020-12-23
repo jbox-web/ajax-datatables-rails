@@ -317,7 +317,7 @@ def additional_data
 end
 ```
 
-Very useful with https://github.com/vedmack/yadcf to provide values for dropdown filters.
+Very useful with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)) to provide values for dropdown filters.
 
 
 ### 4) Setup the Controller action
@@ -656,7 +656,7 @@ See [DefaultScope is evil](https://rails-bestpractices.com/posts/2013/06/15/defa
 
 ### DateRange search
 
-This feature works with [yadcf](https://github.com/vedmack/yadcf).
+This feature works with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)).
 
 To enable the date range search, for example `created_at` :
 
@@ -827,9 +827,9 @@ end
 
 ## Tutorial
 
-You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
+You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to) or [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project). Its real world examples.
 
-Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277)
+Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277#issuecomment-366526373)
 
 Use [has_scope](https://github.com/plataformatec/has_scope) gem with `ajax-datatables-rails` : [#280](https://github.com/jbox-web/ajax-datatables-rails/issues/280)
 
