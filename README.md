@@ -38,6 +38,9 @@ The final goal of this gem is to **generate a JSON** content that will be given 
 All the datatable customizations (header, tr, td, css classes, width, height, buttons, etc...) **must** take place in the [javascript definition](#5-wire-up-the-javascript) of the datatable.
 jQuery DataTables is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
+You'll find a sample project here : https://ajax-datatables-rails.herokuapp.com
+
+Its real world examples. The code is here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
 
 ## Warnings
 
@@ -822,8 +825,6 @@ end
 ```
 
 ## Tutorial
-
-You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to) or [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project). Its real world examples.
 
 Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277#issuecomment-366526373)
 
