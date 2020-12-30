@@ -7,7 +7,7 @@ on:
 
 jobs:
   rspec:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     env:
       ORACLE_COOKIE: sqldev
