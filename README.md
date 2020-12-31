@@ -238,7 +238,8 @@ def data
   end
 end
 ```
-You can either use the v0.3 Array style for your columns :
+
+**Deprecated:** You can either use the v0.3 Array style for your columns :
 
 This method builds a 2d array that is used by datatables to construct the html
 table. Insert the values you want on each column.
