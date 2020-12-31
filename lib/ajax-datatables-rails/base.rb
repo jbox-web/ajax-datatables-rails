@@ -42,10 +42,6 @@ module AjaxDatatablesRails
       }.merge(additional_data)
     end
 
-    def records
-      @records ||= retrieve_records
-    end
-
     private
 
     # helper methods
@@ -77,6 +73,10 @@ module AjaxDatatablesRails
           record.update(record) { |_, v| ERB::Util.html_escape(v) }
         end
       end
+    end
+
+    def records
+      @records ||= retrieve_records
     end
 
     def retrieve_records
