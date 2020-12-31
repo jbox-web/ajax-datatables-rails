@@ -84,54 +84,70 @@ describe AjaxDatatablesRails::Base do
   end
 
   describe 'ORM API' do
-    describe '#filter_records' do
-      let(:records) { User.all }
+    context 'when ORM is not implemented' do
+      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
 
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def filter_records(records)
-            raise NotImplementedError
-          end
+      describe '#fetch_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.fetch_records }.to raise_error NotImplementedError
         end
-        datatable.new(sample_params)
       end
 
-      it 'should allow method override' do
-        expect { datatable.filter_records(records) }.to raise_error(NotImplementedError)
+      describe '#filter_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.filter_records([]) }.to raise_error NotImplementedError
+        end
+      end
+
+      describe '#sort_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.sort_records([]) }.to raise_error NotImplementedError
+        end
+      end
+
+      describe '#paginate_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.paginate_records([]) }.to raise_error NotImplementedError
+        end
       end
     end
 
-    describe '#sort_records' do
-      let(:records) { User.all }
+    context 'when ORM is implemented' do
+      describe 'it allows method override' do
+        let(:datatable) do
+          datatable = Class.new(ComplexDatatable) do
+            def filter_records(records)
+              raise NotImplementedError.new('FOO')
+            end
 
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def sort_records(records)
-            raise NotImplementedError
+            def sort_records(records)
+              raise NotImplementedError.new('FOO')
+            end
+
+            def paginate_records(records)
+              raise NotImplementedError.new('FOO')
+            end
           end
+          datatable.new(sample_params)
         end
-        datatable.new(sample_params)
-      end
 
-      it 'should allow method override' do
-        expect { datatable.sort_records(records) }.to raise_error(NotImplementedError)
-      end
-    end
-
-    describe '#paginate_records' do
-      let(:records) { User.all }
-
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def paginate_records(records)
-            raise NotImplementedError
-          end
+        describe '#filter_records' do
+          it {
+            expect { datatable.filter_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
         end
-        datatable.new(sample_params)
-      end
 
-      it 'should allow method override' do
-        expect { datatable.paginate_records(records) }.to raise_error(NotImplementedError)
+        describe '#sort_records' do
+          it {
+            expect { datatable.sort_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
+        end
+
+        describe '#paginate_records' do
+          it {
+            expect { datatable.paginate_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
+        end
       end
     end
   end
@@ -159,36 +175,6 @@ describe AjaxDatatablesRails::Base do
           expect(data[:data]).to be_a(Array)
           expect(data[:data].size).to eq 5
           expect(data[:foo]).to eq 'bar'
-        end
-      end
-    end
-  end
-
-  context 'Private API' do
-    context 'when orm is not implemented' do
-      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
-
-      describe '#fetch_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.fetch_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#filter_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.filter_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#sort_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.sort_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#paginate_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.paginate_records }.to raise_error NoMethodError
         end
       end
     end

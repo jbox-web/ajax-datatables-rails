@@ -28,6 +28,23 @@ module AjaxDatatablesRails
       raise(NotImplementedError, data_error_text)
     end
 
+    # ORM defined methods
+    def fetch_records
+      get_raw_records
+    end
+
+    def filter_records(records)
+      raise(NotImplementedError)
+    end
+
+    def sort_records(records)
+      raise(NotImplementedError)
+    end
+
+    def paginate_records(records)
+      raise(NotImplementedError)
+    end
+
     # User overides
     def additional_data
       {}

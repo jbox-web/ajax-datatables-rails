@@ -4,10 +4,6 @@ module AjaxDatatablesRails
   module ORM
     module ActiveRecord
 
-      def fetch_records
-        get_raw_records
-      end
-
       def filter_records(records)
         records.where(build_conditions)
       end
