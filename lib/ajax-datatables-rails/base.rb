@@ -43,6 +43,8 @@ module AjaxDatatablesRails
       @records ||= retrieve_records
     end
 
+    private
+
     # helper methods
     def connected_columns
       @connected_columns ||= begin
@@ -63,8 +65,6 @@ module AjaxDatatablesRails
         searchable_columns.select(&:searched?)
       end
     end
-
-    private
 
     def sanitize_data(data)
       data.map do |record|
