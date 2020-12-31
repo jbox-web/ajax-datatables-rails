@@ -225,24 +225,26 @@ describe AjaxDatatablesRails::Base do
           expect(datatable.datatable.send(:per_page)).to eq(20)
         end
       end
+    end
+  end
 
-      describe '#column_id' do
-        let(:datatable) { ComplexDatatable.new(sample_params) }
+  describe 'User helper methods' do
+    describe '#column_id' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
 
-        it 'should return column id from view_columns hash' do
-          expect(datatable.send(:column_id, :username)).to eq(0)
-          expect(datatable.send(:column_id, 'username')).to eq(0)
-        end
+      it 'should return column id from view_columns hash' do
+        expect(datatable.column_id(:username)).to eq(0)
+        expect(datatable.column_id('username')).to eq(0)
       end
+    end
 
-      describe '#column_data' do
-        let(:datatable) { ComplexDatatable.new(sample_params) }
-        before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
+    describe '#column_data' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
+      before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
 
-        it 'should return column data from params' do
-          expect(datatable.send(:column_data, :username)).to eq('doe')
-          expect(datatable.send(:column_data, 'username')).to eq('doe')
-        end
+      it 'should return column data from params' do
+        expect(datatable.column_data(:username)).to eq('doe')
+        expect(datatable.column_data('username')).to eq('doe')
       end
     end
   end

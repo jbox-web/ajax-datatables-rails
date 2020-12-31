@@ -42,6 +42,16 @@ module AjaxDatatablesRails
       }.merge(additional_data)
     end
 
+    # User helper methods
+    def column_id(name)
+      view_columns.keys.index(name.to_sym)
+    end
+
+    def column_data(column)
+      id = column_id(column)
+      params.dig('columns', id.to_s, 'search', 'value')
+    end
+
     private
 
     # helper methods
@@ -98,15 +108,6 @@ module AjaxDatatablesRails
 
     def global_search_delimiter
       GLOBAL_SEARCH_DELIMITER
-    end
-
-    def column_id(name)
-      view_columns.keys.index(name.to_sym)
-    end
-
-    def column_data(column)
-      id = column_id(column)
-      params.dig('columns', id.to_s, 'search', 'value')
     end
 
     def raw_records_error_text
