@@ -183,372 +183,378 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe 'filter conditions' do
-    describe 'it can filter records with condition :date_range' do
-      let(:datatable) { DatatableCondDate.new(sample_params) }
+    context 'date condition' do
+      describe 'it can filter records with condition :date_range' do
+        let(:datatable) { DatatableCondDate.new(sample_params) }
 
-      before(:each) do
-        create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
-        create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'Smith', created_at: '01/02/2000')
-      end
-
-      context 'when range is empty' do
-        it 'should not filter records' do
-          datatable.params[:columns]['5'][:search][:value] = '-'
-          expect(datatable.data.size).to eq 2
-          item = datatable.data.first
-          expect(item[:last_name]).to eq 'Doe'
+        before(:each) do
+          create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
+          create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'Smith', created_at: '01/02/2000')
         end
-      end
 
-      context 'when start date is filled' do
-        it 'should filter records created after this date' do
-          datatable.params[:columns]['5'][:search][:value] = '31/12/1999-'
-          expect(datatable.data.size).to eq 2
-        end
-      end
-
-      context 'when end date is filled' do
-        it 'should filter records created before this date' do
-          datatable.params[:columns]['5'][:search][:value] = '-31/12/1999'
-          expect(datatable.data.size).to eq 0
-        end
-      end
-
-      context 'when both date are filled' do
-        it 'should filter records created between the range' do
-          datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
-          expect(datatable.data.size).to eq 1
-        end
-      end
-
-      context 'when another filter is active' do
         context 'when range is empty' do
-          it 'should filter records' do
-            datatable.params[:columns]['0'][:search][:value] = 'doe'
+          it 'should not filter records' do
             datatable.params[:columns]['5'][:search][:value] = '-'
-            expect(datatable.data.size).to eq 1
+            expect(datatable.data.size).to eq 2
             item = datatable.data.first
             expect(item[:last_name]).to eq 'Doe'
           end
         end
 
         context 'when start date is filled' do
-          it 'should filter records' do
-            datatable.params[:columns]['0'][:search][:value] = 'doe'
-            datatable.params[:columns]['5'][:search][:value] = '01/12/1999-'
-            expect(datatable.data.size).to eq 1
-            item = datatable.data.first
-            expect(item[:last_name]).to eq 'Doe'
+          it 'should filter records created after this date' do
+            datatable.params[:columns]['5'][:search][:value] = '31/12/1999-'
+            expect(datatable.data.size).to eq 2
           end
         end
 
         context 'when end date is filled' do
-          it 'should filter records' do
-            datatable.params[:columns]['0'][:search][:value] = 'doe'
-            datatable.params[:columns]['5'][:search][:value] = '-15/01/2000'
-            expect(datatable.data.size).to eq 1
-            item = datatable.data.first
-            expect(item[:last_name]).to eq 'Doe'
+          it 'should filter records created before this date' do
+            datatable.params[:columns]['5'][:search][:value] = '-31/12/1999'
+            expect(datatable.data.size).to eq 0
           end
         end
 
         context 'when both date are filled' do
-          it 'should filter records' do
-            datatable.params[:columns]['0'][:search][:value] = 'doe'
+          it 'should filter records created between the range' do
             datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
             expect(datatable.data.size).to eq 1
-            item = datatable.data.first
-            expect(item[:last_name]).to eq 'Doe'
+          end
+        end
+
+        context 'when another filter is active' do
+          context 'when range is empty' do
+            it 'should filter records' do
+              datatable.params[:columns]['0'][:search][:value] = 'doe'
+              datatable.params[:columns]['5'][:search][:value] = '-'
+              expect(datatable.data.size).to eq 1
+              item = datatable.data.first
+              expect(item[:last_name]).to eq 'Doe'
+            end
+          end
+
+          context 'when start date is filled' do
+            it 'should filter records' do
+              datatable.params[:columns]['0'][:search][:value] = 'doe'
+              datatable.params[:columns]['5'][:search][:value] = '01/12/1999-'
+              expect(datatable.data.size).to eq 1
+              item = datatable.data.first
+              expect(item[:last_name]).to eq 'Doe'
+            end
+          end
+
+          context 'when end date is filled' do
+            it 'should filter records' do
+              datatable.params[:columns]['0'][:search][:value] = 'doe'
+              datatable.params[:columns]['5'][:search][:value] = '-15/01/2000'
+              expect(datatable.data.size).to eq 1
+              item = datatable.data.first
+              expect(item[:last_name]).to eq 'Doe'
+            end
+          end
+
+          context 'when both date are filled' do
+            it 'should filter records' do
+              datatable.params[:columns]['0'][:search][:value] = 'doe'
+              datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
+              expect(datatable.data.size).to eq 1
+              item = datatable.data.first
+              expect(item[:last_name]).to eq 'Doe'
+            end
           end
         end
       end
     end
 
-    describe 'it can filter records with condition :start_with' do
-      let(:datatable) { DatatableCondStartWith.new(sample_params) }
+    context 'numeric condition' do
+      describe 'it can filter records with condition :eq' do
+        let(:datatable) { DatatableCondEq.new(sample_params) }
 
-      before(:each) do
-        create(:user, first_name: 'John')
-        create(:user, first_name: 'Mary')
-      end
-
-      it 'should filter records matching' do
-        datatable.params[:columns]['2'][:search][:value] = 'Jo'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'John'
-      end
-    end
-
-    describe 'it can filter records with condition :end_with' do
-      let(:datatable) { DatatableCondEndWith.new(sample_params) }
-
-      before(:each) do
-        create(:user, last_name: 'JOHN')
-        create(:user, last_name: 'MARY')
-      end
-
-      if ENV['DB_ADAPTER'] == 'oracle_enhanced'
-        context 'when db_adapter is oracleenhanced' do
-          it 'should filter records matching' do
-            datatable.params[:columns]['3'][:search][:value] = 'RY'
-            expect(datatable.data.size).to eq 1
-            item = datatable.data.first
-            expect(item[:last_name]).to eq 'MARY'
-          end
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
         end
-      else
+
         it 'should filter records matching' do
-          datatable.params[:columns]['3'][:search][:value] = 'ry'
+          datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
-          expect(item[:last_name]).to eq 'MARY'
+          expect(item[:first_name]).to eq 'john'
         end
       end
-    end
 
-    describe 'it can filter records with condition :like' do
-      let(:datatable) { DatatableCondLike.new(sample_params) }
+      describe 'it can filter records with condition :not_eq' do
+        let(:datatable) { DatatableCondNotEq.new(sample_params) }
 
-      before(:each) do
-        create(:user, email: 'john@foo.com')
-        create(:user, email: 'mary@bar.com')
-      end
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['1'][:search][:value] = 'foo'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:email]).to eq 'john@foo.com'
-      end
-    end
-
-    describe 'it can filter records with condition :string_eq' do
-      let(:datatable) { DatatableCondStringEq.new(sample_params) }
-
-      before(:each) do
-        create(:user, email: 'john@foo.com')
-        create(:user, email: 'mary@bar.com')
-      end
-
-      it 'should filter records matching' do
-        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:email]).to eq 'john@foo.com'
-      end
-    end
-
-    describe 'it can filter records with condition :string_in' do
-      let(:datatable) { DatatableCondStringIn.new(sample_params) }
-
-      before(:each) do
-        create(:user, email: 'john@foo.com')
-        create(:user, email: 'mary@bar.com')
-        create(:user, email: 'henry@baz.com')
-      end
-
-      it 'should filter records matching' do
-        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:email]).to eq 'john@foo.com'
-      end
-
-      it 'should filter records matching with multiple' do
-        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry@baz.com'
-        expect(datatable.data.size).to eq 2
-        items = datatable.data.sort_by { |h| h[:email] }
-        item_first = items.first
-        item_last = items.last
-        expect(item_first[:email]).to eq 'henry@baz.com'
-        expect(item_last[:email]).to eq 'john@foo.com'
-      end
-
-      it 'should filter records matching with multiple contains not found' do
-        datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry_not@baz.com'
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:email]).to eq 'john@foo.com'
-      end
-    end
-
-    describe 'it can filter records with condition :null_value' do
-      let(:datatable) { DatatableCondNullValue.new(sample_params) }
-
-      before(:each) do
-        create(:user, first_name: 'john', email: 'foo@bar.com')
-        create(:user, first_name: 'mary', email: nil)
-      end
-
-      context 'when condition is NULL' do
         it 'should filter records matching' do
-          datatable.params[:columns]['1'][:search][:value] = 'NULL'
+          datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
           expect(item[:first_name]).to eq 'mary'
         end
       end
 
-      context 'when condition is !NULL' do
+      describe 'it can filter records with condition :lt' do
+        let(:datatable) { DatatableCondLt.new(sample_params) }
+
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
+
         it 'should filter records matching' do
-          datatable.params[:columns]['1'][:search][:value] = '!NULL'
+          datatable.params[:columns]['4'][:search][:value] = 2
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
           expect(item[:first_name]).to eq 'john'
         end
       end
-    end
 
-    describe 'it can filter records with condition :eq' do
-      let(:datatable) { DatatableCondEq.new(sample_params) }
+      describe 'it can filter records with condition :gt' do
+        let(:datatable) { DatatableCondGt.new(sample_params) }
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['4'][:search][:value] = 1
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'mary'
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 1
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'john'
-      end
-    end
+      describe 'it can filter records with condition :lteq' do
+        let(:datatable) { DatatableCondLteq.new(sample_params) }
 
-    describe 'it can filter records with condition :not_eq' do
-      let(:datatable) { DatatableCondNotEq.new(sample_params) }
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        it 'should filter records matching' do
+          datatable.params[:columns]['4'][:search][:value] = 2
+          expect(datatable.data.size).to eq 2
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 1
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'mary'
-      end
-    end
+      describe 'it can filter records with condition :gteq' do
+        let(:datatable) { DatatableCondGteq.new(sample_params) }
 
-    describe 'it can filter records with condition :lt' do
-      let(:datatable) { DatatableCondLt.new(sample_params) }
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        it 'should filter records matching' do
+          datatable.params[:columns]['4'][:search][:value] = 1
+          expect(datatable.data.size).to eq 2
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 2
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'john'
-      end
-    end
+      describe 'it can filter records with condition :in' do
+        let(:datatable) { DatatableCondIn.new(sample_params) }
 
-    describe 'it can filter records with condition :gt' do
-      let(:datatable) { DatatableCondGt.new(sample_params) }
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
-      end
-
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 1
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'mary'
-      end
-    end
-
-    describe 'it can filter records with condition :lteq' do
-      let(:datatable) { DatatableCondLteq.new(sample_params) }
-
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        it 'should filter records matching' do
+          datatable.params[:columns]['4'][:search][:value] = [1]
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'john'
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 2
-        expect(datatable.data.size).to eq 2
-      end
-    end
+      describe 'it can filter records with condition :in with regex' do
+        let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
 
-    describe 'it can filter records with condition :gteq' do
-      let(:datatable) { DatatableCondGteq.new(sample_params) }
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+        end
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
-      end
-
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = 1
-        expect(datatable.data.size).to eq 2
-      end
-    end
-
-    describe 'it can filter records with condition :in' do
-      let(:datatable) { DatatableCondIn.new(sample_params) }
-
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        it 'should filter records matching' do
+          datatable.params[:columns]['4'][:search][:value] = '1|2'
+          datatable.params[:order]['0'] = { column: '4', dir: 'asc' }
+          expect(datatable.data.size).to eq 2
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'john'
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = [1]
-        expect(datatable.data.size).to eq 1
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'john'
+      describe 'Integer overflows' do
+        let(:datatable) { DatatableCondEq.new(sample_params) }
+        let(:largest_postgresql_integer_value) { 2147483647 }
+        let(:smallest_postgresql_integer_value) { -2147483648 }
+
+        before(:each) do
+          create(:user, first_name: 'john', post_id: 1)
+          create(:user, first_name: 'mary', post_id: 2)
+          create(:user, first_name: 'phil', post_id: largest_postgresql_integer_value)
+        end
+
+        it 'Returns an empty result if input value is too large' do
+          datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value + 1
+          expect(datatable.data.size).to eq 0
+        end
+
+        it 'Returns an empty result if input value is too small' do
+          datatable.params[:columns]['4'][:search][:value] = smallest_postgresql_integer_value - 1
+          expect(datatable.data.size).to eq 0
+        end
+
+        it 'returns the matching user' do
+          datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value
+          expect(datatable.data.size).to eq 1
+        end
       end
     end
 
-    describe 'it can filter records with condition :in with regex' do
-      let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
+    context 'string condition' do
+      describe 'it can filter records with condition :start_with' do
+        let(:datatable) { DatatableCondStartWith.new(sample_params) }
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
+        before(:each) do
+          create(:user, first_name: 'John')
+          create(:user, first_name: 'Mary')
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['2'][:search][:value] = 'Jo'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:first_name]).to eq 'John'
+        end
       end
 
-      it 'should filter records matching' do
-        datatable.params[:columns]['4'][:search][:value] = '1|2'
-        datatable.params[:order]['0'] = { column: '4', dir: 'asc' }
-        expect(datatable.data.size).to eq 2
-        item = datatable.data.first
-        expect(item[:first_name]).to eq 'john'
-      end
-    end
+      describe 'it can filter records with condition :end_with' do
+        let(:datatable) { DatatableCondEndWith.new(sample_params) }
 
-    describe 'Integer overflows' do
-      let(:datatable) { DatatableCondEq.new(sample_params) }
-      let(:largest_postgresql_integer_value) { 2147483647 }
-      let(:smallest_postgresql_integer_value) { -2147483648 }
+        before(:each) do
+          create(:user, last_name: 'JOHN')
+          create(:user, last_name: 'MARY')
+        end
 
-      before(:each) do
-        create(:user, first_name: 'john', post_id: 1)
-        create(:user, first_name: 'mary', post_id: 2)
-        create(:user, first_name: 'phil', post_id: largest_postgresql_integer_value)
-      end
-
-      it 'Returns an empty result if input value is too large' do
-        datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value + 1
-        expect(datatable.data.size).to eq 0
-      end
-
-      it 'Returns an empty result if input value is too small' do
-        datatable.params[:columns]['4'][:search][:value] = smallest_postgresql_integer_value - 1
-        expect(datatable.data.size).to eq 0
+        if ENV['DB_ADAPTER'] == 'oracle_enhanced'
+          context 'when db_adapter is oracleenhanced' do
+            it 'should filter records matching' do
+              datatable.params[:columns]['3'][:search][:value] = 'RY'
+              expect(datatable.data.size).to eq 1
+              item = datatable.data.first
+              expect(item[:last_name]).to eq 'MARY'
+            end
+          end
+        else
+          it 'should filter records matching' do
+            datatable.params[:columns]['3'][:search][:value] = 'ry'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:last_name]).to eq 'MARY'
+          end
+        end
       end
 
-      it 'returns the matching user' do
-        datatable.params[:columns]['4'][:search][:value] = largest_postgresql_integer_value
-        expect(datatable.data.size).to eq 1
+      describe 'it can filter records with condition :like' do
+        let(:datatable) { DatatableCondLike.new(sample_params) }
+
+        before(:each) do
+          create(:user, email: 'john@foo.com')
+          create(:user, email: 'mary@bar.com')
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['1'][:search][:value] = 'foo'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:email]).to eq 'john@foo.com'
+        end
+      end
+
+      describe 'it can filter records with condition :string_eq' do
+        let(:datatable) { DatatableCondStringEq.new(sample_params) }
+
+        before(:each) do
+          create(:user, email: 'john@foo.com')
+          create(:user, email: 'mary@bar.com')
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:email]).to eq 'john@foo.com'
+        end
+      end
+
+      describe 'it can filter records with condition :string_in' do
+        let(:datatable) { DatatableCondStringIn.new(sample_params) }
+
+        before(:each) do
+          create(:user, email: 'john@foo.com')
+          create(:user, email: 'mary@bar.com')
+          create(:user, email: 'henry@baz.com')
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:email]).to eq 'john@foo.com'
+        end
+
+        it 'should filter records matching with multiple' do
+          datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry@baz.com'
+          expect(datatable.data.size).to eq 2
+          items = datatable.data.sort_by { |h| h[:email] }
+          item_first = items.first
+          item_last = items.last
+          expect(item_first[:email]).to eq 'henry@baz.com'
+          expect(item_last[:email]).to eq 'john@foo.com'
+        end
+
+        it 'should filter records matching with multiple contains not found' do
+          datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry_not@baz.com'
+          expect(datatable.data.size).to eq 1
+          item = datatable.data.first
+          expect(item[:email]).to eq 'john@foo.com'
+        end
+      end
+
+      describe 'it can filter records with condition :null_value' do
+        let(:datatable) { DatatableCondNullValue.new(sample_params) }
+
+        before(:each) do
+          create(:user, first_name: 'john', email: 'foo@bar.com')
+          create(:user, first_name: 'mary', email: nil)
+        end
+
+        context 'when condition is NULL' do
+          it 'should filter records matching' do
+            datatable.params[:columns]['1'][:search][:value] = 'NULL'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:first_name]).to eq 'mary'
+          end
+        end
+
+        context 'when condition is !NULL' do
+          it 'should filter records matching' do
+            datatable.params[:columns]['1'][:search][:value] = '!NULL'
+            expect(datatable.data.size).to eq 1
+            item = datatable.data.first
+            expect(item[:first_name]).to eq 'john'
+          end
+        end
       end
     end
   end
