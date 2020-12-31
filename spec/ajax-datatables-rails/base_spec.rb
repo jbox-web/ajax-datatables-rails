@@ -192,40 +192,6 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
-
-    describe 'helper methods' do
-      describe '#offset' do
-        it 'defaults to 0' do
-          datatable = described_class.new({})
-          expect(datatable.datatable.send(:offset)).to eq(0)
-        end
-
-        it 'matches the value on view params[:start]' do
-          datatable = described_class.new({ start: '11' })
-          expect(datatable.datatable.send(:offset)).to eq(11)
-        end
-      end
-
-      describe '#page' do
-        it 'calculates page number from params[:start] and #per_page' do
-          datatable = described_class.new({ start: '11' })
-          expect(datatable.datatable.send(:page)).to eq(2)
-        end
-      end
-
-      describe '#per_page' do
-        it 'defaults to 10' do
-          datatable = described_class.new(sample_params)
-          expect(datatable.datatable.send(:per_page)).to eq(10)
-        end
-
-        it 'matches the value on view params[:length]' do
-          other_view = { length: 20 }
-          datatable = described_class.new(other_view)
-          expect(datatable.datatable.send(:per_page)).to eq(20)
-        end
-      end
-    end
   end
 
   describe 'User helper methods' do
