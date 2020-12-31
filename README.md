@@ -15,7 +15,7 @@ It's tested against :
 * Ruby 2.5.x / 2.6.x / 2.7.x
 * SQLite3
 * Postgresql 13
-* MySQL 5.6
+* MySQL 8
 * Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 
 ## Description
@@ -166,9 +166,9 @@ end
 
 * `:like`, `:start_with`, `:end_with`, `:string_eq`, `:string_in` for string or full text search
 * `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
-* `:date_range` for date range (only for Rails > 4.2.x, see [here](#daterange-search))
+* `:date_range` for date range
 * `:null_value` for nil field
-* `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
+* `Proc` for whatever (see [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project/blob/master/app/datatables/city_datatable.rb) for real example)
 
 The `nulls_last` param allows for nulls to be ordered last.
 
