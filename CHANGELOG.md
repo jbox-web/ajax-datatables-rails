@@ -10,6 +10,7 @@
 * Improve specs
 * `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
 * Fix lib loading with JRuby (fixes [#371](https://github.com/jbox-web/ajax-datatables-rails/issues/371))
+* Raise an error when column's `cond:` setting is unknown
 
 ## 1.2.0 (2020-04-19)
 

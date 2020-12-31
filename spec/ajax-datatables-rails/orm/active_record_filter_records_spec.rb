@@ -107,6 +107,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
+      # TODO: improve (or delete?) this test
       context 'when column.search_query returns nil' do
         let(:datatable) { DatatableCondUnknown.new(sample_params) }
 
@@ -115,6 +116,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'does not raise error' do
+          allow_any_instance_of(AjaxDatatablesRails::Datatable::Column).to receive(:valid_search_condition?).and_return(true)
+
           expect {
             datatable.data.size
           }.to_not raise_error
@@ -588,6 +591,20 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
             expect(item[:first_name]).to eq 'john'
           end
         end
+      end
+    end
+
+    context 'unknown condition' do
+      let(:datatable) { DatatableCondUnknown.new(sample_params) }
+
+      before(:each) do
+        datatable.params[:search] = { value: 'john doe', regex: 'false' }
+      end
+
+      it 'should raise error' do
+        expect {
+          datatable.data.size
+        }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchCondition).with_message('foo')
       end
     end
   end

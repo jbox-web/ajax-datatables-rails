@@ -16,6 +16,7 @@ module AjaxDatatablesRails
         @index       = index
         @options     = options
         @view_column = datatable.view_columns[options[:data].to_sym]
+        validate_settings!
       end
 
       def data
@@ -83,6 +84,27 @@ module AjaxDatatablesRails
 
       def casted_column
         @casted_column ||= ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(type_cast)])
+      end
+
+      def validate_settings!
+        raise AjaxDatatablesRails::Error::InvalidSearchCondition, cond unless valid_search_condition?(cond)
+      end
+
+      VALID_SEARCH_CONDITIONS = [
+        # String condition
+        :start_with, :end_with, :like, :string_eq, :string_in, :null_value,
+        # Numeric condition
+        :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in,
+        # Date condition
+        :date_range
+      ]
+
+      private_constant :VALID_SEARCH_CONDITIONS
+
+      def valid_search_condition?(cond)
+        return true if cond.is_a?(Proc)
+
+        VALID_SEARCH_CONDITIONS.include?(cond)
       end
 
     end
