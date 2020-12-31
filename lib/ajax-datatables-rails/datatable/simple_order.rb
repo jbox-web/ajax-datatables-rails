@@ -9,9 +9,10 @@ module AjaxDatatablesRails
       DIRECTIONS     = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
       def initialize(datatable, options = {})
-        @datatable = datatable
-        @options   = options
-        @adapter   = datatable.db_adapter
+        @datatable  = datatable
+        @options    = options
+        @adapter    = datatable.db_adapter
+        @nulls_last = datatable.nulls_last
       end
 
       def query(sort_column)
@@ -37,7 +38,7 @@ module AjaxDatatablesRails
       end
 
       def sort_nulls_last?
-        column.nulls_last? || AjaxDatatablesRails.config.nulls_last == true
+        column.nulls_last? || @nulls_last == true
       end
 
       def nulls_last_sql

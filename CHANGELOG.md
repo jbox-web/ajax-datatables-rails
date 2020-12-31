@@ -8,10 +8,15 @@
 * Add support of Ruby 3.0
 * Switch from Travis to Github Actions
 * Improve specs
-* `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
 * Fix lib loading with JRuby (fixes [#371](https://github.com/jbox-web/ajax-datatables-rails/issues/371))
 * Raise an error when column's `cond:` setting is unknown
 * Make global search and column search work together (merge: [#350](https://github.com/jbox-web/ajax-datatables-rails/pull/350), fixes: [#258](https://github.com/jbox-web/ajax-datatables-rails/issues/258))
+
+* `AjaxDatatablesRails.config` is removed with no replacement. The gem is now configless :)
+* `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
+* `AjaxDatatablesRails.config.nulls_last=` is removed and is configured per datatable class now (or by column). It defaults to false.
+
+To mitigate this 3 changes see the [migration doc](/doc/migrate.md).
 
 ## 1.2.0 (2020-04-19)
 

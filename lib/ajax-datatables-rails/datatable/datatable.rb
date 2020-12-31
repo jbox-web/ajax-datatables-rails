@@ -77,6 +77,10 @@ module AjaxDatatablesRails
         @datatable.db_adapter
       end
 
+      def nulls_last
+        @datatable.nulls_last
+      end
+
     end
   end
 end

@@ -170,7 +170,15 @@ end
 * `:null_value` for nil field
 * `Proc` for whatever (see [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project/blob/master/app/datatables/city_datatable.rb) for real example)
 
-The `nulls_last` param allows for nulls to be ordered last.
+The `nulls_last` param allows for nulls to be ordered last. You can configure it by column, like above, or by datatable class :
+
+```ruby
+class MyDatatable < AjaxDatatablesRails::ActiveRecord
+  self.nulls_last = true
+
+  # ... other methods (view_columns, data...)
+end
+```
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 

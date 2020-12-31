@@ -14,9 +14,9 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
   end
 
   describe 'option methods with nulls last' do
-    describe 'using global option' do
-      before { AjaxDatatablesRails.config.nulls_last = true }
-      after  { AjaxDatatablesRails.config.nulls_last = false }
+    describe 'using class option' do
+      before { parent.nulls_last = true }
+      after  { parent.nulls_last = false }
 
       it 'sql query' do
         skip('unsupported database adapter') if ENV['DB_ADAPTER'] == 'oracle_enhanced'

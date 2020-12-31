@@ -1,3 +1,28 @@
+## To migrate from `v1.0.x` to `v1.3.0`
+
+The *v1.3.0* version has some breaking changes :
+
+* `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
+
+This change is transparent for everyone. Just remove `AjaxDatatablesRails.config.db_adapter=` from your configuration (if exists) and it should work fine.
+
+Now you can use AjaxDatatablesRails in multi-db environments.
+
+* `AjaxDatatablesRails.config.nulls_last=` is removed and is configured per datatable class now (or by column). It defaults to false.
+
+This change is easy to mitigate : add `self.nulls_last = true` in [`ApplicationDatatable`](https://github.com/jbox-web/ajax-datatables-rails#create-a-master-parent-class-easy) and remove `AjaxDatatablesRails.config.nulls_last=`
+
+```ruby
+class ApplicationDatatable < AjaxDatatablesRails::ActiveRecord
+  self.nulls_last = true
+  # puts commonly used methods here
+end
+```
+
+* `AjaxDatatablesRails.config` is removed with no replacement
+
+Fix the two changes above and remove any configuration file about AjaxDatatablesRails. The gem is now configless :)
+
 ## To migrate from `v0.4.x` to `v1.0.0`
 
 The *v1.0.0* version is a **major break** from *v0.4*.

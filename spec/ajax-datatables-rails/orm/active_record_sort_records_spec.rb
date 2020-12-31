@@ -45,8 +45,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#sort_records with nulls last using global config' do
-    before { AjaxDatatablesRails.config.nulls_last = true }
-    after  { AjaxDatatablesRails.config.nulls_last = false }
+    before { datatable.nulls_last = true }
+    after  { datatable.nulls_last = false }
 
     it 'can handle multiple sorting columns' do
       skip('unsupported database adapter') if ENV['DB_ADAPTER'] == 'oracle_enhanced'

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/configurable'
-
 require 'zeitwerk'
 loader = Zeitwerk::Loader.for_gem
 generators = "#{__dir__}/generators"
@@ -13,18 +11,4 @@ loader.inflector.inflect(
 loader.setup
 
 module AjaxDatatablesRails
-  # Configure AjaxDatatablesRails global settings
-  #
-  #   AjaxDatatablesRails.configure do |config|
-  #     config.nulls_last = true
-  #   end
-
-  def self.configure
-    yield @config ||= AjaxDatatablesRails::Configuration.new
-  end
-
-  # AjaxDatatablesRails global settings
-  def self.config
-    @config ||= AjaxDatatablesRails::Configuration.new
-  end
 end
