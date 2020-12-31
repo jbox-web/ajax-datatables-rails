@@ -42,38 +42,6 @@ You'll find a sample project here : https://ajax-datatables-rails.herokuapp.com
 
 Its real world examples. The code is here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
 
-## Warnings
-
-**Breaking changes :**
-
-1) the *v1.0.0* version is a **major break** from *v0.4*.
-
-* Datatables no longer inherits from `AjaxDatatablesRails::Base` but from `AjaxDatatablesRails::ActiveRecord` (this solves [#228](https://github.com/jbox-web/ajax-datatables-rails/issues/228))
-* The `view_context` is no longer injected in Datatables but only the `params` hash (see the [example](#4-setup-the-controller-action)). This will break calls to helpers methods.
-
-To mitigate this 2 changes see the [migration doc](/doc/migrate.md).
-
-2) the *v0.4* version is a **major break** from *v0.3*.
-
-The core has been rewriten to remove dependency on [Kaminari](https://github.com/kaminari/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
-
-It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search.
-
-[See below](#3-customize-the-generated-datatables-class) for more infos.
-
-To migrate on the v0.4 you'll need to :
-
-* update your DataTables classes to remove all the `extend` directives
-* switch to hash definitions of `view_columns`
-* update your views to declare your columns bindings ([See here](#5-wire-up-the-javascript))
-
-
-## Documentation version
-
-This documentation is about the `v1.x.x` release (master branch) of this gem.
-
-You can still have access to the `v0.4.x` documentation on the [v0.4.x branch](https://github.com/jbox-web/ajax-datatables-rails/tree/v0.4.x).
-
 
 ## Installation
 
@@ -185,7 +153,7 @@ def view_columns
   @view_columns ||= {
     id:         { source: "User.id" },
     first_name: { source: "User.first_name", cond: :like, searchable: true, orderable: true },
-    last_name:  { source: "User.last_name",  cond: :like },
+    last_name:  { source: "User.last_name",  cond: :like, nulls_last: true },
     email:      { source: "User.email" },
     bio:        { source: "User.bio" },
   }
@@ -201,6 +169,8 @@ end
 * `:date_range` for date range (only for Rails > 4.2.x, see [here](#daterange-search))
 * `:null_value` for nil field
 * `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
+
+The `nulls_last` param allows for nulls to be ordered last.
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 

@@ -1,5 +1,10 @@
 ## To migrate from `v0.4.x` to `v1.0.0`
 
+The *v1.0.0* version is a **major break** from *v0.4*.
+
+* Datatables no longer inherits from `AjaxDatatablesRails::Base` but from `AjaxDatatablesRails::ActiveRecord` (this solves [#228](https://github.com/jbox-web/ajax-datatables-rails/issues/228))
+* The `view_context` is no longer injected in Datatables but only the `params` hash (see the [example](#4-setup-the-controller-action)). This will break calls to helpers methods.
+
 1) To mitigate the first change (Datatables no longer inherits from `AjaxDatatablesRails::Base` but from `AjaxDatatablesRails::ActiveRecord`)
 
 Create a new `ApplicationDatatable` class and make all your classes inherits from it :
@@ -51,3 +56,17 @@ end
 This way, you can still use `def_delegators` in your datatables [as in the documentation](https://github.com/jbox-web/ajax-datatables-rails#using-view-helpers).
 
 Note that the recommanded way is to use [Draper gem](https://github.com/drapergem/draper) to separate filtering logic from view/presentation logic [as in the documentation](https://github.com/jbox-web/ajax-datatables-rails#using-view-decorators).
+
+## To migrate from `v0.3.x` to `v0.4.x`
+
+The *v0.4* version is a **major break** from *v0.3*.
+
+The core has been rewriten to remove dependency on [Kaminari](https://github.com/kaminari/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
+
+It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search.
+
+To migrate on the v0.4 you'll need to :
+
+* update your DataTables classes to remove all the `extend` directives
+* switch to hash definitions of `view_columns`
+* update your views to declare your columns bindings ([See here](https://github.com/jbox-web/ajax-datatables-rails#5-wire-up-the-javascript))
