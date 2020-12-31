@@ -11,6 +11,7 @@ module AjaxDatatablesRails
       def initialize(datatable, options = {})
         @datatable = datatable
         @options   = options
+        @adapter   = datatable.db_adapter
       end
 
       def query(sort_column)
@@ -42,15 +43,13 @@ module AjaxDatatablesRails
       def nulls_last_sql
         return unless sort_nulls_last?
 
-        adapter = @datatable.datatable.db_adapter
-
-        case adapter
+        case @adapter
         when :pg, :postgresql, :postgres, :oracle
           'NULLS LAST'
         when :mysql, :mysql2, :sqlite, :sqlite3
           'IS NULL'
         else
-          raise "unsupported database adapter: #{adapter}"
+          raise "unsupported database adapter: #{@adapter}"
         end
       end
 

@@ -4,7 +4,7 @@ module AjaxDatatablesRails
   module Datatable
 
     class Datatable
-      attr_reader :datatable, :options
+      attr_reader :options
 
       def initialize(datatable)
         @datatable = datatable
@@ -41,7 +41,7 @@ module AjaxDatatablesRails
 
       def columns
         @columns ||= get_param(:columns).map do |index, column_options|
-          Column.new(datatable, index, column_options)
+          Column.new(@datatable, index, column_options)
         end
       end
 
@@ -71,6 +71,10 @@ module AjaxDatatablesRails
         return {} if options[param].nil?
 
         options[param].to_unsafe_h.with_indifferent_access
+      end
+
+      def db_adapter
+        @datatable.db_adapter
       end
 
     end
