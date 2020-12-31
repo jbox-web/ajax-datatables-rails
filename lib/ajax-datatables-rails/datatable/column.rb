@@ -4,29 +4,12 @@ module AjaxDatatablesRails
   module Datatable
     class Column
 
-      TYPE_CAST_DEFAULT   = 'VARCHAR'
-      TYPE_CAST_MYSQL     = 'CHAR'
-      TYPE_CAST_SQLITE    = 'TEXT'
-      TYPE_CAST_ORACLE    = 'VARCHAR2(4000)'
-      TYPE_CAST_SQLSERVER = 'VARCHAR(4000)'
-
-      DB_ADAPTER_TYPE_CAST = {
-        mysql:          TYPE_CAST_MYSQL,
-        mysql2:         TYPE_CAST_MYSQL,
-        sqlite:         TYPE_CAST_SQLITE,
-        sqlite3:        TYPE_CAST_SQLITE,
-        oracle:         TYPE_CAST_ORACLE,
-        oracleenhanced: TYPE_CAST_ORACLE,
-        sqlserver:      TYPE_CAST_SQLSERVER,
-      }.freeze
-
-      attr_reader :datatable, :index, :options
-      attr_writer :search
-
       include Search
       include Order
       include DateFilter
 
+      attr_reader :datatable, :index, :options
+      attr_writer :search
 
       def initialize(datatable, index, options)
         @datatable   = datatable
@@ -70,6 +53,29 @@ module AjaxDatatablesRails
       end
 
       private
+
+      TYPE_CAST_DEFAULT   = 'VARCHAR'
+      TYPE_CAST_MYSQL     = 'CHAR'
+      TYPE_CAST_SQLITE    = 'TEXT'
+      TYPE_CAST_ORACLE    = 'VARCHAR2(4000)'
+      TYPE_CAST_SQLSERVER = 'VARCHAR(4000)'
+
+      DB_ADAPTER_TYPE_CAST = {
+        mysql:          TYPE_CAST_MYSQL,
+        mysql2:         TYPE_CAST_MYSQL,
+        sqlite:         TYPE_CAST_SQLITE,
+        sqlite3:        TYPE_CAST_SQLITE,
+        oracle:         TYPE_CAST_ORACLE,
+        oracleenhanced: TYPE_CAST_ORACLE,
+        sqlserver:      TYPE_CAST_SQLSERVER,
+      }.freeze
+
+      private_constant :TYPE_CAST_DEFAULT
+      private_constant :TYPE_CAST_MYSQL
+      private_constant :TYPE_CAST_SQLITE
+      private_constant :TYPE_CAST_ORACLE
+      private_constant :TYPE_CAST_SQLSERVER
+      private_constant :DB_ADAPTER_TYPE_CAST
 
       def type_cast
         @type_cast ||= DB_ADAPTER_TYPE_CAST.fetch(datatable.db_adapter, TYPE_CAST_DEFAULT)
