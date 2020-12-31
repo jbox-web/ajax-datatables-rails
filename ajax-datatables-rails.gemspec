@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'rails', '>= 5.1'
+  s.add_development_dependency 'rails', '>= 5.2'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-retry'
