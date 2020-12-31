@@ -420,6 +420,25 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    context 'proc condition' do
+      describe 'it can filter records with lambda/proc condition' do
+        let(:datatable) { DatatableCondProc.new(sample_params) }
+
+        before(:each) do
+          create(:user, username: 'johndoe', email: 'johndoe@example.com')
+          create(:user, username: 'johndie', email: 'johndie@example.com')
+          create(:user, username: 'msmith',  email: 'mary.smith@example.com')
+        end
+
+        it 'should filter records matching' do
+          datatable.params[:columns]['0'][:search][:value] = 'john'
+          expect(datatable.data.size).to eq 2
+          item = datatable.data.first
+          expect(item[:username]).to eq 'johndie'
+        end
+      end
+    end
+
     context 'string condition' do
       describe 'it can filter records with condition :start_with' do
         let(:datatable) { DatatableCondStartWith.new(sample_params) }
