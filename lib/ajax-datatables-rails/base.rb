@@ -75,6 +75,7 @@ module AjaxDatatablesRails
       end
     end
 
+    # called from within #data
     def records
       @records ||= retrieve_records
     end
