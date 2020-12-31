@@ -106,6 +106,20 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
           expect(results).not_to include('msmith')
         end
       end
+
+      context 'when column.search_query returns nil' do
+        let(:datatable) { DatatableCondUnknown.new(sample_params) }
+
+        before(:each) do
+          datatable.params[:search] = { value: 'john doe', regex: 'false' }
+        end
+
+        it 'does not raise error' do
+          expect {
+            datatable.data.size
+          }.to_not raise_error
+        end
+      end
     end
   end
 
