@@ -15,6 +15,7 @@ module AjaxDatatablesRails
       @datatable = Datatable::Datatable.new(self)
     end
 
+    # User defined methods
     def view_columns
       raise(NotImplementedError, view_columns_error_text)
     end
@@ -27,10 +28,12 @@ module AjaxDatatablesRails
       raise(NotImplementedError, data_error_text)
     end
 
+    # User overides
     def additional_data
       {}
     end
 
+    # JSON structure sent to jQuery DataTables
     def as_json(*)
       {
         recordsTotal:    records_total_count,
