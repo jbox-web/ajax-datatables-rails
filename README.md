@@ -78,7 +78,7 @@ If you'd be interested in contributing to speed development, please [open an iss
 ## Quick start (in 5 steps)
 
 The following examples assume that we are setting up `ajax-datatables-rails` for an index page of users from a `User` model,
-and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, see above, just be sure to have [configured the right adapter](#configuration))
+and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, [see above](#change-the-db-adapter-for-a-datatable-class))
 
 The goal is to render a users table and display : `id`, `first name`, `last name`, `email`, and `bio` for each user.
 
