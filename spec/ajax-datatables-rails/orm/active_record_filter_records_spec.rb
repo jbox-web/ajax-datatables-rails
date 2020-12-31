@@ -23,6 +23,29 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
+  describe '#build_conditions' do
+    before(:each) do
+      create(:user, username: 'johndoe', email: 'johndoe@example.com')
+      create(:user, username: 'msmith',  email: 'mary.smith@example.com')
+      create(:user, username: 'hsmith',  email: 'henry.smith@example.net')
+    end
+
+    context 'with column and global search' do
+      before(:each) do
+        datatable.params[:search] = { value: 'example.com', regex: 'false' }
+        datatable.params[:columns]['0'][:search][:value] = 'smith'
+      end
+
+      it 'return a filtered set of records' do
+        query = datatable.build_conditions
+        results = records.where(query).map(&:username)
+        expect(results).to include('msmith')
+        expect(results).not_to include('johndoe')
+        expect(results).not_to include('hsmith')
+      end
+    end
+  end
+
   describe '#build_conditions_for_datatable' do
     before(:each) do
       create(:user, username: 'johndoe', email: 'johndoe@example.com')
