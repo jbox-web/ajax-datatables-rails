@@ -13,7 +13,7 @@ describe AjaxDatatablesRails::Base do
     end
   end
 
-  context 'Public API' do
+  describe 'User API' do
     describe '#view_columns' do
       it 'raises an error if not defined by the user' do
         datatable = described_class.new(sample_params)
@@ -81,33 +81,9 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
+  end
 
-    describe '#as_json' do
-      let(:datatable) { ComplexDatatable.new(sample_params) }
-
-      it 'should return a hash' do
-        create_list(:user, 5)
-        data = datatable.as_json
-        expect(data[:recordsTotal]).to eq 5
-        expect(data[:recordsFiltered]).to eq 5
-        expect(data[:data]).to be_a(Array)
-        expect(data[:data].size).to eq 5
-      end
-
-      context 'with additional_data' do
-        it 'should return a hash' do
-          create_list(:user, 5)
-          expect(datatable).to receive(:additional_data){ { foo: 'bar' } }
-          data = datatable.as_json
-          expect(data[:recordsTotal]).to eq 5
-          expect(data[:recordsFiltered]).to eq 5
-          expect(data[:data]).to be_a(Array)
-          expect(data[:data].size).to eq 5
-          expect(data[:foo]).to eq 'bar'
-        end
-      end
-    end
-
+  describe 'ORM API' do
     describe '#filter_records' do
       let(:records) { User.all }
 
@@ -160,6 +136,33 @@ describe AjaxDatatablesRails::Base do
     end
   end
 
+  describe 'JSON format' do
+    describe '#as_json' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
+
+      it 'should return a hash' do
+        create_list(:user, 5)
+        data = datatable.as_json
+        expect(data[:recordsTotal]).to eq 5
+        expect(data[:recordsFiltered]).to eq 5
+        expect(data[:data]).to be_a(Array)
+        expect(data[:data].size).to eq 5
+      end
+
+      context 'with additional_data' do
+        it 'should return a hash' do
+          create_list(:user, 5)
+          expect(datatable).to receive(:additional_data){ { foo: 'bar' } }
+          data = datatable.as_json
+          expect(data[:recordsTotal]).to eq 5
+          expect(data[:recordsFiltered]).to eq 5
+          expect(data[:data]).to be_a(Array)
+          expect(data[:data].size).to eq 5
+          expect(data[:foo]).to eq 'bar'
+        end
+      end
+    end
+  end
 
   context 'Private API' do
     context 'when orm is not implemented' do
