@@ -12,6 +12,12 @@ Gem::Specification.new do |s|
   s.summary     = 'A gem that simplifies using datatables and hundreds of records via ajax'
   s.description = "A wrapper around datatable's ajax methods that allow synchronization with server-side pagination in a rails app"
   s.license     = 'MIT'
+  s.metadata    = {
+    'homepage_uri'    => 'https://github.com/jbox-web/ajax-datatables-rails',
+    'changelog_uri'   => 'https://github.com/jbox-web/ajax-datatables-rails/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/jbox-web/ajax-datatables-rails',
+    'bug_tracker_uri' => 'https://github.com/jbox-web/ajax-datatables-rails/issues'
+  }
 
   s.required_ruby_version = '>= 2.5.0'
 
