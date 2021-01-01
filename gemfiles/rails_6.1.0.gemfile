@@ -2,10 +2,20 @@
 
 source "https://rubygems.org"
 
+gem "appraisal", git: "https://github.com/n-rodriguez/appraisal.git", branch: "wip/install_if"
 gem "rails", "6.1.0"
-gem "activerecord-oracle_enhanced-adapter", "~> 6.1.0"
-gem "sqlite3", "~> 1.4.0"
-gem "mysql2"
-gem "ruby-oci8" if ENV["DB_ADAPTER"] == "oracle_enhanced"
+
+install_if -> { ENV["DB_ADAPTER"] == "sqlite3" } do
+  gem "sqlite3", "~> 1.4.0"
+end
+
+install_if -> { ENV["DB_ADAPTER"] == "mysql2" } do
+  gem "mysql2"
+end
+
+install_if -> { ENV["DB_ADAPTER"] == "oracle_enhanced" } do
+  gem "activerecord-oracle_enhanced-adapter", "~> 6.1.0"
+  gem "ruby-oci8"
+end
 
 gemspec path: "../"

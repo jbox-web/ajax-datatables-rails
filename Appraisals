@@ -1,34 +1,27 @@
 # frozen_string_literal: true
 
-RAILS_VERSIONS = {
-  '5.2.4' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 5.2.0',
-    'sqlite3' => '~> 1.3.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
-  '6.0.3' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 6.0.0',
-    'sqlite3' => '~> 1.4.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
-  '6.1.0' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 6.1.0',
-    'sqlite3' => '~> 1.4.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
-}.freeze
+require 'yaml'
 
-RAILS_VERSIONS.each do |version, gems|
+rails_versions = YAML.load(File.read('appraisal.yml'))
+
+rails_versions.each do |version, gems|
   appraise "rails_#{version}" do
     gem 'rails', version
-    gems.each do |name, gem_version|
-      if gem_version.empty?
-        gem name
+    gems.each do |name, opts|
+      if opts['install_if']
+        install_if opts['install_if'] do
+          if opts['version'].empty?
+            gem name
+          else
+            gem name, opts['version']
+          end
+        end
       else
-        gem name, gem_version
+        if opts['version'].empty?
+          gem name
+        else
+          gem name, opts['version']
+        end
       end
     end
   end

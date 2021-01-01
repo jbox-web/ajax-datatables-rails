@@ -1,0 +1,42 @@
+---
+5.2.4:
+  sqlite3:
+    version: ~> 1.3.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
+  mysql2:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "mysql2" }'
+  activerecord-oracle_enhanced-adapter:
+    version: ~> 5.2.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+  ruby-oci8:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+
+6.0.3:
+  sqlite3:
+    version: ~> 1.4.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
+  mysql2:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "mysql2" }'
+  activerecord-oracle_enhanced-adapter:
+    version: ~> 6.0.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+  ruby-oci8:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+
+6.1.0:
+  sqlite3:
+    version: ~> 1.4.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
+  mysql2:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "mysql2" }'
+  activerecord-oracle_enhanced-adapter:
+    version: ~> 6.1.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+  ruby-oci8:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
