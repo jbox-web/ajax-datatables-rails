@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.3.0 (to come)
+## 1.3.0 (2021-01-04)
 
 * Drop support of Rails 5.0.x and 5.1.x
 * Drop support of Ruby 2.4
@@ -13,6 +13,7 @@
 * Make global search and column search work together (merge: [#350](https://github.com/jbox-web/ajax-datatables-rails/pull/350), fixes: [#258](https://github.com/jbox-web/ajax-datatables-rails/issues/258))
 * Fix: date_range doesn't support searching by a date greater than today (merge: [#351](https://github.com/jbox-web/ajax-datatables-rails/pull/351))
 * Fix: undefined method `fetch' for nil:NilClass (fix: [#307](https://github.com/jbox-web/ajax-datatables-rails/issues/307))
+* Add support for json params (merge: [#355](https://github.com/jbox-web/ajax-datatables-rails/pull/355))
 
 * `AjaxDatatablesRails.config` is removed with no replacement. The gem is now configless :)
 * `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
