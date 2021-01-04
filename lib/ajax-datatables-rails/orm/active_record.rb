@@ -26,13 +26,14 @@ module AjaxDatatablesRails
       # ----------------- SEARCH HELPER METHODS --------------------
 
       def build_conditions
-        @criteria ||= begin
+        @build_conditions ||= begin
           criteria = [build_conditions_for_selected_columns]
           criteria << build_conditions_for_datatable if datatable.searchable?
           criteria.compact.reduce(:and)
         end
       end
 
+      # rubocop:disable Metrics/AbcSize
       def build_conditions_for_datatable
         columns  = searchable_columns.reject(&:searched?)
         criteria = search_for.inject([]) do |crit, atom|
@@ -44,6 +45,7 @@ module AjaxDatatablesRails
         end.compact.reduce(:and)
         criteria
       end
+      # rubocop:enable Metrics/AbcSize
 
       def build_conditions_for_selected_columns
         search_columns.map(&:search_query).compact.reduce(:and)

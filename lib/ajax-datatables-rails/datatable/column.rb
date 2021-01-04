@@ -97,7 +97,7 @@ module AjaxDatatablesRails
         :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in,
         # Date condition
         :date_range
-      ]
+      ].freeze
 
       private_constant :VALID_SEARCH_CONDITIONS
 
