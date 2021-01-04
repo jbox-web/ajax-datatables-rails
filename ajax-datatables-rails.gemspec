@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
     'homepage_uri'    => 'https://github.com/jbox-web/ajax-datatables-rails',
     'changelog_uri'   => 'https://github.com/jbox-web/ajax-datatables-rails/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/jbox-web/ajax-datatables-rails',
-    'bug_tracker_uri' => 'https://github.com/jbox-web/ajax-datatables-rails/issues'
+    'bug_tracker_uri' => 'https://github.com/jbox-web/ajax-datatables-rails/issues',
   }
 
   s.required_ruby_version = '>= 2.5.0'
