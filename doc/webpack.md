@@ -24,7 +24,10 @@ In `config/webpack/loaders/datatables.js` :
 ```js
 module.exports = {
   test: /datatables\.net.*/,
-  loader: 'imports-loader?define=>false'
+  loader: 'imports-loader',
+  options: {
+    additionalCode: 'var define = false;'
+  }
 }
 ```
 

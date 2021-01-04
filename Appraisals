@@ -1,26 +1,20 @@
 # frozen_string_literal: true
 
 RAILS_VERSIONS = {
-  '5.0.7' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 1.7.0',
-    'sqlite3' => '~> 1.3.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
-  '5.1.7' => {
-    'activerecord-oracle_enhanced-adapter' => '~> 1.8.0',
-    'sqlite3' => '~> 1.3.0',
-    'mysql2' => '',
-    'ruby-oci8' => '',
-  },
-  '5.2.3' => {
+  '5.2.4' => {
     'activerecord-oracle_enhanced-adapter' => '~> 5.2.0',
     'sqlite3' => '~> 1.3.0',
     'mysql2' => '',
     'ruby-oci8' => '',
   },
-  '6.0.1' => {
+  '6.0.3' => {
     'activerecord-oracle_enhanced-adapter' => '~> 6.0.0',
+    'sqlite3' => '~> 1.4.0',
+    'mysql2' => '',
+    'ruby-oci8' => '',
+  },
+  '6.1.0' => {
+    'activerecord-oracle_enhanced-adapter' => '~> 6.1.0',
     'sqlite3' => '~> 1.4.0',
     'mysql2' => '',
     'ruby-oci8' => '',

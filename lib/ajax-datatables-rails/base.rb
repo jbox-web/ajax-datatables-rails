@@ -3,6 +3,9 @@
 module AjaxDatatablesRails
   class Base
 
+    class_attribute :db_adapter, default: ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+    class_attribute :nulls_last, default: false
+
     attr_reader :params, :options, :datatable
 
     GLOBAL_SEARCH_DELIMITER = ' '
@@ -13,6 +16,7 @@ module AjaxDatatablesRails
       @datatable = Datatable::Datatable.new(self)
     end
 
+    # User defined methods
     def view_columns
       raise(NotImplementedError, view_columns_error_text)
     end
@@ -25,10 +29,29 @@ module AjaxDatatablesRails
       raise(NotImplementedError, data_error_text)
     end
 
+    # ORM defined methods
+    def fetch_records
+      get_raw_records
+    end
+
+    def filter_records(records)
+      raise(NotImplementedError)
+    end
+
+    def sort_records(records)
+      raise(NotImplementedError)
+    end
+
+    def paginate_records(records)
+      raise(NotImplementedError)
+    end
+
+    # User overides
     def additional_data
       {}
     end
 
+    # JSON structure sent to jQuery DataTables
     def as_json(*)
       {
         recordsTotal:    records_total_count,
@@ -37,9 +60,17 @@ module AjaxDatatablesRails
       }.merge(additional_data)
     end
 
-    def records
-      @records ||= retrieve_records
+    # User helper methods
+    def column_id(name)
+      view_columns.keys.index(name.to_sym)
     end
+
+    def column_data(column)
+      id = column_id(column)
+      params.dig('columns', id.to_s, 'search', 'value')
+    end
+
+    private
 
     # helper methods
     def connected_columns
@@ -62,8 +93,6 @@ module AjaxDatatablesRails
       end
     end
 
-    private
-
     def sanitize_data(data)
       data.map do |record|
         if record.is_a?(Array)
@@ -72,6 +101,11 @@ module AjaxDatatablesRails
           record.update(record) { |_, v| ERB::Util.html_escape(v) }
         end
       end
+    end
+
+    # called from within #data
+    def records
+      @records ||= retrieve_records
     end
 
     def retrieve_records
@@ -92,15 +126,6 @@ module AjaxDatatablesRails
 
     def global_search_delimiter
       GLOBAL_SEARCH_DELIMITER
-    end
-
-    def column_id(name)
-      view_columns.keys.index(name.to_sym)
-    end
-
-    def column_data(column)
-      id = column_id(column)
-      params.dig('columns', id.to_s, 'search', 'value')
     end
 
     def raw_records_error_text

@@ -13,7 +13,7 @@ describe AjaxDatatablesRails::Base do
     end
   end
 
-  context 'Public API' do
+  describe 'User API' do
     describe '#view_columns' do
       it 'raises an error if not defined by the user' do
         datatable = described_class.new(sample_params)
@@ -81,7 +81,78 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
+  end
 
+  describe 'ORM API' do
+    context 'when ORM is not implemented' do
+      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
+
+      describe '#fetch_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.fetch_records }.to raise_error NotImplementedError
+        end
+      end
+
+      describe '#filter_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.filter_records([]) }.to raise_error NotImplementedError
+        end
+      end
+
+      describe '#sort_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.sort_records([]) }.to raise_error NotImplementedError
+        end
+      end
+
+      describe '#paginate_records' do
+        it 'raises an error if it does not include an ORM module' do
+          expect { datatable.paginate_records([]) }.to raise_error NotImplementedError
+        end
+      end
+    end
+
+    context 'when ORM is implemented' do
+      describe 'it allows method override' do
+        let(:datatable) do
+          datatable = Class.new(ComplexDatatable) do
+            def filter_records(records)
+              raise NotImplementedError.new('FOO')
+            end
+
+            def sort_records(records)
+              raise NotImplementedError.new('FOO')
+            end
+
+            def paginate_records(records)
+              raise NotImplementedError.new('FOO')
+            end
+          end
+          datatable.new(sample_params)
+        end
+
+        describe '#filter_records' do
+          it {
+            expect { datatable.filter_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
+        end
+
+        describe '#sort_records' do
+          it {
+            expect { datatable.sort_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
+        end
+
+        describe '#paginate_records' do
+          it {
+            expect { datatable.paginate_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
+          }
+        end
+      end
+    end
+  end
+
+  describe 'JSON format' do
     describe '#as_json' do
       let(:datatable) { ComplexDatatable.new(sample_params) }
 
@@ -107,139 +178,25 @@ describe AjaxDatatablesRails::Base do
         end
       end
     end
-
-    describe '#filter_records' do
-      let(:records) { User.all }
-
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def filter_records(records)
-            raise NotImplementedError
-          end
-        end
-        datatable.new(sample_params)
-      end
-
-      it 'should allow method override' do
-        expect { datatable.filter_records(records) }.to raise_error(NotImplementedError)
-      end
-    end
-
-    describe '#sort_records' do
-      let(:records) { User.all }
-
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def sort_records(records)
-            raise NotImplementedError
-          end
-        end
-        datatable.new(sample_params)
-      end
-
-      it 'should allow method override' do
-        expect { datatable.sort_records(records) }.to raise_error(NotImplementedError)
-      end
-    end
-
-    describe '#paginate_records' do
-      let(:records) { User.all }
-
-      let(:datatable) do
-        datatable = Class.new(ComplexDatatable) do
-          def paginate_records(records)
-            raise NotImplementedError
-          end
-        end
-        datatable.new(sample_params)
-      end
-
-      it 'should allow method override' do
-        expect { datatable.paginate_records(records) }.to raise_error(NotImplementedError)
-      end
-    end
   end
 
+  describe 'User helper methods' do
+    describe '#column_id' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
 
-  context 'Private API' do
-    context 'when orm is not implemented' do
-      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
-
-      describe '#fetch_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.fetch_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#filter_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.filter_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#sort_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.sort_records }.to raise_error NoMethodError
-        end
-      end
-
-      describe '#paginate_records' do
-        it 'raises an error if it does not include an ORM module' do
-          expect { datatable.paginate_records }.to raise_error NoMethodError
-        end
+      it 'should return column id from view_columns hash' do
+        expect(datatable.column_id(:username)).to eq(0)
+        expect(datatable.column_id('username')).to eq(0)
       end
     end
 
-    describe 'helper methods' do
-      describe '#offset' do
-        it 'defaults to 0' do
-          datatable = described_class.new({})
-          expect(datatable.datatable.send(:offset)).to eq(0)
-        end
+    describe '#column_data' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
+      before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
 
-        it 'matches the value on view params[:start]' do
-          datatable = described_class.new({ start: '11' })
-          expect(datatable.datatable.send(:offset)).to eq(11)
-        end
-      end
-
-      describe '#page' do
-        it 'calculates page number from params[:start] and #per_page' do
-          datatable = described_class.new({ start: '11' })
-          expect(datatable.datatable.send(:page)).to eq(2)
-        end
-      end
-
-      describe '#per_page' do
-        it 'defaults to 10' do
-          datatable = described_class.new(sample_params)
-          expect(datatable.datatable.send(:per_page)).to eq(10)
-        end
-
-        it 'matches the value on view params[:length]' do
-          other_view = { length: 20 }
-          datatable = described_class.new(other_view)
-          expect(datatable.datatable.send(:per_page)).to eq(20)
-        end
-      end
-
-      describe '#column_id' do
-        let(:datatable) { ComplexDatatable.new(sample_params) }
-
-        it 'should return column id from view_columns hash' do
-          expect(datatable.send(:column_id, :username)).to eq(0)
-          expect(datatable.send(:column_id, 'username')).to eq(0)
-        end
-      end
-
-      describe '#column_data' do
-        let(:datatable) { ComplexDatatable.new(sample_params) }
-        before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
-
-        it 'should return column data from params' do
-          expect(datatable.send(:column_data, :username)).to eq('doe')
-          expect(datatable.send(:column_data, 'username')).to eq('doe')
-        end
+      it 'should return column data from params' do
+        expect(datatable.column_data(:username)).to eq('doe')
+        expect(datatable.column_data('username')).to eq('doe')
       end
     end
   end

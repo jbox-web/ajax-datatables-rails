@@ -61,8 +61,6 @@ module AjaxDatatablesRails
             filter
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
             searchable_integer? ? raw_search(cond) : empty_search
-          when :null_value
-            null_value_search
           when :start_with
             casted_column.matches("#{formatted_value}%")
           when :end_with
@@ -73,6 +71,8 @@ module AjaxDatatablesRails
             raw_search(:eq)
           when :string_in
             raw_search(:in)
+          when :null_value
+            null_value_search
           when :date_range
             date_range_search
           end

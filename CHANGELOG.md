@@ -1,10 +1,33 @@
 # CHANGELOG
 
-## 1.2.0 (to come)
+## 1.3.0 (to come)
+
+* Drop support of Rails 5.0.x and 5.1.x
+* Drop support of Ruby 2.4
+* Add support of Rails 6.1
+* Add support of Ruby 3.0
+* Switch from Travis to Github Actions
+* Improve specs
+* Fix lib loading with JRuby (fixes [#371](https://github.com/jbox-web/ajax-datatables-rails/issues/371))
+* Raise an error when column's `cond:` setting is unknown
+* Make global search and column search work together (merge: [#350](https://github.com/jbox-web/ajax-datatables-rails/pull/350), fixes: [#258](https://github.com/jbox-web/ajax-datatables-rails/issues/258))
+* Fix: date_range doesn't support searching by a date greater than today (merge: [#351](https://github.com/jbox-web/ajax-datatables-rails/pull/351))
+* Fix: undefined method `fetch' for nil:NilClass (fix: [#307](https://github.com/jbox-web/ajax-datatables-rails/issues/307))
+
+* `AjaxDatatablesRails.config` is removed with no replacement. The gem is now configless :)
+* `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))
+* `AjaxDatatablesRails.config.nulls_last=` is removed and is configured per datatable class now (or by column). It defaults to false.
+
+To mitigate this 3 changes see the [migration doc](/doc/migrate.md).
+
+## 1.2.0 (2020-04-19)
 
 * Drop support of Rails 4.x
 * Drop support of Ruby 2.3
 * Use [zeitwerk](https://github.com/fxn/zeitwerk) to load gem files
+* Add binstubs to ease development
+
+This is the last version to support Rails 5.0.x, Rails 5.1.x and Ruby 2.4.x.
 
 ## 1.1.0 (2019-12-12)
 

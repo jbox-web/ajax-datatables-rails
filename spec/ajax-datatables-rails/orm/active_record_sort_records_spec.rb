@@ -45,8 +45,8 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#sort_records with nulls last using global config' do
-    before { AjaxDatatablesRails.config.nulls_last = true }
-    after  { AjaxDatatablesRails.config.nulls_last = false }
+    before { datatable.nulls_last = true }
+    after  { datatable.nulls_last = false }
 
     it 'can handle multiple sorting columns' do
       skip('unsupported database adapter') if ENV['DB_ADAPTER'] == 'oracle_enhanced'
@@ -56,7 +56,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(datatable.sort_records(records).to_sql).to include(
-        "ORDER BY users.username ASC #{nulls_last_sql}, users.email DESC #{nulls_last_sql}"
+        "ORDER BY users.username ASC #{nulls_last_sql(datatable)}, users.email DESC #{nulls_last_sql(datatable)}"
       )
     end
   end
@@ -70,7 +70,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       nulls_last_datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       nulls_last_datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(nulls_last_datatable.sort_records(records).to_sql).to include(
-        "ORDER BY users.username ASC, users.email DESC #{nulls_last_sql}"
+        "ORDER BY users.username ASC, users.email DESC #{nulls_last_sql(datatable)}"
       )
     end
   end

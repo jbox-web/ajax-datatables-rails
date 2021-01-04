@@ -76,25 +76,50 @@ describe AjaxDatatablesRails::Datatable::Datatable do
   end
 
   describe 'option methods' do
-    before :each do
-      datatable.options[:start] = '50'
-      datatable.options[:length] = '15'
+    describe '#paginate?' do
+      it {
+        expect(datatable.paginate?).to be(true)
+      }
     end
 
-    it 'paginate?' do
-      expect(datatable.paginate?).to be(true)
+    describe '#per_page' do
+      context 'when params[:length] is missing' do
+        it 'defaults to 10' do
+          expect(datatable.per_page).to eq(10)
+        end
+      end
+
+      context 'when params[:length] is passed' do
+        let(:datatable) { ComplexDatatable.new({ length: '20' }).datatable }
+
+        it 'matches the value on view params[:length]' do
+          expect(datatable.per_page).to eq(20)
+        end
+      end
     end
 
-    it 'offset' do
-      expect(datatable.offset).to eq(50)
+    describe '#offset' do
+      context 'when params[:start] is missing' do
+        it 'defaults to 0' do
+          expect(datatable.offset).to eq(0)
+        end
+      end
+
+      context 'when params[:start] is passed' do
+        let(:datatable) { ComplexDatatable.new({ start: '11' }).datatable }
+
+        it 'matches the value on view params[:start]' do
+          expect(datatable.offset).to eq(11)
+        end
+      end
     end
 
-    it 'page' do
-      expect(datatable.page).to eq(4)
-    end
+    describe '#page' do
+      let(:datatable) { ComplexDatatable.new({ start: '11' }).datatable }
 
-    it 'per_page' do
-      expect(datatable.per_page).to eq(15)
+      it 'calculates page number from params[:start] and #per_page' do
+        expect(datatable.page).to eq(2)
+      end
     end
   end
 end

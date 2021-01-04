@@ -3,7 +3,7 @@
 [![GitHub license](https://img.shields.io/github/license/jbox-web/ajax-datatables-rails.svg)](https://github.com/jbox-web/ajax-datatables-rails/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
-[![Build Status](https://travis-ci.com/jbox-web/ajax-datatables-rails.svg?branch=master)](https://travis-ci.com/jbox-web/ajax-datatables-rails)
+[![CI](https://github.com/jbox-web/ajax-datatables-rails/workflows/CI/badge.svg)](https://github.com/jbox-web/ajax-datatables-rails/actions)
 [![Code Climate](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails)
 [![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
 
@@ -11,12 +11,12 @@
 
 It's tested against :
 
-* Rails 5.0.7 / 5.1.7 / 5.2.3 / 6.0.1
-* Ruby 2.4.9 / 2.5.7 / 2.6.5
-* Postgresql 9.6
-* MySQL 5.6
-* Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
+* Rails 5.2.4 / 6.0.3 / 6.1.0
+* Ruby 2.5.x / 2.6.x / 2.7.x
 * SQLite3
+* Postgresql 13
+* MySQL 8
+* Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 
 ## Description
 
@@ -38,38 +38,9 @@ The final goal of this gem is to **generate a JSON** content that will be given 
 All the datatable customizations (header, tr, td, css classes, width, height, buttons, etc...) **must** take place in the [javascript definition](#5-wire-up-the-javascript) of the datatable.
 jQuery DataTables is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
+You'll find a sample project here : https://ajax-datatables-rails.herokuapp.com
 
-## Warnings
-
-**Breaking changes :**
-
-1) the *v1.0.0* version is a **major break** from *v0.4*.
-
-* Datatables no longer inherits from `AjaxDatatablesRails::Base` but from `AjaxDatatablesRails::ActiveRecord` (this solves [#228](https://github.com/jbox-web/ajax-datatables-rails/issues/228))
-* The `view_context` is no longer injected in Datatables but only the `params` hash (see the [example](#4-setup-the-controller-action)). This will break calls to helpers methods.
-
-To mitigate this 2 changes see the [migration doc](/doc/migrate.md).
-
-2) the *v0.4* version is a **major break** from *v0.3*.
-
-The core has been rewriten to remove dependency on [Kaminari](https://github.com/kaminari/kaminari) or [WillPaginate](https://github.com/mislav/will_paginate).
-
-It also brings a new (more natural) way of defining columns, based on hash definitions (and not arrays) and add some filtering options for column search.
-
-[See below](#3-customize-the-generated-datatables-class) for more infos.
-
-To migrate on the v0.4 you'll need to :
-
-* update your DataTables classes to remove all the `extend` directives
-* switch to hash definitions of `view_columns`
-* update your views to declare your columns bindings ([See here](#5-wire-up-the-javascript))
-
-
-## Documentation version
-
-This documentation is about the `v1.x.x` release (master branch) of this gem.
-
-You can still have access to the `v0.4.x` documentation on the [v0.4.x branch](https://github.com/jbox-web/ajax-datatables-rails/tree/v0.4.x).
+Its real world examples. The code is here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
 
 
 ## Installation
@@ -95,29 +66,7 @@ You can install jQuery DataTables :
 * with [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
 
 
-## Configuration
-
-Generate the `ajax-datatables-rails` config file with this command :
-
-```sh
-$ bundle exec rails generate datatable:config
-```
-
-Doing so, will create the `config/initializers/ajax_datatables_rails.rb` file with the following content :
-
-```ruby
-AjaxDatatablesRails.configure do |config|
-  # available options for db_adapter are: :pg, :mysql, :mysql2, :sqlite, :sqlite3
-  # config.db_adapter = :pg
-
-  # Or you can use your rails environment adapter if you want a generic dev and production
-  # config.db_adapter = Rails.configuration.database_configuration[Rails.env]['adapter'].to_sym
-end
-```
-
-Uncomment the `config.db_adapter` line and set the corresponding value to your database and gem. This is all you need.
-
-#### Note
+## Note
 
 Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
 
@@ -129,7 +78,7 @@ If you'd be interested in contributing to speed development, please [open an iss
 ## Quick start (in 5 steps)
 
 The following examples assume that we are setting up `ajax-datatables-rails` for an index page of users from a `User` model,
-and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, see above, just be sure to have [configured the right adapter](#configuration))
+and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, [see above](#change-the-db-adapter-for-a-datatable-class))
 
 The goal is to render a users table and display : `id`, `first name`, `last name`, `email`, and `bio` for each user.
 
@@ -204,7 +153,7 @@ def view_columns
   @view_columns ||= {
     id:         { source: "User.id" },
     first_name: { source: "User.first_name", cond: :like, searchable: true, orderable: true },
-    last_name:  { source: "User.last_name",  cond: :like },
+    last_name:  { source: "User.last_name",  cond: :like, nulls_last: true },
     email:      { source: "User.email" },
     bio:        { source: "User.bio" },
   }
@@ -217,9 +166,19 @@ end
 
 * `:like`, `:start_with`, `:end_with`, `:string_eq`, `:string_in` for string or full text search
 * `:eq`, `:not_eq`, `:lt`, `:gt`, `:lteq`, `:gteq`, `:in` for numeric
-* `:date_range` for date range (only for Rails > 4.2.x, see [here](#daterange-search))
+* `:date_range` for date range
 * `:null_value` for nil field
-* `Proc` for whatever (see [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to/blob/master/app/datatables/city_datatable.rb) for real example)
+* `Proc` for whatever (see [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project/blob/master/app/datatables/city_datatable.rb) for real example)
+
+The `nulls_last` param allows for nulls to be ordered last. You can configure it by column, like above, or by datatable class :
+
+```ruby
+class MyDatatable < AjaxDatatablesRails::ActiveRecord
+  self.nulls_last = true
+
+  # ... other methods (view_columns, data...)
+end
+```
 
 See [here](#columns-syntax) to get more details about columns definitions and how to play with associated models.
 
@@ -257,7 +216,8 @@ def data
   end
 end
 ```
-You can either use the v0.3 Array style for your columns :
+
+**Deprecated:** You can either use the v0.3 Array style for your columns :
 
 This method builds a 2d array that is used by datatables to construct the html
 table. Insert the values you want on each column.
@@ -317,7 +277,7 @@ def additional_data
 end
 ```
 
-Very useful with https://github.com/vedmack/yadcf to provide values for dropdown filters.
+Very useful with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)) to provide values for dropdown filters.
 
 
 ### 4) Setup the Controller action
@@ -541,6 +501,24 @@ class UnrespondedMessagesDatatable < AjaxDatatablesRails::ActiveRecord
 end
 ```
 
+### Change the DB adapter for a datatable class
+
+If you have models from different databases you can set the `db_adapter` on the datatable class :
+
+```ruby
+class MySharedModelDatatable < AjaxDatatablesRails::ActiveRecord
+  self.db_adapter = :oracle_enhanced
+
+  # ... other methods (view_columns, data...)
+
+  def get_raw_records
+    AnimalsRecord.connected_to(role: :reading) do
+      Dog.all
+    end
+  end
+end
+```
+
 ### Columns syntax
 
 You can mix several model in the same datatable.
@@ -656,7 +634,7 @@ See [DefaultScope is evil](https://rails-bestpractices.com/posts/2013/06/15/defa
 
 ### DateRange search
 
-This feature works with [yadcf](https://github.com/vedmack/yadcf).
+This feature works with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)).
 
 To enable the date range search, for example `created_at` :
 
@@ -832,9 +810,7 @@ end
 
 ## Tutorial
 
-You'll find a sample project [here](https://github.com/ajahongir/ajax-datatables-rails-v-0-4-0-how-to). Its real world example.
-
-Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277)
+Filtering by JSONB column values : [#277](https://github.com/jbox-web/ajax-datatables-rails/issues/277#issuecomment-366526373)
 
 Use [has_scope](https://github.com/plataformatec/has_scope) gem with `ajax-datatables-rails` : [#280](https://github.com/jbox-web/ajax-datatables-rails/issues/280)
 

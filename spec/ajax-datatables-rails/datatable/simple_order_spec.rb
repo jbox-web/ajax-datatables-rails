@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
-  let(:datatable) { ComplexDatatable.new(sample_params).datatable }
+  let(:parent) { ComplexDatatable.new(sample_params) }
+  let(:datatable) { parent.datatable }
   let(:options) { ActiveSupport::HashWithIndifferentAccess.new({'column' => '1', 'dir' => 'desc'}) }
   let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(datatable, options) }
 
@@ -13,25 +14,26 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
   end
 
   describe 'option methods with nulls last' do
-    describe 'using global option' do
-      before { AjaxDatatablesRails.config.nulls_last = true }
-      after  { AjaxDatatablesRails.config.nulls_last = false }
+    describe 'using class option' do
+      before { parent.nulls_last = true }
+      after  { parent.nulls_last = false }
 
       it 'sql query' do
         skip('unsupported database adapter') if ENV['DB_ADAPTER'] == 'oracle_enhanced'
 
         expect(simple_order.query('email')).to eq(
-          "email DESC #{nulls_last_sql}"
+          "email DESC #{nulls_last_sql(parent)}"
         )
       end
     end
 
     describe 'using column option' do
-      let(:sorted_datatable) { DatatableOrderNullsLast.new(sample_params).datatable }
+      let(:parent) { DatatableOrderNullsLast.new(sample_params) }
+      let(:sorted_datatable) { parent.datatable }
       let(:nulls_last_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(sorted_datatable, options) }
 
       context 'with postgres database adapter' do
-        before { AjaxDatatablesRails.config.db_adapter = :pg }
+        before { parent.db_adapter = :pg }
 
         it 'sql query' do
           expect(nulls_last_order.query('email')).to eq('email DESC NULLS LAST')
@@ -39,7 +41,7 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
       end
 
       context 'with sqlite database adapter' do
-        before { AjaxDatatablesRails.config.db_adapter = :sqlite }
+        before { parent.db_adapter = :sqlite }
 
         it 'sql query' do
           expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
@@ -47,7 +49,7 @@ describe AjaxDatatablesRails::Datatable::SimpleOrder do
       end
 
       context 'with mysql database adapter' do
-        before { AjaxDatatablesRails.config.db_adapter = :mysql }
+        before { parent.db_adapter = :mysql }
 
         it 'sql query' do
           expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
