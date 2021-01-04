@@ -12,6 +12,7 @@
 * Raise an error when column's `cond:` setting is unknown
 * Make global search and column search work together (merge: [#350](https://github.com/jbox-web/ajax-datatables-rails/pull/350), fixes: [#258](https://github.com/jbox-web/ajax-datatables-rails/issues/258))
 * Fix: date_range doesn't support searching by a date greater than today (merge: [#351](https://github.com/jbox-web/ajax-datatables-rails/pull/351))
+* Fix: undefined method `fetch' for nil:NilClass (fix: [#307](https://github.com/jbox-web/ajax-datatables-rails/issues/307))
 
 * `AjaxDatatablesRails.config` is removed with no replacement. The gem is now configless :)
 * `AjaxDatatablesRails.config.db_adapter=` is removed and is configured per datatable class now. It defaults to Rails DB adapter. (fixes [#364](https://github.com/jbox-web/ajax-datatables-rails/issues/364))

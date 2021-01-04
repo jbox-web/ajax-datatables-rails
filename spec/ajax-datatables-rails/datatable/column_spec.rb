@@ -202,4 +202,24 @@ describe AjaxDatatablesRails::Datatable::Column do
       expect(column.send(:type_cast)).to eq('VARCHAR(4000)')
     end
   end
+
+  describe 'when empty column' do
+    before do
+      datatable.params[:columns] = {'0'=>{'data'=>'', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+    end
+
+    it 'raises error' do
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Unknown column. Check that `data` field is filled on JS side with the column name")
+    end
+  end
+
+  describe 'when unknown column' do
+    before do
+      datatable.params[:columns] = {'0'=>{'data'=>'foo', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+    end
+
+    it 'raises error' do
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Check that column 'foo' exists in view_columns")
+    end
+  end
 end

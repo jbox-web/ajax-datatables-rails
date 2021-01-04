@@ -15,8 +15,12 @@ module AjaxDatatablesRails
         @datatable   = datatable
         @index       = index
         @options     = options
-        @view_column = datatable.view_columns[options[:data].to_sym]
+        @view_column = datatable.view_columns[column_name]
         validate_settings!
+      end
+
+      def column_name
+        @column_name ||= options[:data]&.to_sym
       end
 
       def data
@@ -87,7 +91,13 @@ module AjaxDatatablesRails
       end
 
       def validate_settings!
+        raise AjaxDatatablesRails::Error::InvalidSearchColumn, "Unknown column. Check that `data` field is filled on JS side with the column name" if column_name.empty?
+        raise AjaxDatatablesRails::Error::InvalidSearchColumn, "Check that column '#{column_name}' exists in view_columns" unless valid_search_column?(column_name)
         raise AjaxDatatablesRails::Error::InvalidSearchCondition, cond unless valid_search_condition?(cond)
+      end
+
+      def valid_search_column?(column_name)
+        !datatable.view_columns[column_name].nil?
       end
 
       VALID_SEARCH_CONDITIONS = [
