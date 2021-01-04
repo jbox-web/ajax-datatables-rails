@@ -51,6 +51,13 @@ def sample_params
     }
   )
 end
+
+def sample_params_json
+  hash_params = sample_params.to_unsafe_h
+  hash_params["columns"] = hash_params["columns"].values
+  hash_params["order"] = hash_params["order"].values
+  ActionController::Parameters.new(hash_params)
+end
 # rubocop:enable Metrics/MethodLength
 
 def nulls_last_sql(datatable)

@@ -761,6 +761,7 @@ then in your views :
 then in your Coffee/JS :
 
 ```coffee
+# send params in form data
 $ ->
   $('#posts-datatable').dataTable
     ajax:
@@ -768,11 +769,15 @@ $ ->
       type: 'POST'
     # ...others options, see [here](#5-wire-up-the-javascript)
 
+# send params as json data
 $ ->
   $('#users-datatable').dataTable
     ajax:
       url: $('#users-datatable').data('source')
+      contentType: 'application/json'
       type: 'POST'
+      data: (d) ->
+        JSON.stringify d
     # ...others options, see [here](#5-wire-up-the-javascript)
 ```
 

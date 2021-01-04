@@ -70,7 +70,13 @@ module AjaxDatatablesRails
       def get_param(param)
         return {} if options[param].nil?
 
-        options[param].to_unsafe_h.with_indifferent_access
+        if options[param].is_a? Array
+          hash = {}
+          options[param].each_with_index { |value, index| hash[index] = value }
+          hash
+        else
+          options[param].to_unsafe_h.with_indifferent_access
+        end
       end
 
       def db_adapter
