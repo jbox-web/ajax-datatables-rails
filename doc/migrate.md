@@ -1,4 +1,4 @@
-## To migrate from `v1.0.x` to `v1.3.0`
+## To migrate from `v1.x` to `v1.3.0`
 
 The *v1.3.0* version has some breaking changes :
 
