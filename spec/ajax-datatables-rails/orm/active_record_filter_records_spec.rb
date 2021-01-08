@@ -307,13 +307,13 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     context 'numeric condition' do
+      before(:each) do
+        create(:user, first_name: 'john', post_id: 1)
+        create(:user, first_name: 'mary', post_id: 2)
+      end
+
       describe 'it can filter records with condition :eq' do
         let(:datatable) { DatatableCondEq.new(sample_params) }
-
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
 
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
@@ -326,11 +326,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :not_eq' do
         let(:datatable) { DatatableCondNotEq.new(sample_params) }
 
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
-
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
@@ -341,11 +336,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       describe 'it can filter records with condition :lt' do
         let(:datatable) { DatatableCondLt.new(sample_params) }
-
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
 
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 2
@@ -358,11 +348,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :gt' do
         let(:datatable) { DatatableCondGt.new(sample_params) }
 
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
-
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
@@ -374,11 +359,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :lteq' do
         let(:datatable) { DatatableCondLteq.new(sample_params) }
 
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
-
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 2
           expect(datatable.data.size).to eq 2
@@ -388,11 +368,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :gteq' do
         let(:datatable) { DatatableCondGteq.new(sample_params) }
 
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
-
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 2
@@ -401,11 +376,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       describe 'it can filter records with condition :in' do
         let(:datatable) { DatatableCondIn.new(sample_params) }
-
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
 
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = [1]
@@ -417,11 +387,6 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       describe 'it can filter records with condition :in with regex' do
         let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
-
-        before(:each) do
-          create(:user, first_name: 'john', post_id: 1)
-          create(:user, first_name: 'mary', post_id: 2)
-        end
 
         it 'should filter records matching' do
           datatable.params[:columns]['4'][:search][:value] = '1|2'
