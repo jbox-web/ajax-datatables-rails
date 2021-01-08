@@ -1,23 +1,25 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::Datatable do
 
   let(:datatable) { ComplexDatatable.new(sample_params).datatable }
   let(:datatable_json) { ComplexDatatable.new(sample_params_json).datatable }
-  let(:order_option) { {'0'=>{'column'=>'0', 'dir'=>'asc'}, '1'=>{'column'=>'1', 'dir'=>'desc'}} }
-  let(:order_option_json) { [{'column'=>'0', 'dir'=>'asc'}, {'column'=>'1', 'dir'=>'desc'}] }
+  let(:order_option) { { '0' => { 'column' => '0', 'dir' => 'asc' }, '1' => { 'column' => '1', 'dir' => 'desc' } } }
+  let(:order_option_json) { [{ 'column' => '0', 'dir' => 'asc' }, { 'column' => '1', 'dir' => 'desc' }] }
 
   shared_examples 'order methods' do
-    it 'should be orderable' do
+    it 'is orderable' do
       expect(datatable.orderable?).to eq(true)
     end
 
-    it 'should not be orderable' do
+    it 'is not orderable' do
       datatable.options[:order] = nil
       expect(datatable.orderable?).to eq(false)
     end
 
-    it 'should have 2 orderable columns' do
+    it 'has 2 orderable columns' do
       datatable.options[:order] = order_option
       expect(datatable.orders.count).to eq(2)
     end
@@ -38,7 +40,7 @@ describe AjaxDatatablesRails::Datatable::Datatable do
   end
 
   shared_examples 'columns methods' do
-    it 'should have 4 columns' do
+    it 'has 4 columns' do
       expect(datatable.columns.count).to eq(6)
     end
 
@@ -60,12 +62,12 @@ describe AjaxDatatablesRails::Datatable::Datatable do
   end
 
   describe 'search methods' do
-    it 'should be searchable' do
+    it 'is searchable' do
       datatable.options[:search][:value] = 'atom'
       expect(datatable.searchable?).to eq(true)
     end
 
-    it 'should not be searchable' do
+    it 'is not searchable' do
       datatable.options[:search][:value] = nil
       expect(datatable.searchable?).to eq(false)
     end

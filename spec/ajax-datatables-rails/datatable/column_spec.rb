@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::Column do
@@ -9,49 +11,49 @@ describe AjaxDatatablesRails::Datatable::Column do
     let(:column) { datatable.datatable.columns.first }
 
     before do
-      datatable.params[:columns] = {'0'=>{'data'=>'username', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+      datatable.params[:columns] = { '0' => { 'data' => 'username', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
     end
 
-    it 'should be orderable' do
+    it 'is orderable' do
       expect(column.orderable?).to eq(true)
     end
 
-    it 'should sort nulls last' do
+    it 'sorts nulls last' do
       expect(column.nulls_last?).to eq(false)
     end
 
-    it 'should be searchable' do
+    it 'is searchable' do
       expect(column.searchable?).to eq(true)
     end
 
-    it 'should be searched' do
+    it 'is searched' do
       expect(column.searched?).to eq(true)
     end
 
-    it 'should have connected to id column' do
+    it 'has connected to id column' do
       expect(column.data).to eq('username')
     end
 
     describe '#data' do
-      it 'should return the data from params' do
+      it 'returns the data from params' do
         expect(column.data).to eq 'username'
       end
     end
 
     describe '#source' do
-      it 'should return the data source from view_column' do
+      it 'returns the data source from view_column' do
         expect(column.source).to eq 'User.username'
       end
     end
 
     describe '#table' do
       context 'with ActiveRecord ORM' do
-        it 'should return the corresponding AR table' do
+        it 'returns the corresponding AR table' do
           expect(column.table).to eq User.arel_table
         end
       end
       context 'with other ORM' do
-        it 'should return the corresponding model' do
+        it 'returns the corresponding model' do
           expect(User).to receive(:respond_to?).with(:arel_table).and_return(false)
           expect(column.table).to eq User
         end
@@ -59,19 +61,19 @@ describe AjaxDatatablesRails::Datatable::Column do
     end
 
     describe '#model' do
-      it 'should return the corresponding AR model' do
+      it 'returns the corresponding AR model' do
         expect(column.model).to eq User
       end
     end
 
     describe '#field' do
-      it 'should return the corresponding field in DB' do
+      it 'returns the corresponding field in DB' do
         expect(column.field).to eq :username
       end
     end
 
     describe '#custom_field?' do
-      it 'should return false if field is bound to an AR field' do
+      it 'returns false if field is bound to an AR field' do
         expect(column.custom_field?).to be false
       end
     end
@@ -81,47 +83,47 @@ describe AjaxDatatablesRails::Datatable::Column do
         expect(column.search).to be_a(AjaxDatatablesRails::Datatable::SimpleSearch)
       end
 
-      it 'should have search value' do
+      it 'has search value' do
         expect(column.search.value).to eq('searchvalue')
       end
 
-      it 'should not regex' do
+      it 'does not regex' do
         expect(column.search.regexp?).to eq false
       end
     end
 
     describe '#cond' do
-      it 'should be :like by default' do
+      it 'is :like by default' do
         expect(column.cond).to eq(:like)
       end
     end
 
     describe '#source' do
-      it 'should be :like by default' do
+      it 'is :like by default' do
         expect(column.source).to eq('User.username')
       end
     end
 
     describe '#search_query' do
-      it 'should buld search query' do
+      it 'bulds search query' do
         expect(column.search_query.to_sql).to include('%searchvalue%')
       end
     end
 
     describe '#sort_query' do
-      it 'should build sort query' do
+      it 'builds sort query' do
         expect(column.sort_query).to eq('users.username')
       end
     end
 
     describe '#use_regex?' do
-      it 'should be true by default' do
+      it 'is true by default' do
         expect(column.use_regex?).to be true
       end
     end
 
     describe '#delimiter' do
-      it 'should be - by default' do
+      it 'is - by default' do
         expect(column.delimiter).to eq('-')
       end
     end
@@ -131,7 +133,7 @@ describe AjaxDatatablesRails::Datatable::Column do
     let(:datatable) { DatatableWithFormater.new(sample_params) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'last_name' } }
 
-    it 'should be a proc' do
+    it 'is a proc' do
       expect(column.formatter).to be_a(Proc)
     end
   end
@@ -140,7 +142,7 @@ describe AjaxDatatablesRails::Datatable::Column do
     let(:datatable) { DatatableCondProc.new(sample_params) }
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'username' } }
 
-    it 'should be a proc' do
+    it 'is a proc' do
       config = column.instance_variable_get('@view_column')
       filter = config[:cond]
       expect(filter).to be_a(Proc)
@@ -205,17 +207,17 @@ describe AjaxDatatablesRails::Datatable::Column do
 
   describe 'when empty column' do
     before do
-      datatable.params[:columns] = {'0'=>{'data'=>'', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+      datatable.params[:columns] = { '0' => { 'data' => '', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
     end
 
     it 'raises error' do
-      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Unknown column. Check that `data` field is filled on JS side with the column name")
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message('Unknown column. Check that `data` field is filled on JS side with the column name')
     end
   end
 
   describe 'when unknown column' do
     before do
-      datatable.params[:columns] = {'0'=>{'data'=>'foo', 'name'=>'', 'searchable'=>'true', 'orderable'=>'true', 'search'=>{'value'=>'searchvalue', 'regex'=>'false'}}}
+      datatable.params[:columns] = { '0' => { 'data' => 'foo', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
     end
 
     it 'raises error' do

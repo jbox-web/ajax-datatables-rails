@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
   let(:parent) { ComplexDatatable.new(sample_params) }
   let(:datatable) { parent.datatable }
-  let(:options) { ActiveSupport::HashWithIndifferentAccess.new({'column' => '1', 'dir' => 'desc'}) }
+  let(:options) { ActiveSupport::HashWithIndifferentAccess.new({ 'column' => '1', 'dir' => 'desc' }) }
   let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(datatable, options) }
 
   describe 'option methods' do

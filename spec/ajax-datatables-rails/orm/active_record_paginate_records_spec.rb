@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
@@ -5,7 +7,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   let(:datatable) { ComplexDatatable.new(sample_params) }
   let(:records) { User.all }
 
-  before(:each) do
+  before do
     create(:user, username: 'johndoe', email: 'johndoe@example.com')
     create(:user, username: 'msmith', email: 'mary.smith@example.com')
   end

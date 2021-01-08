@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
   context 'Private API' do
     let(:datatable) { ComplexDatatable.new(sample_params) }
 
-    before(:each) do
+    before do
       create(:user, username: 'johndoe', email: 'johndoe@example.com')
       create(:user, username: 'msmith', email: 'mary.smith@example.com')
     end

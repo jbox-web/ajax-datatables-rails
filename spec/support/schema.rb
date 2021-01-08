@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 ActiveRecord::Schema.define do
   self.verbose = false
 
-  create_table :users, :force => true do |t|
+  create_table :users, force: true do |t|
     t.string  :username
     t.string  :email
     t.string  :first_name

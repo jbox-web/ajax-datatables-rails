@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
@@ -6,7 +8,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   let(:nulls_last_datatable) { DatatableOrderNullsLast.new(sample_params) }
   let(:records) { User.all }
 
-  before(:each) do
+  before do
     create(:user, username: 'johndoe', email: 'johndoe@example.com')
     create(:user, username: 'msmith', email: 'mary.smith@example.com')
   end
@@ -30,7 +32,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       )
     end
 
-    it 'should not sort a column which is not orderable' do
+    it 'does not sort a column which is not orderable' do
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '4', dir: 'desc' }
 

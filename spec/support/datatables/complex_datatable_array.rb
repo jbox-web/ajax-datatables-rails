@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ComplexDatatableArray < ComplexDatatable
   def data
     records.map do |record|

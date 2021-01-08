@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 require 'rspec'
 require 'rspec/retry'
@@ -36,20 +38,20 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.strategy = :transaction
   end
 
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.start
   end
 
-  config.after(:each) do
+  config.after do
     DatabaseCleaner.clean
   end
 
   if ENV.key?('GITHUB_ACTIONS')
-    config.around(:each) do |ex|
+    config.around do |ex|
       ex.run_with_retry retry: 3
     end
   end
@@ -61,7 +63,7 @@ adapter = ENV.fetch('DB_ADAPTER', 'postgresql')
 options = {
   adapter:  adapter,
   database: 'ajax_datatables_rails',
-  encoding: 'utf8'
+  encoding: 'utf8',
 }
 
 options =

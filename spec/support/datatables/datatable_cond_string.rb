@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DatatableCondStartWith < ComplexDatatable
   def view_columns
     super.deep_merge(first_name: { cond: :start_with })
@@ -24,7 +26,7 @@ end
 
 class DatatableCondStringIn < ComplexDatatable
   def view_columns
-    super.deep_merge(email: { cond: :string_in, formatter: -> (o) { o.split("|") } })
+    super.deep_merge(email: { cond: :string_in, formatter: ->(o) { o.split('|') } })
   end
 end
 
@@ -36,6 +38,6 @@ end
 
 class DatatableWithFormater < ComplexDatatable
   def view_columns
-    super.deep_merge(last_name: { formatter: -> (o) { o.upcase } })
+    super.deep_merge(last_name: { formatter: ->(o) { o.upcase } })
   end
 end

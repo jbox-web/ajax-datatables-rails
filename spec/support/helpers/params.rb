@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/MethodLength
 def sample_params
   ActionController::Parameters.new(
@@ -42,7 +44,7 @@ def sample_params
         },
       },
       'order' => {
-        '0' => {'column' => '0', 'dir' => 'asc'}
+        '0' => { 'column' => '0', 'dir' => 'asc' },
       },
       'start' => '0', 'length' => '10', 'search' => {
         'value' => '', 'regex' => 'false'
@@ -54,8 +56,8 @@ end
 
 def sample_params_json
   hash_params = sample_params.to_unsafe_h
-  hash_params["columns"] = hash_params["columns"].values
-  hash_params["order"] = hash_params["order"].values
+  hash_params['columns'] = hash_params['columns'].values
+  hash_params['order'] = hash_params['order'].values
   ActionController::Parameters.new(hash_params)
 end
 # rubocop:enable Metrics/MethodLength
@@ -63,9 +65,9 @@ end
 def nulls_last_sql(datatable)
   case datatable.db_adapter
   when :pg, :postgresql, :postgres, :oracle
-    "NULLS LAST"
+    'NULLS LAST'
   when :mysql, :mysql2, :sqlite, :sqlite3
-    "IS NULL"
+    'IS NULL'
   else
     raise 'unsupported database adapter'
   end

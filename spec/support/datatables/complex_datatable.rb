@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ComplexDatatable < AjaxDatatablesRails::ActiveRecord
   def view_columns
     @view_columns ||= {

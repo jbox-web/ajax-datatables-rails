@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DatatableCondProc < ComplexDatatable
   def view_columns
     super.deep_merge(username: { cond: custom_filter })

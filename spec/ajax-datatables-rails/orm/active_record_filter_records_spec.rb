@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::ORM::ActiveRecord do
@@ -7,7 +9,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   describe '#filter_records' do
     it 'requires a records collection as argument' do
-      expect { datatable.filter_records() }.to raise_error(ArgumentError)
+      expect { datatable.filter_records }.to raise_error(ArgumentError)
     end
 
     it 'performs a simple search first' do
@@ -24,14 +26,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#build_conditions' do
-    before(:each) do
+    before do
       create(:user, username: 'johndoe', email: 'johndoe@example.com')
       create(:user, username: 'msmith',  email: 'mary.smith@example.com')
       create(:user, username: 'hsmith',  email: 'henry.smith@example.net')
     end
 
     context 'with column and global search' do
-      before(:each) do
+      before do
         datatable.params[:search] = { value: 'example.com', regex: 'false' }
         datatable.params[:columns]['0'][:search][:value] = 'smith'
       end
@@ -47,7 +49,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#build_conditions_for_datatable' do
-    before(:each) do
+    before do
       create(:user, username: 'johndoe', email: 'johndoe@example.com')
       create(:user, username: 'msmith', email: 'mary.smith@example.com')
     end
@@ -66,12 +68,12 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     context 'when none of columns are connected' do
-      before(:each) do
+      before do
         allow(datatable).to receive(:searchable_columns) { [] }
       end
 
       context 'when search value is a string' do
-        before(:each) do
+        before do
           datatable.params[:search] = { value: 'msmith' }
         end
 
@@ -87,7 +89,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       context 'when search value is space-separated string' do
-        before(:each) do
+        before do
           datatable.params[:search] = { value: 'foo bar' }
         end
 
@@ -105,7 +107,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     context 'with search query' do
       context 'when search value is a string' do
-        before(:each) do
+        before do
           datatable.params[:search] = { value: 'john', regex: 'false' }
         end
 
@@ -118,7 +120,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       context 'when search value is space-separated string' do
-        before(:each) do
+        before do
           datatable.params[:search] = { value: 'john doe', regex: 'false' }
         end
 
@@ -134,7 +136,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       context 'when column.search_query returns nil' do
         let(:datatable) { DatatableCondUnknown.new(sample_params) }
 
-        before(:each) do
+        before do
           datatable.params[:search] = { value: 'john doe', regex: 'false' }
         end
 
@@ -150,7 +152,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   end
 
   describe '#build_conditions_for_selected_columns' do
-    before(:each) do
+    before do
       create(:user, username: 'johndoe', email: 'johndoe@example.com')
       create(:user, username: 'msmith', email: 'mary.smith@example.com')
     end
@@ -209,7 +211,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     context 'with search values in columns' do
-      before(:each) do
+      before do
         datatable.params[:columns]['0'][:search][:value] = 'doe'
       end
 
@@ -227,13 +229,13 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :date_range' do
         let(:datatable) { DatatableCondDate.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'Doe', created_at: '01/01/2000')
           create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'Smith', created_at: '01/02/2000')
         end
 
         context 'when range is empty' do
-          it 'should not filter records' do
+          it 'does not filter records' do
             datatable.params[:columns]['5'][:search][:value] = '-'
             expect(datatable.data.size).to eq 2
             item = datatable.data.first
@@ -242,21 +244,21 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         context 'when start date is filled' do
-          it 'should filter records created after this date' do
+          it 'filters records created after this date' do
             datatable.params[:columns]['5'][:search][:value] = '31/12/1999-'
             expect(datatable.data.size).to eq 2
           end
         end
 
         context 'when end date is filled' do
-          it 'should filter records created before this date' do
+          it 'filters records created before this date' do
             datatable.params[:columns]['5'][:search][:value] = '-31/12/1999'
             expect(datatable.data.size).to eq 0
           end
         end
 
         context 'when both date are filled' do
-          it 'should filter records created between the range' do
+          it 'filters records created between the range' do
             datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
             expect(datatable.data.size).to eq 1
           end
@@ -264,7 +266,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
         context 'when another filter is active' do
           context 'when range is empty' do
-            it 'should filter records' do
+            it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
               datatable.params[:columns]['5'][:search][:value] = '-'
               expect(datatable.data.size).to eq 1
@@ -274,7 +276,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
           end
 
           context 'when start date is filled' do
-            it 'should filter records' do
+            it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
               datatable.params[:columns]['5'][:search][:value] = '01/12/1999-'
               expect(datatable.data.size).to eq 1
@@ -284,7 +286,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
           end
 
           context 'when end date is filled' do
-            it 'should filter records' do
+            it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
               datatable.params[:columns]['5'][:search][:value] = '-15/01/2000'
               expect(datatable.data.size).to eq 1
@@ -294,7 +296,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
           end
 
           context 'when both date are filled' do
-            it 'should filter records' do
+            it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
               datatable.params[:columns]['5'][:search][:value] = '01/12/1999-15/01/2000'
               expect(datatable.data.size).to eq 1
@@ -307,7 +309,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     context 'numeric condition' do
-      before(:each) do
+      before do
         create(:user, first_name: 'john', post_id: 1)
         create(:user, first_name: 'mary', post_id: 2)
       end
@@ -315,7 +317,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :eq' do
         let(:datatable) { DatatableCondEq.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -326,7 +328,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :not_eq' do
         let(:datatable) { DatatableCondNotEq.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -337,7 +339,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :lt' do
         let(:datatable) { DatatableCondLt.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 2
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -348,7 +350,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :gt' do
         let(:datatable) { DatatableCondGt.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -359,7 +361,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :lteq' do
         let(:datatable) { DatatableCondLteq.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 2
           expect(datatable.data.size).to eq 2
         end
@@ -368,7 +370,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :gteq' do
         let(:datatable) { DatatableCondGteq.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = 1
           expect(datatable.data.size).to eq 2
         end
@@ -377,7 +379,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :in' do
         let(:datatable) { DatatableCondIn.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = [1]
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -388,7 +390,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :in with regex' do
         let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['4'][:search][:value] = '1|2'
           datatable.params[:order]['0'] = { column: '4', dir: 'asc' }
           expect(datatable.data.size).to eq 2
@@ -399,10 +401,10 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
 
       describe 'Integer overflows' do
         let(:datatable) { DatatableCondEq.new(sample_params) }
-        let(:largest_postgresql_integer_value) { 2147483647 }
-        let(:smallest_postgresql_integer_value) { -2147483648 }
+        let(:largest_postgresql_integer_value) { 2_147_483_647 }
+        let(:smallest_postgresql_integer_value) { -2_147_483_648 }
 
-        before(:each) do
+        before do
           create(:user, first_name: 'john', post_id: 1)
           create(:user, first_name: 'mary', post_id: 2)
           create(:user, first_name: 'phil', post_id: largest_postgresql_integer_value)
@@ -429,13 +431,13 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with lambda/proc condition' do
         let(:datatable) { DatatableCondProc.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, username: 'johndoe', email: 'johndoe@example.com')
           create(:user, username: 'johndie', email: 'johndie@example.com')
           create(:user, username: 'msmith',  email: 'mary.smith@example.com')
         end
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['0'][:search][:value] = 'john'
           expect(datatable.data.size).to eq 2
           item = datatable.data.first
@@ -448,12 +450,12 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :start_with' do
         let(:datatable) { DatatableCondStartWith.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, first_name: 'John')
           create(:user, first_name: 'Mary')
         end
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['2'][:search][:value] = 'Jo'
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -464,14 +466,14 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :end_with' do
         let(:datatable) { DatatableCondEndWith.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, last_name: 'JOHN')
           create(:user, last_name: 'MARY')
         end
 
         if ENV['DB_ADAPTER'] == 'oracle_enhanced'
           context 'when db_adapter is oracleenhanced' do
-            it 'should filter records matching' do
+            it 'filters records matching' do
               datatable.params[:columns]['3'][:search][:value] = 'RY'
               expect(datatable.data.size).to eq 1
               item = datatable.data.first
@@ -479,7 +481,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
             end
           end
         else
-          it 'should filter records matching' do
+          it 'filters records matching' do
             datatable.params[:columns]['3'][:search][:value] = 'ry'
             expect(datatable.data.size).to eq 1
             item = datatable.data.first
@@ -491,12 +493,12 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :like' do
         let(:datatable) { DatatableCondLike.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, email: 'john@foo.com')
           create(:user, email: 'mary@bar.com')
         end
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['1'][:search][:value] = 'foo'
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -507,12 +509,12 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :string_eq' do
         let(:datatable) { DatatableCondStringEq.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, email: 'john@foo.com')
           create(:user, email: 'mary@bar.com')
         end
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -523,20 +525,20 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :string_in' do
         let(:datatable) { DatatableCondStringIn.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, email: 'john@foo.com')
           create(:user, email: 'mary@bar.com')
           create(:user, email: 'henry@baz.com')
         end
 
-        it 'should filter records matching' do
+        it 'filters records matching' do
           datatable.params[:columns]['1'][:search][:value] = 'john@foo.com'
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
           expect(item[:email]).to eq 'john@foo.com'
         end
 
-        it 'should filter records matching with multiple' do
+        it 'filters records matching with multiple' do
           datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry@baz.com'
           expect(datatable.data.size).to eq 2
           items = datatable.data.sort_by { |h| h[:email] }
@@ -546,7 +548,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
           expect(item_last[:email]).to eq 'john@foo.com'
         end
 
-        it 'should filter records matching with multiple contains not found' do
+        it 'filters records matching with multiple contains not found' do
           datatable.params[:columns]['1'][:search][:value] = 'john@foo.com|henry_not@baz.com'
           expect(datatable.data.size).to eq 1
           item = datatable.data.first
@@ -557,13 +559,13 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
       describe 'it can filter records with condition :null_value' do
         let(:datatable) { DatatableCondNullValue.new(sample_params) }
 
-        before(:each) do
+        before do
           create(:user, first_name: 'john', email: 'foo@bar.com')
           create(:user, first_name: 'mary', email: nil)
         end
 
         context 'when condition is NULL' do
-          it 'should filter records matching' do
+          it 'filters records matching' do
             datatable.params[:columns]['1'][:search][:value] = 'NULL'
             expect(datatable.data.size).to eq 1
             item = datatable.data.first
@@ -572,7 +574,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         context 'when condition is !NULL' do
-          it 'should filter records matching' do
+          it 'filters records matching' do
             datatable.params[:columns]['1'][:search][:value] = '!NULL'
             expect(datatable.data.size).to eq 1
             item = datatable.data.first
@@ -585,11 +587,11 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
     context 'unknown condition' do
       let(:datatable) { DatatableCondUnknown.new(sample_params) }
 
-      before(:each) do
+      before do
         datatable.params[:search] = { value: 'john doe', regex: 'false' }
       end
 
-      it 'should raise error' do
+      it 'raises error' do
         expect {
           datatable.data.size
         }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchCondition).with_message('foo')
@@ -600,7 +602,7 @@ describe AjaxDatatablesRails::ORM::ActiveRecord do
   describe 'formatter option' do
     let(:datatable) { DatatableWithFormater.new(sample_params) }
 
-    before(:each) do
+    before do
       create(:user, username: 'johndoe', email: 'johndoe@example.com', last_name: 'DOE')
       create(:user, username: 'msmith', email: 'mary.smith@example.com', last_name: 'SMITH')
       datatable.params[:columns]['3'][:search][:value] = 'doe'

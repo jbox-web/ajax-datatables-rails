@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AjaxDatatablesRails::Base do
@@ -44,7 +46,7 @@ describe AjaxDatatablesRails::Base do
       context 'when data is defined as a hash' do
         let(:datatable) { ComplexDatatable.new(sample_params) }
 
-        it 'should return an array of hashes' do
+        it 'returns an array of hashes' do
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
           expect(datatable.data.size).to eq 5
@@ -52,7 +54,7 @@ describe AjaxDatatablesRails::Base do
           expect(item).to be_a(Hash)
         end
 
-        it 'should html escape data' do
+        it 'htmls escape data' do
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
           data = datatable.send(:sanitize_data, datatable.data)
           item = data.first
@@ -64,7 +66,7 @@ describe AjaxDatatablesRails::Base do
       context 'when data is defined as a array' do
         let(:datatable) { ComplexDatatableArray.new(sample_params) }
 
-        it 'should return an array of arrays' do
+        it 'returns an array of arrays' do
           create_list(:user, 5)
           expect(datatable.data).to be_a(Array)
           expect(datatable.data.size).to eq 5
@@ -72,7 +74,7 @@ describe AjaxDatatablesRails::Base do
           expect(item).to be_a(Array)
         end
 
-        it 'should html escape data' do
+        it 'htmls escape data' do
           create(:user, first_name: 'Name "><img src=x onerror=alert("first_name")>', last_name: 'Name "><img src=x onerror=alert("last_name")>')
           data = datatable.send(:sanitize_data, datatable.data)
           item = data.first
@@ -156,7 +158,7 @@ describe AjaxDatatablesRails::Base do
     describe '#as_json' do
       let(:datatable) { ComplexDatatable.new(sample_params) }
 
-      it 'should return a hash' do
+      it 'returns a hash' do
         create_list(:user, 5)
         data = datatable.as_json
         expect(data[:recordsTotal]).to eq 5
@@ -166,9 +168,9 @@ describe AjaxDatatablesRails::Base do
       end
 
       context 'with additional_data' do
-        it 'should return a hash' do
+        it 'returns a hash' do
           create_list(:user, 5)
-          expect(datatable).to receive(:additional_data){ { foo: 'bar' } }
+          expect(datatable).to receive(:additional_data) { { foo: 'bar' } }
           data = datatable.as_json
           expect(data[:recordsTotal]).to eq 5
           expect(data[:recordsFiltered]).to eq 5
@@ -184,7 +186,7 @@ describe AjaxDatatablesRails::Base do
     describe '#column_id' do
       let(:datatable) { ComplexDatatable.new(sample_params) }
 
-      it 'should return column id from view_columns hash' do
+      it 'returns column id from view_columns hash' do
         expect(datatable.column_id(:username)).to eq(0)
         expect(datatable.column_id('username')).to eq(0)
       end
@@ -194,7 +196,7 @@ describe AjaxDatatablesRails::Base do
       let(:datatable) { ComplexDatatable.new(sample_params) }
       before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
 
-      it 'should return column data from params' do
+      it 'returns column data from params' do
         expect(datatable.column_data(:username)).to eq('doe')
         expect(datatable.column_data('username')).to eq('doe')
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DatatableCondEq < ComplexDatatable
   def view_columns
     super.deep_merge(post_id: { cond: :eq })
