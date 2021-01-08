@@ -532,13 +532,13 @@ available in our datatable to search and sort by.
 
 def view_columns
   @view_columns ||= {
-    first_name:       'User.first_name',
-    last_name:        'User.last_name',
-    order_number:     'PurchaseOrder.number',
-    order_created_at: 'PurchaseOrder.created_at',
-    quantity:         'Purchase::LineItem.quantity',
-    unit_price:       'Purchase::LineItem.unit_price',
-    item_total:       'Purchase::LineItem.item_total'
+    first_name:       { source: 'User.first_name' },
+    last_name:        { source: 'User.last_name' },
+    order_number:     { source: 'PurchaseOrder.number' },
+    order_created_at: { source: 'PurchaseOrder.created_at' },
+    quantity:         { source: 'Purchase::LineItem.quantity' },
+    unit_price:       { source: 'Purchase::LineItem.unit_price' },
+    item_total:       { source: 'Purchase::LineItem.item_total }'
   }
 end
 ```
@@ -570,14 +570,14 @@ The related definition would be :
 ```ruby
 def view_columns
   @view_columns ||= {
-    course_type:     'CourseType.name',
-    course_name:     'Course.name',
-    contact_name:    'Contact.full_name',
-    competency_type: 'CompetencyType.name',
-    event_title:     'Event.title',
-    event_start:     'Event.event_start',
-    event_end:       'Event.event_end',
-    event_status:    'Event.status',
+    course_type:     { source: 'CourseType.name' },
+    course_name:     { source: 'Course.name' },
+    contact_name:    { source: 'Contact.full_name' },
+    competency_type: { source: 'CompetencyType.name' },
+    event_title:     { source: 'Event.title' },
+    event_start:     { source: 'Event.event_start' },
+    event_end:       { source: 'Event.event_end' },
+    event_status:    { source: 'Event.status' },
   }
 end
 
