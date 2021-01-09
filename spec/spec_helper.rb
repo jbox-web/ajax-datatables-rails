@@ -50,6 +50,10 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  # disable monkey patching
+  # see: https://relishapp.com/rspec/rspec-core/v/3-8/docs/configuration/zero-monkey-patching-mode
+  config.disable_monkey_patching!
+
   if ENV.key?('GITHUB_ACTIONS')
     config.around do |ex|
       ex.run_with_retry retry: 3

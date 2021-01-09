@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AjaxDatatablesRails::Datatable::Datatable do
+RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
 
   let(:datatable) { ComplexDatatable.new(sample_params).datatable }
   let(:datatable_json) { ComplexDatatable.new(sample_params_json).datatable }

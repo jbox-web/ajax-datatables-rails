@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AjaxDatatablesRails::ORM::ActiveRecord do
+RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   let(:datatable) { ComplexDatatable.new(sample_params) }
   let(:records) { User.all }

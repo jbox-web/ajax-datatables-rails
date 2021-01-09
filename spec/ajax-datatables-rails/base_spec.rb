@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AjaxDatatablesRails::Base do
+RSpec.describe AjaxDatatablesRails::Base do
 
   describe 'an instance' do
     it 'requires a hash of params' do

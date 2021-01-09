@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AjaxDatatablesRails::Datatable::SimpleOrder do
+RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
   let(:parent) { ComplexDatatable.new(sample_params) }
   let(:datatable) { parent.datatable }
