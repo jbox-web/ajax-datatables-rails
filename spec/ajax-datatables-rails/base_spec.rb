@@ -139,6 +139,18 @@ RSpec.describe AjaxDatatablesRails::Base do
           datatable.new(sample_params)
         end
 
+        describe '#fetch_records' do
+          it 'calls #get_raw_records' do
+            expect(datatable).to receive(:get_raw_records) { User.all }
+            datatable.fetch_records
+          end
+
+          it 'returns a collection of records' do
+            expect(datatable).to receive(:get_raw_records) { User.all }
+            expect(datatable.fetch_records).to be_a(ActiveRecord::Relation)
+          end
+        end
+
         describe '#filter_records' do
           it {
             expect { datatable.filter_records([]) }.to raise_error(NotImplementedError).with_message('FOO')
