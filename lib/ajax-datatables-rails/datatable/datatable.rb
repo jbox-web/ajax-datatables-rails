@@ -2,7 +2,6 @@
 
 module AjaxDatatablesRails
   module Datatable
-
     class Datatable
       attr_reader :options
 
