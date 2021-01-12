@@ -17,9 +17,11 @@ RSpec.describe AjaxDatatablesRails::Base do
 
   describe 'User API' do
     describe '#view_columns' do
-      it 'raises an error if not defined by the user' do
-        datatable = described_class.new(sample_params)
-        expect { datatable.view_columns }.to raise_error NotImplementedError
+      context 'when method is not defined by the user' do
+        it 'raises an error' do
+          datatable = described_class.new(sample_params)
+          expect { datatable.view_columns }.to raise_error NotImplementedError
+        end
       end
 
       context 'child class implements view_columns' do
@@ -31,16 +33,20 @@ RSpec.describe AjaxDatatablesRails::Base do
     end
 
     describe '#get_raw_records' do
-      it 'raises an error if not defined by the user' do
-        datatable = described_class.new(sample_params)
-        expect { datatable.get_raw_records }.to raise_error NotImplementedError
+      context 'when method is not defined by the user' do
+        it 'raises an error' do
+          datatable = described_class.new(sample_params)
+          expect { datatable.get_raw_records }.to raise_error NotImplementedError
+        end
       end
     end
 
     describe '#data' do
-      it 'raises an error if not defined by the user' do
-        datatable = described_class.new(sample_params)
-        expect { datatable.data }.to raise_error NotImplementedError
+      context 'when method is not defined by the user' do
+        it 'raises an error' do
+          datatable = described_class.new(sample_params)
+          expect { datatable.data }.to raise_error NotImplementedError
+        end
       end
 
       context 'when data is defined as a hash' do
