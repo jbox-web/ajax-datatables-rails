@@ -10,9 +10,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
 
     let(:column) { datatable.datatable.columns.first }
 
-    before do
-      datatable.params[:columns] = { '0' => { 'data' => 'username', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
-    end
+    before { datatable.params[:columns]['0'][:search][:value] = 'searchvalue' }
 
     it 'is orderable' do
       expect(column.orderable?).to eq(true)
@@ -52,6 +50,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
           expect(column.table).to eq User.arel_table
         end
       end
+
       context 'with other ORM' do
         it 'returns the corresponding model' do
           expect(User).to receive(:respond_to?).with(:arel_table).and_return(false)
@@ -206,9 +205,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe 'when empty column' do
-    before do
-      datatable.params[:columns] = { '0' => { 'data' => '', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
-    end
+    before { datatable.params[:columns]['0'][:data] = '' }
 
     it 'raises error' do
       expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message('Unknown column. Check that `data` field is filled on JS side with the column name')
@@ -216,9 +213,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe 'when unknown column' do
-    before do
-      datatable.params[:columns] = { '0' => { 'data' => 'foo', 'name' => '', 'searchable' => 'true', 'orderable' => 'true', 'search' => { 'value' => 'searchvalue', 'regex' => 'false' } } }
-    end
+    before { datatable.params[:columns]['0'][:data] = 'foo' }
 
     it 'raises error' do
       expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Check that column 'foo' exists in view_columns")
