@@ -62,11 +62,11 @@ module AjaxDatatablesRails
           when :eq, :not_eq, :lt, :gt, :lteq, :gteq, :in
             searchable_integer? ? raw_search(cond) : empty_search
           when :start_with
-            casted_column.matches("#{formatted_value}%")
+            text_search("#{formatted_value}%")
           when :end_with
-            casted_column.matches("%#{formatted_value}")
+            text_search("%#{formatted_value}")
           when :like
-            casted_column.matches("%#{formatted_value}%")
+            text_search("%#{formatted_value}%")
           when :string_eq
             raw_search(:eq)
           when :string_in
@@ -93,6 +93,10 @@ module AjaxDatatablesRails
           else
             table[field].send(cond, formatted_value)
           end
+        end
+
+        def text_search(value)
+          casted_column.matches(value)
         end
 
         def empty_search
