@@ -40,8 +40,8 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
   end
 
   shared_examples 'columns methods' do
-    it 'has 4 columns' do
-      expect(datatable.columns.count).to eq(6)
+    it 'has 7 columns' do
+      expect(datatable.columns.count).to eq(7)
     end
 
     it 'child class' do

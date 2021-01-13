@@ -31,12 +31,18 @@ def sample_params
           }
         },
         '4' => {
-          'data' => 'post_id', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+          'data' => 'full_name', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
           'search' => {
             'value' => '', 'regex' => 'false'
           }
         },
         '5' => {
+          'data' => 'post_id', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        },
+        '6' => {
           'data' => 'created_at', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
           'search' => {
             'value' => '', 'regex' => 'false'
