@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.1 (2021-02-09)
+
+* Fix rare case error `uninitialized constant AjaxDatatablesRails::ActiveRecord::Base` (merge: [#379](https://github.com/jbox-web/ajax-datatables-rails/pull/379))
+
 ## 1.3.0 (2021-01-04)
 
 * Drop support of Rails 5.0.x and 5.1.x
