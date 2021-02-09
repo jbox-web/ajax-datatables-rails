@@ -410,12 +410,12 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           create(:user, first_name: 'phil', post_id: largest_postgresql_integer_value)
         end
 
-        it 'Returns an empty result if input value is too large' do
+        it 'returns an empty result if input value is too large' do
           datatable.params[:columns]['5'][:search][:value] = largest_postgresql_integer_value + 1
           expect(datatable.data.size).to eq 0
         end
 
-        it 'Returns an empty result if input value is too small' do
+        it 'returns an empty result if input value is too small' do
           datatable.params[:columns]['5'][:search][:value] = smallest_postgresql_integer_value - 1
           expect(datatable.data.size).to eq 0
         end
@@ -595,6 +595,28 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         expect {
           datatable.data.size
         }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchCondition).with_message('foo')
+      end
+    end
+
+    context 'custom column' do
+      describe 'it can filter records with custom column' do
+        let(:datatable) { DatatableCustomColumn.new(sample_params) }
+
+        before do
+          create(:user, username: 'msmith',  email: 'mary.smith@example.com', first_name: 'Mary', last_name: 'Smith')
+          create(:user, username: 'jsmith',  email: 'john.smith@example.com', first_name: 'John', last_name: 'Smith')
+          create(:user, username: 'johndoe', email: 'johndoe@example.com',    first_name: 'John', last_name: 'Doe')
+        end
+
+        it 'filters records' do
+          skip('unsupported database adapter') if RunningSpec.oracle? || RunningSpec.sqlite?
+
+          datatable.params[:columns]['4'][:search][:value] = 'John'
+          datatable.params[:order]['0'][:column] = '4'
+          expect(datatable.data.size).to eq 2
+          item = datatable.data.first
+          expect(item[:full_name]).to eq 'John Doe'
+        end
       end
     end
   end

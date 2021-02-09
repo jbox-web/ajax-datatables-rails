@@ -88,15 +88,11 @@ module AjaxDatatablesRails
         end
 
         def raw_search(cond)
-          if custom_field?
-            ::Arel::Nodes::SqlLiteral.new(field).eq(formatted_value)
-          else
-            table[field].send(cond, formatted_value)
-          end
+          table[field].send(cond, formatted_value) unless custom_field?
         end
 
         def text_search(value)
-          casted_column.matches(value)
+          casted_column.matches(value) unless custom_field?
         end
 
         def empty_search
