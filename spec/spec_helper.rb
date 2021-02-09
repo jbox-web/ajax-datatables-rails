@@ -61,8 +61,27 @@ RSpec.configure do |config|
   end
 end
 
+class RunningSpec
+  def self.sqlite?
+    ENV['DB_ADAPTER'] == 'sqlite3'
+  end
+
+  def self.oracle?
+    ENV['DB_ADAPTER'] == 'oracle_enhanced'
+  end
+
+  def self.mysql?
+    ENV['DB_ADAPTER'] == 'mysql2'
+  end
+
+  def self.postgresql?
+    ENV['DB_ADAPTER'] == 'postgresql'
+  end
+end
+
 # Configure ActiveRecord
 adapter = ENV.fetch('DB_ADAPTER', 'postgresql')
+ENV['DB_ADAPTER'] = adapter
 
 options = {
   adapter:  adapter,
