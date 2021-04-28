@@ -32,7 +32,15 @@ module AjaxDatatablesRails
       end
 
       def table
-        model.respond_to?(:arel_table) ? model.arel_table : model
+        if model.respond_to?(:arel_table)
+          table_alias.present? ? model.arel_table.alias(table_alias) : model.arel_table
+        else
+          model
+        end
+      end
+
+      def table_alias
+        @table_alias ||= @view_column[:table_alias]
       end
 
       def model

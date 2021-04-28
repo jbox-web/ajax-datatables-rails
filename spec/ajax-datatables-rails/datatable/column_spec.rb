@@ -44,6 +44,12 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       end
     end
 
+    describe '#table_alias' do
+      it 'returns nil as the table_alias' do
+        expect(column.table_alias).to eq nil
+      end
+    end
+
     describe '#table' do
       context 'with ActiveRecord ORM' do
         it 'returns the corresponding AR table' do
@@ -217,6 +223,24 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
 
     it 'raises error' do
       expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Check that column 'foo' exists in view_columns")
+    end
+  end
+
+  describe 'table name overwrites for named joins' do
+    let(:datatable) { NamedJoinDatatable.new(group_sample_params) }
+
+    let(:column) { datatable.datatable.columns.last }
+
+    describe '#source' do
+      it 'returns the data source from view_column' do
+        expect(column.source).to eq 'User.username'
+      end
+    end
+
+    describe '#table_alias' do
+      it 'returns the data source from table_alias' do
+        expect(column.table_alias).to eq 'admin'
+      end
     end
   end
 end

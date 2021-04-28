@@ -220,4 +220,51 @@ RSpec.describe AjaxDatatablesRails::Base do
       end
     end
   end
+
+  describe 'Named join' do
+    describe '#data' do
+      let(:datatable) { NamedJoinDatatable.new(group_sample_params) }
+      let(:admin) { create(:user, username: 'johndoe', email: 'johndoe@example.com') }
+
+      before do
+        user_1 = create(:user, username: 'johndoe', email: 'johndoe@example.com')
+
+        group_1 = create(:group, admin: nil, name: 'Super Group')
+        user_2 = create(:user, username: 'sandbo', email: 'sandra.bo@example.com', group: group_1)
+
+        user_3 = create(:user, username: 'msmith', email: 'mary.smith@example.com')
+        create(:group, admin: user_2, name: 'First group', users: [user_1, user_3])
+
+        user_4 = create(:user, username: 'anna', email: 'anna.belle@example.com')
+        create(:group, admin: user_4, name: 'Awesome group', users: [user_4])
+
+        create(:user, username: 'hans', email: 'han.solo@example.com')
+      end
+
+      it 'returns list' do
+        group_names = datatable.data.map { |i| i[:group_name] }
+        admin_names = datatable.data.map { |i| i[:group_admin] }
+        expect(group_names).to eq ["Awesome group", nil, "First group", "First group", "Super Group"]
+        expect(admin_names).to eq ["anna", nil, "sandbo", "sandbo", nil]
+      end
+
+      it 'global search' do
+        datatable.params[:search][:value] = 'sand'
+        user_names = datatable.data.map { |i| i[:username] }
+        expect(user_names).to eq ["johndoe", "msmith", "sandbo"]
+      end
+
+      it 'sorts list asc' do
+        datatable.params[:order]['0'] = { column: '2', dir: 'asc' }
+        admin_names = datatable.data.map { |i| i[:group_admin] }
+        expect(admin_names).to eq  ["anna", "sandbo", "sandbo", nil, nil]
+      end
+
+      it 'sort list desc' do
+        datatable.params[:order]['0'] = { column: '2', dir: 'desc' }
+        admin_names = datatable.data.map { |i| i[:group_admin] }
+        expect(admin_names).to eq [nil, nil, "sandbo", "sandbo", "anna"]
+      end
+    end
+  end
 end
