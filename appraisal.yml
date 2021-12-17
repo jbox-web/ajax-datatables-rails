@@ -40,3 +40,17 @@
   ruby-oci8:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+
+7.0.0:
+  sqlite3:
+    version: ~> 1.4.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
+  mysql2:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "mysql2" }'
+  activerecord-oracle_enhanced-adapter:
+    version: ~> 7.0.0
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
+  ruby-oci8:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
