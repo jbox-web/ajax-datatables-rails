@@ -50,9 +50,9 @@ jobs:
           - '2.7'
           - '2.6'
         rails:
-          - rails_5.2.4
-          - rails_6.0.3
-          - rails_6.1.0
+          - rails_5.2.6
+          - rails_6.0.4
+          - rails_6.1.4
         adapter:
           - sqlite3
           - postgresql
@@ -60,7 +60,7 @@ jobs:
           - oracle_enhanced
         exclude:
           - ruby: '3.0'
-            rails: rails_5.2.4
+            rails: rails_5.2.6
 
     steps:
       - name: Checkout

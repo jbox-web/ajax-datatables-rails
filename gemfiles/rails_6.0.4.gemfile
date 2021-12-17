@@ -2,8 +2,8 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", git: "https://github.com/n-rodriguez/appraisal.git", branch: "wip/install_if"
-gem "rails", "6.0.3"
+gem "appraisal", git: "https://github.com/thoughtbot/appraisal.git"
+gem "rails", "6.0.4"
 
 install_if -> { ENV["DB_ADAPTER"] == "sqlite3" } do
   gem "sqlite3", "~> 1.4.0"

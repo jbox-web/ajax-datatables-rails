@@ -1,5 +1,5 @@
 ---
-5.2.4:
+5.2.6:
   sqlite3:
     version: ~> 1.3.0
     install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
@@ -13,7 +13,7 @@
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
 
-6.0.3:
+6.0.4:
   sqlite3:
     version: ~> 1.4.0
     install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
@@ -27,7 +27,7 @@
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
 
-6.1.0:
+6.1.4:
   sqlite3:
     version: ~> 1.4.0
     install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
