@@ -53,7 +53,7 @@ jobs:
           - rails_5.2.6
           - rails_6.0.4
           - rails_6.1.4
-          - rails_7.0.0
+          - rails_7.0.1
         adapter:
           - sqlite3
           - postgresql
@@ -61,7 +61,7 @@ jobs:
           - oracle_enhanced
         exclude:
           - ruby: '2.6'
-            rails: rails_7.0.0
+            rails: rails_7.0.1
           - ruby: '3.0'
             rails: rails_5.2.6
 
