@@ -2,8 +2,14 @@
 name: CI
 
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 4 1 * *'
 
 jobs:
   rspec:
