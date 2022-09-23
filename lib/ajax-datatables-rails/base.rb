@@ -3,8 +3,14 @@
 module AjaxDatatablesRails
   class Base
 
-    class_attribute :db_adapter, default: ::ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+    class_attribute :db_adapter
     class_attribute :nulls_last, default: false
+
+    class << self
+      def db_adapter
+        self.db_adapter = ::ActiveRecord::Base.connection.adapter_name.downcase.to_sym
+      end
+    end
 
     attr_reader :params, :options, :datatable
 
