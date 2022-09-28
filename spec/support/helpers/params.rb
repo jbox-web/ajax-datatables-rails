@@ -60,6 +60,41 @@ def sample_params
   )
 end
 
+def group_sample_params
+  ActionController::Parameters.new(
+    {
+      'draw' => '1',
+      'columns' => {
+        '0' => {
+          'data' => 'username', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        },
+        '1' => {
+          'data' => 'group_name', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        },
+        '2' => {
+          'data' => 'group_admin', 'name' => '', 'searchable' => 'true', 'orderable' => 'false',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        }
+      },
+      'order' => {
+        '0' => { 'column' => '0', 'dir' => 'asc' },
+      },
+      'start' => '0', 'length' => '10', 'search' => {
+        'value' => '', 'regex' => 'false'
+      },
+      '_' => '1423364387185'
+    }
+  )
+end
+
 def sample_params_json
   hash_params = sample_params.to_unsafe_h
   hash_params['columns'] = hash_params['columns'].values

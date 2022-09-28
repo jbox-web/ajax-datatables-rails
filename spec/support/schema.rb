@@ -9,6 +9,14 @@ ActiveRecord::Schema.define do
     t.string  :first_name
     t.string  :last_name
     t.integer :post_id
+    t.integer :group_id
+
+    t.timestamps null: false
+  end
+
+  create_table :groups, force: true do |t|
+    t.string  :name
+    t.integer :admin_id
 
     t.timestamps null: false
   end
