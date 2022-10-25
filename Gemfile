@@ -4,4 +4,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git'
+gem 'appraisal', git: 'https://github.com/n-rodriguez/appraisal.git', branch: 'wip/combustion'

@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", git: "https://github.com/thoughtbot/appraisal.git"
+gem "appraisal", git: "https://github.com/n-rodriguez/appraisal.git", branch: "wip/combustion"
 gem "rails", "6.0.4"
 
 install_if -> { ENV["DB_ADAPTER"] == "sqlite3" } do

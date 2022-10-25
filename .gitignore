@@ -10,11 +10,14 @@
 /coverage
 /tmp
 
-# Ignore sqlite db file
-/ajax_datatables_rails
-
 # RVM files
 /.ruby-version
 
 # Gem files
 /*.gem
+
+# Ignore dummy app files
+spec/dummy/db/*.sqlite3
+spec/dummy/db/*.sqlite3-journal
+spec/dummy/log/*.log
+spec/dummy/tmp/

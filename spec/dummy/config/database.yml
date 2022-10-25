@@ -1,0 +1,25 @@
+<% adapter = ENV.fetch('DB_ADAPTER', 'postgresql') %>
+test:
+  adapter:  <%= adapter %>
+  database: ajax_datatables_rails
+  encoding: utf8
+
+<% if adapter == 'postgresql' %>
+  host: '127.0.0.1'
+  port: 5432
+  username: 'postgres'
+  password: 'postgres'
+<% elsif adapter == 'mysql2' %>
+  host: '127.0.0.1'
+  port: 3306
+  username: 'root'
+  password: 'root'
+<% elsif adapter == 'oracle_enhanced' %>
+  host: '127.0.0.1/xe'
+  username: <%= ENV.fetch('USER') %>
+  password: <%= ENV.fetch('USER') %>
+  database: 'xe'
+<% elsif adapter == 'sqlite3' %>
+  # database: ':memory:'
+  database: db/ajax_datatables_rails.sqlite3
+<% end %>

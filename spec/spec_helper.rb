@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require 'combustion'
+
+Combustion.path = 'spec/dummy'
+Combustion.initialize! :active_record, :action_controller
+
 require 'simplecov'
 require 'rspec'
 require 'rspec/retry'
@@ -7,9 +12,6 @@ require 'database_cleaner'
 require 'factory_bot'
 require 'faker'
 require 'pry'
-require 'rails'
-require 'active_record'
-require 'action_controller'
 
 # Start Simplecov
 SimpleCov.start do
@@ -78,30 +80,6 @@ class RunningSpec
     ENV['DB_ADAPTER'] == 'postgresql'
   end
 end
-
-# Configure ActiveRecord
-adapter = ENV.fetch('DB_ADAPTER', 'postgresql')
-ENV['DB_ADAPTER'] = adapter
-
-options = {
-  adapter:  adapter,
-  database: 'ajax_datatables_rails',
-  encoding: 'utf8',
-}
-
-options =
-  case adapter
-  when 'postgresql'
-    options.merge(host: '127.0.0.1', port: 5432, username: 'postgres', password: 'postgres')
-  when 'mysql2'
-    options.merge(host: '127.0.0.1', port: 3306, username: 'root', password: 'root')
-  when 'oracle_enhanced'
-    options.merge(host: '127.0.0.1/xe', username: ENV['USER'], password: ENV['USER'], database: 'xe')
-  when 'sqlite3'
-    options.merge(database: ':memory:')
-  end
-
-ActiveRecord::Base.establish_connection(options)
 
 # Require our gem
 require 'ajax-datatables-rails'
