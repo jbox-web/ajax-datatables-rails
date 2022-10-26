@@ -3,7 +3,27 @@
 module AjaxDatatablesRails
   class Base
 
-    class_attribute :db_adapter, default: ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).first.adapter.downcase.to_sym
+    class << self
+      def rails_52?
+        Rails.gem_version >= Gem::Version.new('5.2') && Rails.gem_version <= Gem::Version.new('6.0')
+      end
+
+      def rails_60?
+        Rails.gem_version >= Gem::Version.new('6.0') && Rails.gem_version <= Gem::Version.new('6.1')
+      end
+
+      def default_db_adapter
+        if rails_52?
+          ::ActiveRecord::Base.configurations.dig(Rails.env, 'adapter').downcase.to_sym
+        elsif rails_60?
+          ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).first.config['adapter'].downcase.to_sym
+        else
+          ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).first.adapter.downcase.to_sym
+        end
+      end
+    end
+
+    class_attribute :db_adapter, default: default_db_adapter
     class_attribute :nulls_last, default: false
 
     attr_reader :params, :options, :datatable
