@@ -66,13 +66,14 @@ module AjaxDatatablesRails
       TYPE_CAST_SQLSERVER = 'VARCHAR(4000)'
 
       DB_ADAPTER_TYPE_CAST = {
-        mysql:          TYPE_CAST_MYSQL,
-        mysql2:         TYPE_CAST_MYSQL,
-        sqlite:         TYPE_CAST_SQLITE,
-        sqlite3:        TYPE_CAST_SQLITE,
-        oracle:         TYPE_CAST_ORACLE,
-        oracleenhanced: TYPE_CAST_ORACLE,
-        sqlserver:      TYPE_CAST_SQLSERVER,
+        mysql:           TYPE_CAST_MYSQL,
+        mysql2:          TYPE_CAST_MYSQL,
+        sqlite:          TYPE_CAST_SQLITE,
+        sqlite3:         TYPE_CAST_SQLITE,
+        oracle:          TYPE_CAST_ORACLE,
+        oracleenhanced:  TYPE_CAST_ORACLE,
+        oracle_enhanced: TYPE_CAST_ORACLE,
+        sqlserver:       TYPE_CAST_SQLSERVER,
       }.freeze
 
       private_constant :TYPE_CAST_DEFAULT
