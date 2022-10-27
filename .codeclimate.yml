@@ -1,26 +1,8 @@
 ---
-engines:
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - ruby
-      - javascript
-      - python
-      - php
-  fixme:
-    enabled: true
+plugins:
   rubocop:
     enabled: true
-ratings:
-  paths:
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
-exclude_paths:
-- spec/
-- lib/generators/rails/templates/
+    channel: rubocop-1-31-0
+exclude_patterns:
+  - spec/
+  - lib/generators/rails/templates/
