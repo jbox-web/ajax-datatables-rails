@@ -168,6 +168,11 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
+    it 'returns VARCHAR if :db_adapter is :postgis' do
+      expect(datatable).to receive(:db_adapter) { :postgis }
+      expect(column.send(:type_cast)).to eq('VARCHAR')
+    end
+
     it 'returns VARCHAR2(4000) if :db_adapter is :oracle' do
       expect(datatable).to receive(:db_adapter) { :oracle }
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')

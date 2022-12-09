@@ -18,4 +18,8 @@ install_if -> { ENV["DB_ADAPTER"] == "oracle_enhanced" } do
   gem "ruby-oci8"
 end
 
+install_if -> { ENV["DB_ADAPTER"] == "postgis" } do
+  gem "activerecord-postgis-adapter"
+end
+
 gemspec path: "../"

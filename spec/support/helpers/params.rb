@@ -70,7 +70,7 @@ end
 
 def nulls_last_sql(datatable)
   case datatable.db_adapter
-  when :pg, :postgresql, :postgres, :oracle
+  when :pg, :postgresql, :postgres, :oracle, :postgis
     'NULLS LAST'
   when :mysql, :mysql2, :sqlite, :sqlite3
     'IS NULL'
