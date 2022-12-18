@@ -11,8 +11,8 @@
 
 It's tested against :
 
-* Rails 5.2.4 / 6.0.3 / 6.1.0
-* Ruby 2.5.x / 2.6.x / 2.7.x
+* Rails 6.0.6 / 6.1.7 / 7.0.4
+* Ruby 2.7 / 3.0 / 3.1
 * SQLite3
 * Postgresql 13
 * MySQL 8

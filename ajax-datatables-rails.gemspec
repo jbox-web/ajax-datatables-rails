@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files`.split("\n")
 
-  s.add_runtime_dependency 'rails', '>= 5.2'
+  s.add_runtime_dependency 'rails', '>= 6.0'
   s.add_runtime_dependency 'zeitwerk'
 
   s.add_development_dependency 'activerecord-oracle_enhanced-adapter'

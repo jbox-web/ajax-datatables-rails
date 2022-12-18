@@ -56,7 +56,6 @@ jobs:
           - '3.0'
           - '2.7'
         rails:
-          - rails_5.2.8
           - rails_6.0.6
           - rails_6.1.7
           - rails_7.0.4
@@ -65,11 +64,6 @@ jobs:
           - postgresql
           - mysql2
           - oracle_enhanced
-        exclude:
-          - ruby: '3.0'
-            rails: rails_5.2.8
-          - ruby: '3.1'
-            rails: rails_5.2.8
 
     steps:
       - name: Checkout
