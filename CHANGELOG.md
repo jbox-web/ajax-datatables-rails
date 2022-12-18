@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.4.0
+## 1.4.0 (2022-12-18)
 
 * Improve tests
 * Add tests on custom_field feature
