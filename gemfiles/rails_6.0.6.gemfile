@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "appraisal", git: "https://github.com/n-rodriguez/appraisal.git", branch: "wip/combustion"
-gem "rails", "7.0.1"
+gem "rails", "6.0.6"
 
 install_if -> { ENV["DB_ADAPTER"] == "sqlite3" } do
   gem "sqlite3", "~> 1.4.0"
@@ -14,7 +14,7 @@ install_if -> { ENV["DB_ADAPTER"] == "mysql2" } do
 end
 
 install_if -> { ENV["DB_ADAPTER"] == "oracle_enhanced" } do
-  gem "activerecord-oracle_enhanced-adapter", "~> 7.0.0"
+  gem "activerecord-oracle_enhanced-adapter", "~> 6.0.0"
   gem "ruby-oci8"
 end
 
