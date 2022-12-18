@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 1.4.0
+
+* Improve tests
+* Add tests on custom_field feature
+* Drop support of Ruby 2.5
+* Drop support of Ruby 2.6
+* Add support of Ruby 3.1
+* Add support of Rails 7
+* Fix: prevent establishing ActiveRecord connection on startup
+
 ## 1.3.1 (2021-02-09)
 
 * Fix rare case error `uninitialized constant AjaxDatatablesRails::ActiveRecord::Base` (merge: [#379](https://github.com/jbox-web/ajax-datatables-rails/pull/379))
