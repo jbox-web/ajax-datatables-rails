@@ -137,11 +137,11 @@ module AjaxDatatablesRails
     end
 
     def records_total_count
-      numeric_count(fetch_records.count(:all))
+      numeric_count fetch_records.count(:all)
     end
 
     def records_filtered_count
-      numeric_count(filter_records(fetch_records).count(:all))
+      numeric_count filter_records(fetch_records).count(:all)
     end
 
     def numeric_count(count)

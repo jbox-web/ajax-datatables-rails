@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-rails_versions = YAML.load(File.read('appraisal.yml'))
+rails_versions = YAML.safe_load(File.read('appraisal.yml'))
 
 rails_versions.each do |version, gems|
   appraise "rails_#{version}" do
