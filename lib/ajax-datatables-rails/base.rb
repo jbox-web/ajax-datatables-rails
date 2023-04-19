@@ -73,11 +73,13 @@ module AjaxDatatablesRails
 
     # JSON structure sent to jQuery DataTables
     def as_json(*)
+      draw_resp = (params[:draw].present?) ? { draw: params[:draw].to_i } : { }
+
       {
         recordsTotal:    records_total_count,
         recordsFiltered: records_filtered_count,
         data:            sanitize_data(data),
-      }.merge(additional_data)
+      }.merge(draw_resp).merge(additional_data)
     end
 
     # User helper methods

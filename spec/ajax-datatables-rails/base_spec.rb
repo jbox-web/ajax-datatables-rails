@@ -181,6 +181,7 @@ RSpec.describe AjaxDatatablesRails::Base do
         data = datatable.as_json
         expect(data[:recordsTotal]).to eq 5
         expect(data[:recordsFiltered]).to eq 5
+        expect(data[:draw]).to eq 1
         expect(data[:data]).to be_a(Array)
         expect(data[:data].size).to eq 5
       end
@@ -192,6 +193,7 @@ RSpec.describe AjaxDatatablesRails::Base do
           data = datatable.as_json
           expect(data[:recordsTotal]).to eq 5
           expect(data[:recordsFiltered]).to eq 5
+          expect(data[:draw]).to eq 1
           expect(data[:data]).to be_a(Array)
           expect(data[:data].size).to eq 5
           expect(data[:foo]).to eq 'bar'
