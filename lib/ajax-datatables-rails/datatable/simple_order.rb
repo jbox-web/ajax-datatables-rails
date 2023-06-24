@@ -45,7 +45,7 @@ module AjaxDatatablesRails
         return unless sort_nulls_last?
 
         case @adapter
-        when :pg, :postgresql, :postgres, :oracle
+        when :pg, :postgresql, :postgres, :oracle, :postgis
           'NULLS LAST'
         when :mysql, :mysql2, :sqlite, :sqlite3
           'IS NULL'

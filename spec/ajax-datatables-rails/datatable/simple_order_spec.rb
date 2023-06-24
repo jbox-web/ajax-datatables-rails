@@ -42,6 +42,14 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
         end
       end
 
+      context 'with postgis database adapter' do
+        before { parent.db_adapter = :postgis }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC NULLS LAST')
+        end
+      end
+
       context 'with sqlite database adapter' do
         before { parent.db_adapter = :sqlite }
 
