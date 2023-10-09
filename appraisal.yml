@@ -33,7 +33,7 @@
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "postgis" }'
 
-7.0.4:
+7.0.8:
   sqlite3:
     version: ~> 1.4.0
     install_if: '-> { ENV["DB_ADAPTER"] == "sqlite3" }'
