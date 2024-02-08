@@ -66,6 +66,7 @@ jobs:
           - sqlite3
           - postgresql
           - mysql2
+          - trilogy
           - oracle_enhanced
 
     steps:
@@ -85,7 +86,7 @@ jobs:
 
         # See: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#mysql
         run: |
-          if [ "${DB_ADAPTER}" = "mysql2" ]; then
+          if [ "${DB_ADAPTER}" = "mysql2" ] || [ "${DB_ADAPTER}" = "trilogy" ]; then
             sudo systemctl start mysql.service
             mysql -u root -proot -e 'create database ajax_datatables_rails;'
           fi
