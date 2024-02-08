@@ -73,7 +73,7 @@ class RunningSpec
   end
 
   def self.mysql?
-    ENV['DB_ADAPTER'] == 'mysql2'
+    ENV['DB_ADAPTER'] == 'mysql2' || ENV['DB_ADAPTER'] == 'trilogy'
   end
 
   def self.postgresql?
