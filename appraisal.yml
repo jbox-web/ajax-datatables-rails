@@ -66,6 +66,9 @@
   mysql2:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "mysql2" }'
+  activerecord-trilogy-adapter:
+    version: ''
+    install_if: '-> { ENV["DB_ADAPTER"] == "trilogy" }'
   # activerecord-oracle_enhanced-adapter:
   #   version: ~> 7.0.0
   #   install_if: '-> { ENV["DB_ADAPTER"] == "oracle_enhanced" }'
