@@ -13,6 +13,10 @@ install_if -> { ENV["DB_ADAPTER"] == "mysql2" } do
   gem "mysql2"
 end
 
+install_if -> { ENV["DB_ADAPTER"] == "trilogy" } do
+  gem "activerecord-trilogy-adapter"
+end
+
 install_if -> { ENV["DB_ADAPTER"] == "oracle_enhanced" } do
   gem "activerecord-oracle_enhanced-adapter", "~> 6.0.0"
   gem "ruby-oci8"

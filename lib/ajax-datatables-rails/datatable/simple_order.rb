@@ -47,7 +47,7 @@ module AjaxDatatablesRails
         case @adapter
         when :pg, :postgresql, :postgres, :oracle, :postgis
           'NULLS LAST'
-        when :mysql, :mysql2, :sqlite, :sqlite3
+        when :mysql, :mysql2, :trilogy, :sqlite, :sqlite3
           'IS NULL'
         else
           raise "unsupported database adapter: #{@adapter}"

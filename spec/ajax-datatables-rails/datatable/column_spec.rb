@@ -188,6 +188,11 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
+    it 'returns CHAR if :db_adapter is :trilogy' do
+      expect(datatable).to receive(:db_adapter) { :trilogy }
+      expect(column.send(:type_cast)).to eq('CHAR')
+    end
+
     it 'returns CHAR if :db_adapter is :mysql' do
       expect(datatable).to receive(:db_adapter) { :mysql }
       expect(column.send(:type_cast)).to eq('CHAR')

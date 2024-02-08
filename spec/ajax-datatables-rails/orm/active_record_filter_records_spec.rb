@@ -202,6 +202,16 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
             )
           end
         end
+
+        context 'when db_adapter is trilogy' do
+          it 'can call #to_sql on returned object' do
+            result = datatable.build_conditions_for_selected_columns
+            expect(result).to respond_to(:to_sql)
+            expect(result.to_sql).to eq(
+              "CAST(`users`.`username` AS CHAR) LIKE '%doe%' AND CAST(`users`.`email` AS CHAR) LIKE '%example%'"
+            )
+          end
+        end
       end
     end
 
