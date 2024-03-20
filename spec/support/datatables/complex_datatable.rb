@@ -9,6 +9,7 @@ class ComplexDatatable < AjaxDatatablesRails::ActiveRecord
       last_name:  { source: 'User.last_name'  },
       full_name:  { source: 'full_name' },
       post_id:    { source: 'User.post_id', orderable: false },
+      email_hash: { source: 'email_hash', searchable: false }, 
       created_at: { source: 'User.created_at' },
     }
   end
