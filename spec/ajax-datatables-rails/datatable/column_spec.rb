@@ -127,7 +127,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       end
     end
   end
-  
+
   describe 'unsearchable column' do
     let(:column) { datatable.datatable.columns.find{ |c| c.data == 'email_hash' } }
 

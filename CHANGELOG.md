@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* Implementing `searchable: false` functionality
+* Implementing `searchable: false` tests
 
 ## 1.4.0 (2022-12-18)
 
