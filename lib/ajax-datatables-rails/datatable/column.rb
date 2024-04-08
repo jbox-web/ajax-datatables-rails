@@ -8,14 +8,15 @@ module AjaxDatatablesRails
       include Order
       include DateFilter
 
-      attr_reader :datatable, :index, :options
+      attr_reader :datatable, :index, :options, :column_name
       attr_writer :search
 
       def initialize(datatable, index, options)
         @datatable   = datatable
         @index       = index
         @options     = options
-        @view_column = datatable.view_columns[column_name]
+        @column_name = options[:data]&.to_sym
+        @view_column = datatable.view_columns[@column_name]
 
         @model         = nil
         @field         = nil
@@ -27,10 +28,6 @@ module AjaxDatatablesRails
         @range_end     = nil
 
         validate_settings!
-      end
-
-      def column_name
-        @column_name ||= options[:data]&.to_sym
       end
 
       def data
