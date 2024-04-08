@@ -20,6 +20,12 @@ module AjaxDatatablesRails
       @params    = params
       @options   = options
       @datatable = Datatable::Datatable.new(self)
+
+      @connected_columns  = nil
+      @searchable_columns = nil
+      @search_columns     = nil
+      @records            = nil
+      @build_conditions   = nil
     end
 
     # User defined methods

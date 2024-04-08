@@ -16,6 +16,16 @@ module AjaxDatatablesRails
         @index       = index
         @options     = options
         @view_column = datatable.view_columns[column_name]
+
+        @model         = nil
+        @field         = nil
+        @type_cast     = nil
+        @casted_column = nil
+        @search        = nil
+        @delimiter     = nil
+        @range_start   = nil
+        @range_end     = nil
+
         validate_settings!
       end
 

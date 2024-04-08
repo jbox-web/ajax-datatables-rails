@@ -8,6 +8,10 @@ module AjaxDatatablesRails
       def initialize(datatable)
         @datatable = datatable
         @options   = datatable.params
+
+        @orders  = nil
+        @search  = nil
+        @columns = nil
       end
 
       # ----------------- ORDER METHODS --------------------
