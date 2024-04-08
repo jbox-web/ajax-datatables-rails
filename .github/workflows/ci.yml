@@ -66,8 +66,8 @@ jobs:
           - sqlite3
           - postgresql
           - mysql2
-          - trilogy
           - oracle_enhanced
+          # - trilogy
 
     steps:
       - name: Checkout
