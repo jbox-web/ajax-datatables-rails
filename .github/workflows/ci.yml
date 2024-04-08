@@ -107,11 +107,14 @@ jobs:
 
       - name: Bundle
         env:
+          RUBY_VERSION: ${{ matrix.ruby }}
           RAILS_VERSION: ${{ matrix.rails }}
           DB_ADAPTER: ${{ matrix.adapter }}
           BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
         run: |
-          gem install bundler
+          if [[ "${RUBY_VERSION}" != "2.7" ]]; then
+            gem install bundler
+          fi
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
