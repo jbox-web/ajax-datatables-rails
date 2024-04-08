@@ -20,7 +20,13 @@ RSpec.describe AjaxDatatablesRails::Base do
       context 'when method is not defined by the user' do
         it 'raises an error' do
           datatable = described_class.new(sample_params)
-          expect { datatable.view_columns }.to raise_error NotImplementedError
+          expect { datatable.view_columns }.to raise_error(NotImplementedError).with_message(<<~ERROR)
+
+            You should implement this method in your class and return an array
+            of database columns based on the columns displayed in the HTML view.
+            These columns should be represented in the ModelName.column_name,
+            or aliased_join_table.column_name notation.
+          ERROR
         end
       end
 
@@ -36,7 +42,11 @@ RSpec.describe AjaxDatatablesRails::Base do
       context 'when method is not defined by the user' do
         it 'raises an error' do
           datatable = described_class.new(sample_params)
-          expect { datatable.get_raw_records }.to raise_error NotImplementedError
+          expect { datatable.get_raw_records }.to raise_error(NotImplementedError).with_message(<<~ERROR)
+
+            You should implement this method in your class and specify
+            how records are going to be retrieved from the database.
+          ERROR
         end
       end
     end
@@ -45,7 +55,12 @@ RSpec.describe AjaxDatatablesRails::Base do
       context 'when method is not defined by the user' do
         it 'raises an error' do
           datatable = described_class.new(sample_params)
-          expect { datatable.data }.to raise_error NotImplementedError
+          expect { datatable.data }.to raise_error(NotImplementedError).with_message(<<~ERROR)
+
+            You should implement this method in your class and return an array
+            of arrays, or an array of hashes, as defined in the jQuery.dataTables
+            plugin documentation.
+          ERROR
         end
       end
 

@@ -150,7 +150,7 @@ module AjaxDatatablesRails
     end
 
     def raw_records_error_text
-      <<-ERROR
+      <<~ERROR
 
         You should implement this method in your class and specify
         how records are going to be retrieved from the database.
@@ -158,7 +158,7 @@ module AjaxDatatablesRails
     end
 
     def data_error_text
-      <<-ERROR
+      <<~ERROR
 
         You should implement this method in your class and return an array
         of arrays, or an array of hashes, as defined in the jQuery.dataTables
@@ -167,7 +167,7 @@ module AjaxDatatablesRails
     end
 
     def view_columns_error_text
-      <<-ERROR
+      <<~ERROR
 
         You should implement this method in your class and return an array
         of database columns based on the columns displayed in the HTML view.
