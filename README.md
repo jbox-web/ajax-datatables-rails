@@ -11,12 +11,10 @@
 
 It's tested against :
 
-* Rails 6.0.6 / 6.1.7 / 7.0.4
-* Ruby 2.7 / 3.0 / 3.1
-* SQLite3
-* Postgresql 13
-* MySQL 8
-* Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
+* Rails: 6.0.6 / 6.1.7 / 7.0.4 / 7.1.0
+* Ruby: 2.7 / 3.0 / 3.1 / 3.2 / 3.3
+* Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
+* Adapters: sqlite / mysql2 / trilogy / postgres / postgis / oracle
 
 ## Description
 
