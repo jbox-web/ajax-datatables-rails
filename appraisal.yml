@@ -18,6 +18,19 @@
   activerecord-postgis-adapter:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "postgis" }'
+  base64:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  bigdecimal:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  mutex_m:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  drb:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+
 
 6.1.7:
   sqlite3:
@@ -38,6 +51,19 @@
   activerecord-postgis-adapter:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "postgis" }'
+  base64:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  bigdecimal:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  mutex_m:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  drb:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+
 
 7.0.8:
   sqlite3:
@@ -58,6 +84,19 @@
   activerecord-postgis-adapter:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "postgis" }'
+  base64:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  bigdecimal:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  mutex_m:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  drb:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+
 
 7.1.0:
   sqlite3:
@@ -78,3 +117,15 @@
   activerecord-postgis-adapter:
     version: ''
     install_if: '-> { ENV["DB_ADAPTER"] == "postgis" }'
+  base64:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  bigdecimal:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  mutex_m:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'
+  drb:
+    version: ''
+    install_if: '-> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") }'

@@ -22,4 +22,11 @@ install_if -> { ENV["DB_ADAPTER"] == "postgis" } do
   gem "activerecord-postgis-adapter"
 end
 
+install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") } do
+  gem "base64"
+  gem "bigdecimal"
+  gem "mutex_m"
+  gem "drb"
+end
+
 gemspec path: "../"
