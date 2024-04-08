@@ -41,17 +41,29 @@ module AjaxDatatablesRails
         column.nulls_last? || @nulls_last == true
       end
 
+      PG_NULL_STYLE    = 'NULLS LAST'
+      MYSQL_NULL_STYLE = 'IS NULL'
+      private_constant :PG_NULL_STYLE
+      private_constant :MYSQL_NULL_STYLE
+
+      NULL_STYLE_MAP = {
+        pg:         PG_NULL_STYLE,
+        postgresql: PG_NULL_STYLE,
+        postgres:   PG_NULL_STYLE,
+        postgis:    PG_NULL_STYLE,
+        oracle:     PG_NULL_STYLE,
+        mysql:      MYSQL_NULL_STYLE,
+        mysql2:     MYSQL_NULL_STYLE,
+        trilogy:    MYSQL_NULL_STYLE,
+        sqlite:     MYSQL_NULL_STYLE,
+        sqlite3:    MYSQL_NULL_STYLE,
+      }.freeze
+      private_constant :NULL_STYLE_MAP
+
       def nulls_last_sql
         return unless sort_nulls_last?
 
-        case @adapter
-        when :pg, :postgresql, :postgres, :oracle, :postgis
-          'NULLS LAST'
-        when :mysql, :mysql2, :trilogy, :sqlite, :sqlite3
-          'IS NULL'
-        else
-          raise "unsupported database adapter: #{@adapter}"
-        end
+        NULL_STYLE_MAP[@adapter] || raise("unsupported database adapter: #{@adapter}")
       end
 
     end
