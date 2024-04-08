@@ -43,6 +43,12 @@ def sample_params
           }
         },
         '6' => {
+          'data' => 'email_hash', 'name' => '', 'searchable' => 'false', 'orderable' => 'true',
+          'search' => {
+            'value' => '', 'regex' => 'false'
+          }
+        },
+        '7' => {
           'data' => 'created_at', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
           'search' => {
             'value' => '', 'regex' => 'false'

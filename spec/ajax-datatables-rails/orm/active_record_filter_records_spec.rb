@@ -12,11 +12,22 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect { datatable.filter_records }.to raise_error(ArgumentError)
     end
 
-    it 'performs a simple search first' do
-      datatable.params[:search] = { value: 'msmith' }
-      expect(datatable).to receive(:build_conditions_for_datatable)
-      datatable.filter_records(records)
+    context 'with simple search' do
+      before do
+        datatable.params[:search] = { value: 'msmith' }
+      end
+
+      it 'performs a simple search first' do
+        expect(datatable).to receive(:build_conditions_for_datatable)
+        datatable.filter_records(records)
+      end
+
+      it 'does not search unsearchable fields' do
+        criteria = datatable.filter_records(records)
+        expect(criteria.to_sql).not_to include('email_hash')
+      end
     end
+
 
     it 'performs a composite search second' do
       datatable.params[:search] = { value: '' }
@@ -246,7 +257,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
         context 'when range is empty' do
           it 'does not filter records' do
-            datatable.params[:columns]['6'][:search][:value] = '-'
+            datatable.params[:columns]['7'][:search][:value] = '-'
             expect(datatable.data.size).to eq 2
             item = datatable.data.first
             expect(item[:last_name]).to eq 'Doe'
@@ -255,21 +266,21 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
         context 'when start date is filled' do
           it 'filters records created after this date' do
-            datatable.params[:columns]['6'][:search][:value] = '31/12/1999-'
+            datatable.params[:columns]['7'][:search][:value] = '31/12/1999-'
             expect(datatable.data.size).to eq 2
           end
         end
 
         context 'when end date is filled' do
           it 'filters records created before this date' do
-            datatable.params[:columns]['6'][:search][:value] = '-31/12/1999'
+            datatable.params[:columns]['7'][:search][:value] = '-31/12/1999'
             expect(datatable.data.size).to eq 0
           end
         end
 
         context 'when both date are filled' do
           it 'filters records created between the range' do
-            datatable.params[:columns]['6'][:search][:value] = '01/12/1999-15/01/2000'
+            datatable.params[:columns]['7'][:search][:value] = '01/12/1999-15/01/2000'
             expect(datatable.data.size).to eq 1
           end
         end
@@ -278,7 +289,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           context 'when range is empty' do
             it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
-              datatable.params[:columns]['6'][:search][:value] = '-'
+              datatable.params[:columns]['7'][:search][:value] = '-'
               expect(datatable.data.size).to eq 1
               item = datatable.data.first
               expect(item[:last_name]).to eq 'Doe'
@@ -288,7 +299,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           context 'when start date is filled' do
             it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
-              datatable.params[:columns]['6'][:search][:value] = '01/12/1999-'
+              datatable.params[:columns]['7'][:search][:value] = '01/12/1999-'
               expect(datatable.data.size).to eq 1
               item = datatable.data.first
               expect(item[:last_name]).to eq 'Doe'
@@ -298,7 +309,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           context 'when end date is filled' do
             it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
-              datatable.params[:columns]['6'][:search][:value] = '-15/01/2000'
+              datatable.params[:columns]['7'][:search][:value] = '-15/01/2000'
               expect(datatable.data.size).to eq 1
               item = datatable.data.first
               expect(item[:last_name]).to eq 'Doe'
@@ -308,7 +319,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           context 'when both date are filled' do
             it 'filters records' do
               datatable.params[:columns]['0'][:search][:value] = 'doe'
-              datatable.params[:columns]['6'][:search][:value] = '01/12/1999-15/01/2000'
+              datatable.params[:columns]['7'][:search][:value] = '01/12/1999-15/01/2000'
               expect(datatable.data.size).to eq 1
               item = datatable.data.first
               expect(item[:last_name]).to eq 'Doe'
