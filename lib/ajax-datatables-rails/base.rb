@@ -21,6 +21,7 @@ module AjaxDatatablesRails
       @options   = options
       @datatable = Datatable::Datatable.new(self)
 
+      @view_columns       = nil
       @connected_columns  = nil
       @searchable_columns = nil
       @search_columns     = nil
