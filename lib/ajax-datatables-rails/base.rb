@@ -101,23 +101,15 @@ module AjaxDatatablesRails
 
     # helper methods
     def connected_columns
-      @connected_columns ||= begin
-        view_columns.keys.map do |field_name|
-          datatable.column_by(:data, field_name.to_s)
-        end.compact
-      end
+      @connected_columns ||= view_columns.keys.map { |field_name| datatable.column_by(:data, field_name.to_s) }.compact
     end
 
     def searchable_columns
-      @searchable_columns ||= begin
-        connected_columns.select(&:searchable?)
-      end
+      @searchable_columns ||= connected_columns.select(&:searchable?)
     end
 
     def search_columns
-      @search_columns ||= begin
-        searchable_columns.select(&:searched?)
-      end
+      @search_columns ||= searchable_columns.select(&:searched?)
     end
 
     def sanitize_data(data)

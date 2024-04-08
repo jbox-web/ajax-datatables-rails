@@ -100,7 +100,7 @@ module AjaxDatatablesRails
       end
 
       def validate_settings!
-        raise AjaxDatatablesRails::Error::InvalidSearchColumn, "Unknown column. Check that `data` field is filled on JS side with the column name" if column_name.empty?
+        raise AjaxDatatablesRails::Error::InvalidSearchColumn, 'Unknown column. Check that `data` field is filled on JS side with the column name' if column_name.empty?
         raise AjaxDatatablesRails::Error::InvalidSearchColumn, "Check that column '#{column_name}' exists in view_columns" unless valid_search_column?(column_name)
         raise AjaxDatatablesRails::Error::InvalidSearchCondition, cond unless valid_search_condition?(cond)
       end
