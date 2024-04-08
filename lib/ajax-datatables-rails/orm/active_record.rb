@@ -37,9 +37,8 @@ module AjaxDatatablesRails
       def build_conditions_for_datatable
         columns = searchable_columns.reject(&:searched?)
         search_for.inject([]) do |crit, atom|
-          search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
           crit << columns.map do |simple_column|
-            simple_column.search = search
+            simple_column.search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
             simple_column.search_query
           end.compact.reduce(:or)
         end.compact.reduce(:and)
