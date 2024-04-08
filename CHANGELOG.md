@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.5.0 (2024-04-xx)
+
+* Drop support of Rails 5.2
+* Add support for grouped results (merge: [#419](https://github.com/jbox-web/ajax-datatables-rails/pull/419))
+* Fix server-side out of order ajax responses (merge: [#418](https://github.com/jbox-web/ajax-datatables-rails/pull/418))
+* Add support for postgis adapter (merge: [#417](https://github.com/jbox-web/ajax-datatables-rails/pull/417))
+* Add support for trilogy adapter (merge: [#423](https://github.com/jbox-web/ajax-datatables-rails/pull/423))
+* Add support for Rails 7.1
+* Add support for Ruby 3.3
+
+This is the last version to support Rails 6.0.x and Ruby 2.7.x.
+
 ## 1.4.0 (2022-12-18)
 
 * Improve tests
