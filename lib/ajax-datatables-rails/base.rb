@@ -30,15 +30,30 @@ module AjaxDatatablesRails
 
     # User defined methods
     def view_columns
-      raise(NotImplementedError, view_columns_error_text)
+      raise(NotImplementedError, <<~ERROR)
+
+        You should implement this method in your class and return an array
+        of database columns based on the columns displayed in the HTML view.
+        These columns should be represented in the ModelName.column_name,
+        or aliased_join_table.column_name notation.
+      ERROR
     end
 
     def get_raw_records
-      raise(NotImplementedError, raw_records_error_text)
+      raise(NotImplementedError, <<~ERROR)
+
+        You should implement this method in your class and specify
+        how records are going to be retrieved from the database.
+      ERROR
     end
 
     def data
-      raise(NotImplementedError, data_error_text)
+      raise(NotImplementedError, <<~ERROR)
+
+        You should implement this method in your class and return an array
+        of arrays, or an array of hashes, as defined in the jQuery.dataTables
+        plugin documentation.
+      ERROR
     end
 
     # ORM defined methods
@@ -147,33 +162,6 @@ module AjaxDatatablesRails
     # See: https://datatables.net/manual/server-side#Returned-data
     def draw_id
       params[:draw].present? ? { draw: params[:draw].to_i } : {}
-    end
-
-    def raw_records_error_text
-      <<~ERROR
-
-        You should implement this method in your class and specify
-        how records are going to be retrieved from the database.
-      ERROR
-    end
-
-    def data_error_text
-      <<~ERROR
-
-        You should implement this method in your class and return an array
-        of arrays, or an array of hashes, as defined in the jQuery.dataTables
-        plugin documentation.
-      ERROR
-    end
-
-    def view_columns_error_text
-      <<~ERROR
-
-        You should implement this method in your class and return an array
-        of database columns based on the columns displayed in the HTML view.
-        These columns should be represented in the ModelName.column_name,
-        or aliased_join_table.column_name notation.
-      ERROR
     end
 
   end
