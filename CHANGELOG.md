@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.5.0 (2024-04-xx)
+## 1.5.0 (2024-04-08)
 
 * Drop support of Rails 5.2
 * Add support for grouped results (merge: [#419](https://github.com/jbox-web/ajax-datatables-rails/pull/419))
