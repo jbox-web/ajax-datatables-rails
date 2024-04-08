@@ -68,10 +68,15 @@ jobs:
           - postgresql
           - mysql2
           - oracle_enhanced
+          - postgis
           # - trilogy
         exclude:
           - rails: rails_7.1.0
             adapter: oracle_enhanced
+
+          - rails: rails_7.1.0
+            adapter: postgis
+            ruby: 2.7'
 
     steps:
       - name: Checkout

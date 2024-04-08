@@ -77,7 +77,7 @@ class RunningSpec
   end
 
   def self.postgresql?
-    ENV['DB_ADAPTER'] == 'postgresql'
+    ENV['DB_ADAPTER'] == 'postgresql' || ENV['DB_ADAPTER'] == 'postgis'
   end
 end
 

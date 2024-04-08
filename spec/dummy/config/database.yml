@@ -4,7 +4,7 @@ test:
   database: ajax_datatables_rails
   encoding: utf8
 
-<% if adapter == 'postgresql' %>
+<% if adapter == 'postgresql' || adapter == 'postgis' %>
   host: '127.0.0.1'
   port: 5432
   username: 'postgres'
