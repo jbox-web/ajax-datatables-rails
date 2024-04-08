@@ -68,6 +68,7 @@ module AjaxDatatablesRails
       DB_ADAPTER_TYPE_CAST = {
         mysql:           TYPE_CAST_MYSQL,
         mysql2:          TYPE_CAST_MYSQL,
+        trilogy:         TYPE_CAST_MYSQL,
         sqlite:          TYPE_CAST_SQLITE,
         sqlite3:         TYPE_CAST_SQLITE,
         oracle:          TYPE_CAST_ORACLE,
