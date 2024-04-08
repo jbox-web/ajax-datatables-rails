@@ -89,12 +89,12 @@ jobs:
 
         # See: https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#mysql
         run: |
-          if [ "${DB_ADAPTER}" = "mysql2" ] || [ "${DB_ADAPTER}" = "trilogy" ]; then
+          if [[ "${DB_ADAPTER}" == "mysql2" ]] || [[ "${DB_ADAPTER}" == "trilogy" ]]; then
             sudo systemctl start mysql.service
             mysql -u root -proot -e 'create database ajax_datatables_rails;'
           fi
 
-          if [ "${DB_ADAPTER}" = "oracle_enhanced" ]; then
+          if [[ "${DB_ADAPTER}" == "oracle_enhanced" ]]; then
             ./spec/install_oracle.sh
             # Fix error : libnnz11.so: cannot open shared object file: No such file or directory
             sudo ln -s ${ORACLE_HOME}/lib/libnnz11.so /usr/lib/libnnz11.so
