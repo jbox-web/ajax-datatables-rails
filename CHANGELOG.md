@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* Implementing `searchable: false` tests
+
 ## 1.5.0 (2024-04-08)
 
 * Drop support of Rails 5.2
