@@ -120,7 +120,7 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: RSpec & publish code coverage
-        uses: paambaati/codeclimate-action@v5.0.0
+        uses: paambaati/codeclimate-action@v8.0.0
         env:
           RAILS_VERSION: ${{ matrix.rails }}
           DB_ADAPTER: ${{ matrix.adapter }}
