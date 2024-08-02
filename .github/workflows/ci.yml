@@ -100,14 +100,6 @@ jobs:
             sudo ln -s ${ORACLE_HOME}/lib/libnnz11.so /usr/lib/libnnz11.so
           fi
 
-      - name: Setup Ruby cache
-        uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-${{ matrix.adapter }}-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-${{ matrix.ruby }}-${{ matrix.rails }}-${{ matrix.adapter }}-
-
       - name: Bundle
         env:
           RUBY_VERSION: ${{ matrix.ruby }}
