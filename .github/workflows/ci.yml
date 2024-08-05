@@ -15,7 +15,8 @@ jobs:
   rspec:
     runs-on: ubuntu-latest
 
-    env:
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.rails }}.gemfile
       ORACLE_COOKIE: sqldev
       ORACLE_FILE: oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
       ORACLE_HOME: /u01/app/oracle/product/11.2.0/xe
@@ -76,14 +77,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-
       - name: Set DB Adapter
         env:
-          RAILS_VERSION: ${{ matrix.rails }}
           DB_ADAPTER: ${{ matrix.adapter }}
           CUSTOM_ORACLE_FILE: ${{ secrets.CUSTOM_ORACLE_FILE }}
 
@@ -100,23 +95,18 @@ jobs:
             sudo ln -s ${ORACLE_HOME}/lib/libnnz11.so /usr/lib/libnnz11.so
           fi
 
-      - name: Bundle
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
         env:
-          RUBY_VERSION: ${{ matrix.ruby }}
-          RAILS_VERSION: ${{ matrix.rails }}
           DB_ADAPTER: ${{ matrix.adapter }}
-          BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
 
       - name: RSpec & publish code coverage
         uses: paambaati/codeclimate-action@v8.0.0
         env:
-          RAILS_VERSION: ${{ matrix.rails }}
           DB_ADAPTER: ${{ matrix.adapter }}
-          BUNDLE_GEMFILE: gemfiles/${{ matrix.rails }}.gemfile
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
           coverageCommand: bin/rake
