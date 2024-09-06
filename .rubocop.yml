@@ -1,6 +1,12 @@
+---
+require:
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
-  SuggestExtensions: false
   TargetRubyVersion: 3.0
   Exclude:
     - bin/*
