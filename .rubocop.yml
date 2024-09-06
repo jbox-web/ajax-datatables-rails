@@ -32,6 +32,7 @@ Style/TrailingCommaInHashLiteral:
 ##########
 
 Layout/LineLength:
+  Max: 125
   Exclude:
     - ajax-datatables-rails.gemspec
 

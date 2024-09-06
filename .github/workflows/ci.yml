@@ -88,10 +88,23 @@ jobs:
           - postgis
           # - trilogy
         exclude:
-          - rails: rails_7.2.0
-            adapter: oracle_enhanced
+          # Rails 7.2 needs Ruby > 3.1
           - rails: rails_7.2.0
             ruby: '3.0'
+
+          # Disabled for now because of build error:
+          #  /opt/hostedtoolcache/Ruby/3.0.7/x64/lib/ruby/3.0.0/psych.rb:457:in
+          # `parse_stream': undefined method `parse' for #<Psych::Parser:0x000055b6cc7b6898
+          # @handler=#<Psych::Handlers::DocumentStream:0x000055b6cc7b69b0 @stack=[],
+          # @last=nil, @root=nil, @start_line=nil, @start_column=nil, @end_line=nil,
+          # @end_column=nil, @block=#<Proc:0x000055b6cc7b68e8
+          # /opt/hostedtoolcache/Ruby/3.0.7/x64/lib/ruby/3.0.0/psych.rb:391>>,
+          # @external_encoding=0> (NoMethodError)
+          # from
+          # /home/runner/work/ajax-datatables-rails/ajax-datatables-rails/vendor/bundle/ruby/3.0.0/gems/ruby-oci8-2.2.14/ext/oci8/apiwrap.rb:64:in
+          # `create_apiwrap'
+          - rails: rails_7.2.0
+            adapter: oracle_enhanced
           - rails: rails_7.1.0
             adapter: oracle_enhanced
 
