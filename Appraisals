@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-rails_versions = YAML.safe_load(File.read('appraisal.yml'))
+rails_versions = YAML.safe_load_file('appraisal.yml')
 
 rails_versions.each do |version, gems|
   appraise "rails_#{version}" do
@@ -16,12 +16,10 @@ rails_versions.each do |version, gems|
             gem name, opts['version']
           end
         end
+      elsif opts['version'].empty?
+        gem name
       else
-        if opts['version'].empty?
-          gem name
-        else
-          gem name, opts['version']
-        end
+        gem name, opts['version']
       end
     end
   end

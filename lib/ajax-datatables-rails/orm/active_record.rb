@@ -33,20 +33,17 @@ module AjaxDatatablesRails
         end
       end
 
-      # rubocop:disable Metrics/AbcSize
       def build_conditions_for_datatable
         columns = searchable_columns.reject(&:searched?)
         search_for.inject([]) do |crit, atom|
-          crit << columns.map do |simple_column|
+          crit << columns.filter_map do |simple_column|
             simple_column.search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
             simple_column.search_query
-          end.compact.reduce(:or)
+          end.reduce(:or)
         end.compact.reduce(:and)
       end
-      # rubocop:enable Metrics/AbcSize
-
       def build_conditions_for_selected_columns
-        search_columns.map(&:search_query).compact.reduce(:and)
+        search_columns.filter_map(&:search_query).reduce(:and)
       end
 
       def search_for

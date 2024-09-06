@@ -102,7 +102,7 @@ module AjaxDatatablesRails
 
     # helper methods
     def connected_columns
-      @connected_columns ||= view_columns.keys.map { |field_name| datatable.column_by(:data, field_name.to_s) }.compact
+      @connected_columns ||= view_columns.keys.filter_map { |field_name| datatable.column_by(:data, field_name.to_s) }
     end
 
     def searchable_columns
