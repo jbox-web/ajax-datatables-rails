@@ -10,9 +10,9 @@ AllCops:
   TargetRubyVersion: 3.0
   Exclude:
     - bin/*
-    - lib/generators/**/*.rb
     - gemfiles/*
     - spec/**/*
+    - lib/generators/**/*.rb
 
 #########
 # STYLE #
