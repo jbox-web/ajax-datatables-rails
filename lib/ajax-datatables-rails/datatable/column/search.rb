@@ -48,7 +48,7 @@ module AjaxDatatablesRails
         # The solution is to bypass regex_search and use non_regex_search with :in operator
         def regex_search
           if use_regex?
-            ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(formatted_value))
+            ::Arel::Nodes::Regexp.new((custom_field? ? field : table[field]), ::Arel::Nodes.build_quoted(formatted_value)) # rubocop:disable Layout/LineLength
           else
             non_regex_search
           end

@@ -14,16 +14,31 @@ AllCops:
     - gemfiles/*
     - spec/**/*
 
-Gemspec/DevelopmentDependencies:
-  Enabled: false
+#########
+# STYLE #
+#########
 
 Style/Documentation:
   Enabled: false
 
-Layout/HashAlignment:
-  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+##########
+# LAYOUT #
+##########
+
+Layout/LineLength:
+  Exclude:
+    - ajax-datatables-rails.gemspec
 
 Layout/EmptyLines:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
   Enabled: false
 
 Layout/EmptyLinesAroundClassBody:
@@ -35,33 +50,14 @@ Layout/EmptyLinesAroundBlockBody:
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
 
-Layout/EmptyLineBetweenDefs:
-  Enabled: false
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: table
 
-Metrics/CyclomaticComplexity:
-  Max: 7
-
-Metrics/LineLength:
-  Enabled: false
-
-Metrics/BlockLength:
-  Max: 30
-
-Metrics/MethodLength:
-  Max: 15
-
-Metrics/ClassLength:
-  Max: 130
-
-Naming/AccessorMethodName:
-  Enabled: false
+##########
+# NAMING #
+##########
 
 Naming/FileName:
   Exclude:
     - lib/ajax-datatables-rails.rb
-
-Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: comma

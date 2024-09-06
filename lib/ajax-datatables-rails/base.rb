@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AjaxDatatablesRails
-  class Base
+  class Base # rubocop:disable Metrics/ClassLength
 
     class << self
       def default_db_adapter
@@ -40,7 +40,7 @@ module AjaxDatatablesRails
       ERROR
     end
 
-    def get_raw_records
+    def get_raw_records # rubocop:disable Naming/AccessorMethodName
       raise(NotImplementedError, <<~ERROR)
 
         You should implement this method in your class and specify

@@ -11,7 +11,7 @@ module AjaxDatatablesRails
       attr_reader :datatable, :index, :options, :column_name
       attr_writer :search
 
-      def initialize(datatable, index, options)
+      def initialize(datatable, index, options) # rubocop:disable Metrics/MethodLength
         @datatable   = datatable
         @index       = index
         @options     = options
@@ -99,11 +99,13 @@ module AjaxDatatablesRails
         @casted_column ||= ::Arel::Nodes::NamedFunction.new('CAST', [table[field].as(type_cast)])
       end
 
+      # rubocop:disable Layout/LineLength
       def validate_settings!
         raise AjaxDatatablesRails::Error::InvalidSearchColumn, 'Unknown column. Check that `data` field is filled on JS side with the column name' if column_name.empty?
         raise AjaxDatatablesRails::Error::InvalidSearchColumn, "Check that column '#{column_name}' exists in view_columns" unless valid_search_column?(column_name)
         raise AjaxDatatablesRails::Error::InvalidSearchCondition, cond unless valid_search_condition?(cond)
       end
+      # rubocop:enable Layout/LineLength
 
       def valid_search_column?(column_name)
         !datatable.view_columns[column_name].nil?
