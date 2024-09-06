@@ -11,12 +11,12 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
 
   shared_examples 'order methods' do
     it 'is orderable' do
-      expect(datatable.orderable?).to eq(true)
+      expect(datatable.orderable?).to be(true)
     end
 
     it 'is not orderable' do
       datatable.options[:order] = nil
-      expect(datatable.orderable?).to eq(false)
+      expect(datatable.orderable?).to be(false)
     end
 
     it 'has 2 orderable columns' do
@@ -57,6 +57,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
   describe 'with json params' do
     let(:order_option) { order_option_json }
     let(:datatable) { datatable_json }
+
     it_behaves_like 'order methods'
     it_behaves_like 'columns methods'
   end
@@ -64,12 +65,12 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
   describe 'search methods' do
     it 'is searchable' do
       datatable.options[:search][:value] = 'atom'
-      expect(datatable.searchable?).to eq(true)
+      expect(datatable.searchable?).to be(true)
     end
 
     it 'is not searchable' do
       datatable.options[:search][:value] = nil
-      expect(datatable.searchable?).to eq(false)
+      expect(datatable.searchable?).to be(false)
     end
 
     it 'child class' do

@@ -85,4 +85,4 @@ end
 require 'ajax-datatables-rails'
 
 # Load test helpers
-Dir[File.dirname(__FILE__) + '/support/**/*.rb'].sort.each { |f| require f }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }

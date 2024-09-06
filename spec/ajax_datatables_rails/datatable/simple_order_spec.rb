@@ -7,7 +7,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
   let(:parent) { ComplexDatatable.new(sample_params) }
   let(:datatable) { parent.datatable }
   let(:options) { ActiveSupport::HashWithIndifferentAccess.new({ 'column' => '1', 'dir' => 'desc' }) }
-  let(:simple_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(datatable, options) }
+  let(:simple_order) { described_class.new(datatable, options) }
 
   describe 'option methods' do
     it 'sql query' do
@@ -32,7 +32,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
     describe 'using column option' do
       let(:parent) { DatatableOrderNullsLast.new(sample_params) }
       let(:sorted_datatable) { parent.datatable }
-      let(:nulls_last_order) { AjaxDatatablesRails::Datatable::SimpleOrder.new(sorted_datatable, options) }
+      let(:nulls_last_order) { described_class.new(sorted_datatable, options) }
 
       context 'with postgres database adapter' do
         before { parent.db_adapter = :pg }

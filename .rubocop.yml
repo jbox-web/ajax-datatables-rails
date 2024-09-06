@@ -11,7 +11,7 @@ AllCops:
   Exclude:
     - bin/*
     - gemfiles/*
-    - spec/**/*
+    - spec/dummy/**/*
     - lib/generators/**/*.rb
 
 #########
@@ -27,12 +27,15 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 
+Style/BlockDelimiters:
+  AllowedPatterns: ['expect']
+
 ##########
 # LAYOUT #
 ##########
 
 Layout/LineLength:
-  Max: 125
+  Max: 150
   Exclude:
     - ajax-datatables-rails.gemspec
 
@@ -62,3 +65,22 @@ Layout/HashAlignment:
 Naming/FileName:
   Exclude:
     - lib/ajax-datatables-rails.rb
+
+#########
+# RSPEC #
+#########
+
+RSpec/MultipleExpectations:
+  Max: 7
+
+RSpec/NestedGroups:
+  Max: 6
+
+RSpec/ExampleLength:
+  Max: 9
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 6
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not

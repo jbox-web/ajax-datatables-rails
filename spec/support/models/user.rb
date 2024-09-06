@@ -8,8 +8,8 @@ class User < ActiveRecord::Base
   end
 
   def email_hash
-     return nil if email.nil?
+    return nil if email.nil?
 
-     Digest::SHA256.hexdigest email
+    Digest::SHA256.hexdigest email
   end
 end

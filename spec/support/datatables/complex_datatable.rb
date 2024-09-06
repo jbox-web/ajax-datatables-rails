@@ -14,7 +14,7 @@ class ComplexDatatable < AjaxDatatablesRails::ActiveRecord
     }
   end
 
-  def data
+  def data # rubocop:disable Metrics/MethodLength
     records.map do |record|
       {
         username:   record.username,
@@ -29,7 +29,7 @@ class ComplexDatatable < AjaxDatatablesRails::ActiveRecord
     end
   end
 
-  def get_raw_records
+  def get_raw_records # rubocop:disable Naming/AccessorMethodName
     User.all
   end
 end

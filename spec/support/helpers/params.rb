@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/MethodLength, Layout/HashAlignment
 def sample_params
   ActionController::Parameters.new(
     {
@@ -58,13 +58,16 @@ def sample_params
       'order' => {
         '0' => { 'column' => '0', 'dir' => 'asc' },
       },
-      'start' => '0', 'length' => '10', 'search' => {
+      'start' => '0',
+      'length' => '10',
+      'search' => {
         'value' => '', 'regex' => 'false'
       },
-      '_' => '1423364387185'
+      '_' => '1423364387185',
     }
   )
 end
+# rubocop:enable Metrics/MethodLength, Layout/HashAlignment
 
 def sample_params_json
   hash_params = sample_params.to_unsafe_h
@@ -72,7 +75,6 @@ def sample_params_json
   hash_params['order'] = hash_params['order'].values
   ActionController::Parameters.new(hash_params)
 end
-# rubocop:enable Metrics/MethodLength
 
 def nulls_last_sql(datatable)
   case datatable.db_adapter

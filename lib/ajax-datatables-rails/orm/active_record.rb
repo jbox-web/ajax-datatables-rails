@@ -42,6 +42,7 @@ module AjaxDatatablesRails
           end.reduce(:or)
         end.compact.reduce(:and)
       end
+
       def build_conditions_for_selected_columns
         search_columns.filter_map(&:search_query).reduce(:and)
       end

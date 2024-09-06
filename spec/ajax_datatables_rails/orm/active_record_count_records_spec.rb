@@ -8,13 +8,13 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
   let(:records) { User.all }
 
   describe '#records_total_count' do
-    context 'ungrouped results' do
+    context 'when ungrouped results' do
       it 'returns the count' do
         expect(datatable.send(:records_total_count)).to eq records.count
       end
     end
 
-    context 'grouped results' do
+    context 'when grouped results' do
       let(:datatable) { GroupedDatatable.new(sample_params) }
 
       it 'returns the count' do
@@ -23,15 +23,14 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
-
   describe '#records_filtered_count' do
-    context 'ungrouped results' do
+    context 'when ungrouped results' do
       it 'returns the count' do
         expect(datatable.send(:records_filtered_count)).to eq records.count
       end
     end
 
-    context 'grouped results' do
+    context 'when grouped results' do
       let(:datatable) { GroupedDatatable.new(sample_params) }
 
       it 'returns the count' do

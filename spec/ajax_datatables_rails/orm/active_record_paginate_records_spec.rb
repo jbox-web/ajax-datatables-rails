@@ -17,7 +17,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect { datatable.paginate_records }.to raise_error(ArgumentError)
     end
 
-    it 'paginates records properly' do
+    it 'paginates records properly' do # rubocop:disable RSpec/ExampleLength
       if RunningSpec.oracle?
         if Rails.version.in? %w[4.2.11]
           expect(datatable.paginate_records(records).to_sql).to include(
@@ -54,13 +54,15 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     it 'depends on the value of #offset' do
-      expect(datatable.datatable).to receive(:offset)
+      allow(datatable.datatable).to receive(:offset)
       datatable.paginate_records(records)
+      expect(datatable.datatable).to have_received(:offset)
     end
 
     it 'depends on the value of #per_page' do
-      expect(datatable.datatable).to receive(:per_page).at_least(:once) { 10 }
+      allow(datatable.datatable).to receive(:per_page).at_least(:once).and_return(10)
       datatable.paginate_records(records)
+      expect(datatable.datatable).to have_received(:per_page).at_least(:once)
     end
   end
 

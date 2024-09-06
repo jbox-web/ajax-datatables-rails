@@ -5,7 +5,7 @@ class DatatableCustomColumn < ComplexDatatable
     super.deep_merge(full_name: { cond: filter_full_name })
   end
 
-  def get_raw_records
+  def get_raw_records # rubocop:disable Naming/AccessorMethodName
     User.select("*, CONCAT(first_name, ' ', last_name) as full_name")
   end
 

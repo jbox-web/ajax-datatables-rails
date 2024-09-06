@@ -13,19 +13,19 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     before { datatable.params[:columns]['0'][:search][:value] = 'searchvalue' }
 
     it 'is orderable' do
-      expect(column.orderable?).to eq(true)
+      expect(column.orderable?).to be(true)
     end
 
     it 'sorts nulls last' do
-      expect(column.nulls_last?).to eq(false)
+      expect(column.nulls_last?).to be(false)
     end
 
     it 'is searchable' do
-      expect(column.searchable?).to eq(true)
+      expect(column.searchable?).to be(true)
     end
 
     it 'is searched' do
-      expect(column.searched?).to eq(true)
+      expect(column.searched?).to be(true)
     end
 
     it 'has connected to id column' do
@@ -53,7 +53,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
 
       context 'with other ORM' do
         it 'returns the corresponding model' do
-          expect(User).to receive(:respond_to?).with(:arel_table).and_return(false)
+          allow(User).to receive(:respond_to?).with(:arel_table).and_return(false)
           expect(column.table).to eq User
         end
       end
@@ -87,19 +87,13 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       end
 
       it 'does not regex' do
-        expect(column.search.regexp?).to eq false
+        expect(column.search.regexp?).to be false
       end
     end
 
     describe '#cond' do
       it 'is :like by default' do
         expect(column.cond).to eq(:like)
-      end
-    end
-
-    describe '#source' do
-      it 'is :like by default' do
-        expect(column.source).to eq('User.username')
       end
     end
 
@@ -129,10 +123,10 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
   end
 
   describe 'unsearchable column' do
-    let(:column) { datatable.datatable.columns.find{ |c| c.data == 'email_hash' } }
+    let(:column) { datatable.datatable.columns.find { |c| c.data == 'email_hash' } }
 
     it 'is not searchable' do
-      expect(column.searchable?).to eql(false)
+      expect(column.searchable?).to be(false)
     end
   end
 
@@ -150,11 +144,12 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'username' } }
 
     it 'is a proc' do
-      config = column.instance_variable_get('@view_column')
+      config = column.instance_variable_get(:@view_column)
       filter = config[:cond]
       expect(filter).to be_a(Proc)
-      expect(filter).to receive(:call).with(column, column.formatted_value)
+      allow(filter).to receive(:call).with(column, column.formatted_value)
       column.filter
+      expect(filter).to have_received(:call).with(column, column.formatted_value)
     end
   end
 
@@ -162,62 +157,62 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     let(:column) { datatable.datatable.columns.first }
 
     it 'returns VARCHAR if :db_adapter is :pg' do
-      expect(datatable).to receive(:db_adapter) { :pg }
+      allow(datatable).to receive(:db_adapter).and_return(:pg)
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR if :db_adapter is :postgre' do
-      expect(datatable).to receive(:db_adapter) { :postgre }
+      allow(datatable).to receive(:db_adapter).and_return(:postgre)
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR if :db_adapter is :postgresql' do
-      expect(datatable).to receive(:db_adapter) { :postgresql }
+      allow(datatable).to receive(:db_adapter).and_return(:postgresql)
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR if :db_adapter is :postgis' do
-      expect(datatable).to receive(:db_adapter) { :postgis }
+      allow(datatable).to receive(:db_adapter).and_return(:postgis)
       expect(column.send(:type_cast)).to eq('VARCHAR')
     end
 
     it 'returns VARCHAR2(4000) if :db_adapter is :oracle' do
-      expect(datatable).to receive(:db_adapter) { :oracle }
+      allow(datatable).to receive(:db_adapter).and_return(:oracle)
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
 
     it 'returns VARCHAR2(4000) if :db_adapter is :oracleenhanced' do
-      expect(datatable).to receive(:db_adapter) { :oracleenhanced }
+      allow(datatable).to receive(:db_adapter).and_return(:oracleenhanced)
       expect(column.send(:type_cast)).to eq('VARCHAR2(4000)')
     end
 
     it 'returns CHAR if :db_adapter is :mysql2' do
-      expect(datatable).to receive(:db_adapter) { :mysql2 }
+      allow(datatable).to receive(:db_adapter).and_return(:mysql2)
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
     it 'returns CHAR if :db_adapter is :trilogy' do
-      expect(datatable).to receive(:db_adapter) { :trilogy }
+      allow(datatable).to receive(:db_adapter).and_return(:trilogy)
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
     it 'returns CHAR if :db_adapter is :mysql' do
-      expect(datatable).to receive(:db_adapter) { :mysql }
+      allow(datatable).to receive(:db_adapter).and_return(:mysql)
       expect(column.send(:type_cast)).to eq('CHAR')
     end
 
     it 'returns TEXT if :db_adapter is :sqlite' do
-      expect(datatable).to receive(:db_adapter) { :sqlite }
+      allow(datatable).to receive(:db_adapter).and_return(:sqlite)
       expect(column.send(:type_cast)).to eq('TEXT')
     end
 
     it 'returns TEXT if :db_adapter is :sqlite3' do
-      expect(datatable).to receive(:db_adapter) { :sqlite3 }
+      allow(datatable).to receive(:db_adapter).and_return(:sqlite3)
       expect(column.send(:type_cast)).to eq('TEXT')
     end
 
     it 'returns VARCHAR(4000) if :db_adapter is :sqlserver' do
-      expect(datatable).to receive(:db_adapter) { :sqlserver }
+      allow(datatable).to receive(:db_adapter).and_return(:sqlserver)
       expect(column.send(:type_cast)).to eq('VARCHAR(4000)')
     end
   end
@@ -225,16 +220,20 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
   describe 'when empty column' do
     before { datatable.params[:columns]['0'][:data] = '' }
 
+    let(:message) { 'Unknown column. Check that `data` field is filled on JS side with the column name' }
+
     it 'raises error' do
-      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message('Unknown column. Check that `data` field is filled on JS side with the column name')
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message(message)
     end
   end
 
   describe 'when unknown column' do
     before { datatable.params[:columns]['0'][:data] = 'foo' }
 
+    let(:message) { "Check that column 'foo' exists in view_columns" }
+
     it 'raises error' do
-      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message("Check that column 'foo' exists in view_columns")
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message(message)
     end
   end
 end

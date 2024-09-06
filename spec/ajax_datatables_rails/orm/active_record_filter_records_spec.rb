@@ -18,21 +18,22 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       it 'performs a simple search first' do
-        expect(datatable).to receive(:build_conditions_for_datatable)
+        allow(datatable).to receive(:build_conditions_for_datatable)
         datatable.filter_records(records)
+        expect(datatable).to have_received(:build_conditions_for_datatable)
       end
 
       it 'does not search unsearchable fields' do
         criteria = datatable.filter_records(records)
-        expect(criteria.to_sql).not_to include('email_hash')
+        expect(criteria.to_sql).to_not include('email_hash')
       end
     end
 
-
     it 'performs a composite search second' do
       datatable.params[:search] = { value: '' }
-      expect(datatable).to receive(:build_conditions_for_selected_columns)
+      allow(datatable).to receive(:build_conditions_for_selected_columns)
       datatable.filter_records(records)
+      expect(datatable).to have_received(:build_conditions_for_selected_columns)
     end
   end
 
@@ -53,8 +54,8 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         query = datatable.build_conditions
         results = records.where(query).map(&:username)
         expect(results).to include('msmith')
-        expect(results).not_to include('johndoe')
-        expect(results).not_to include('hsmith')
+        expect(results).to_not include('johndoe')
+        expect(results).to_not include('hsmith')
       end
     end
   end
@@ -71,7 +72,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect(result).to be_a(Arel::Nodes::Grouping)
     end
 
-    context 'no search query' do
+    context 'when no search query' do
       it 'returns empty query' do
         datatable.params[:search] = { value: '' }
         expect(datatable.build_conditions_for_datatable).to be_blank
@@ -80,7 +81,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     context 'when none of columns are connected' do
       before do
-        allow(datatable).to receive(:searchable_columns) { [] }
+        allow(datatable).to receive(:searchable_columns).and_return([])
       end
 
       context 'when search value is a string' do
@@ -95,7 +96,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         it 'returns filtered results' do
           query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
-          expect(results).to eq ['johndoe', 'msmith']
+          expect(results).to eq %w[johndoe msmith]
         end
       end
 
@@ -111,7 +112,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         it 'returns filtered results' do
           query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
-          expect(results).to eq ['johndoe', 'msmith']
+          expect(results).to eq %w[johndoe msmith]
         end
       end
     end
@@ -126,7 +127,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to include('johndoe')
-          expect(results).not_to include('msmith')
+          expect(results).to_not include('msmith')
         end
       end
 
@@ -139,7 +140,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           query = datatable.build_conditions_for_datatable
           results = records.where(query).map(&:username)
           expect(results).to eq ['johndoe']
-          expect(results).not_to include('msmith')
+          expect(results).to_not include('msmith')
         end
       end
 
@@ -152,7 +153,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
 
         it 'does not raise error' do
-          allow_any_instance_of(AjaxDatatablesRails::Datatable::Column).to receive(:valid_search_condition?).and_return(true)
+          allow_any_instance_of(AjaxDatatablesRails::Datatable::Column).to receive(:valid_search_condition?).and_return(true) # rubocop:disable RSpec/AnyInstance
 
           expect {
             datatable.data.size
@@ -168,7 +169,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       create(:user, username: 'msmith', email: 'mary.smith@example.com')
     end
 
-    context 'columns include search query' do
+    context 'when columns include search query' do
       before do
         datatable.params[:columns]['0'][:search][:value] = 'doe'
         datatable.params[:columns]['1'][:search][:value] = 'example'
@@ -204,7 +205,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
 
       if RunningSpec.mysql?
-        context 'when db_adapter is mysql2' do
+        context 'when db_adapter is mysql2' do # rubocop:disable RSpec/RepeatedExampleGroupBody
           it 'can call #to_sql on returned object' do
             result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
@@ -214,7 +215,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           end
         end
 
-        context 'when db_adapter is trilogy' do
+        context 'when db_adapter is trilogy' do # rubocop:disable RSpec/RepeatedExampleGroupBody
           it 'can call #to_sql on returned object' do
             result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
@@ -227,8 +228,9 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     it 'calls #build_conditions_for_selected_columns' do
-      expect(datatable).to receive(:build_conditions_for_selected_columns)
+      allow(datatable).to receive(:build_conditions_for_selected_columns)
       datatable.build_conditions
+      expect(datatable).to have_received(:build_conditions_for_selected_columns)
     end
 
     context 'with search values in columns' do
@@ -240,13 +242,13 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         query = datatable.build_conditions_for_selected_columns
         results = records.where(query).map(&:username)
         expect(results).to include('johndoe')
-        expect(results).not_to include('msmith')
+        expect(results).to_not include('msmith')
       end
     end
   end
 
   describe 'filter conditions' do
-    context 'date condition' do
+    context 'with date condition' do
       describe 'it can filter records with condition :date_range' do
         let(:datatable) { DatatableCondDate.new(sample_params) }
 
@@ -329,7 +331,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'numeric condition' do
+    context 'with numeric condition' do
       before do
         create(:user, first_name: 'john', post_id: 1)
         create(:user, first_name: 'mary', post_id: 2)
@@ -448,7 +450,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'proc condition' do
+    context 'with proc condition' do
       describe 'it can filter records with lambda/proc condition' do
         let(:datatable) { DatatableCondProc.new(sample_params) }
 
@@ -467,7 +469,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'string condition' do
+    context 'with string condition' do
       describe 'it can filter records with condition :start_with' do
         let(:datatable) { DatatableCondStartWith.new(sample_params) }
 
@@ -605,7 +607,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'unknown condition' do
+    context 'with unknown condition' do
       let(:datatable) { DatatableCondUnknown.new(sample_params) }
 
       before do
@@ -619,7 +621,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
-    context 'custom column' do
+    context 'with custom column' do
       describe 'it can filter records with custom column' do
         let(:datatable) { DatatableCustomColumn.new(sample_params) }
 

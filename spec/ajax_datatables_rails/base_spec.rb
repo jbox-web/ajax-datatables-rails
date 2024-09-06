@@ -30,7 +30,7 @@ RSpec.describe AjaxDatatablesRails::Base do
         end
       end
 
-      context 'child class implements view_columns' do
+      context 'when child class implements view_columns' do
         it 'expects a hash based defining columns' do
           datatable = ComplexDatatable.new(sample_params)
           expect(datatable.view_columns).to be_a(Hash)
@@ -108,7 +108,7 @@ RSpec.describe AjaxDatatablesRails::Base do
 
   describe 'ORM API' do
     context 'when ORM is not implemented' do
-      let(:datatable) { AjaxDatatablesRails::Base.new(sample_params) }
+      let(:datatable) { described_class.new(sample_params) }
 
       describe '#fetch_records' do
         it 'raises an error if it does not include an ORM module' do
@@ -139,16 +139,16 @@ RSpec.describe AjaxDatatablesRails::Base do
       describe 'it allows method override' do
         let(:datatable) do
           datatable = Class.new(ComplexDatatable) do
-            def filter_records(records)
-              raise NotImplementedError.new('FOO')
+            def filter_records(_records)
+              raise NotImplementedError, 'FOO'
             end
 
-            def sort_records(records)
-              raise NotImplementedError.new('FOO')
+            def sort_records(_records)
+              raise NotImplementedError, 'FOO'
             end
 
-            def paginate_records(records)
-              raise NotImplementedError.new('FOO')
+            def paginate_records(_records)
+              raise NotImplementedError, 'FOO'
             end
           end
           datatable.new(sample_params)
@@ -156,12 +156,13 @@ RSpec.describe AjaxDatatablesRails::Base do
 
         describe '#fetch_records' do
           it 'calls #get_raw_records' do
-            expect(datatable).to receive(:get_raw_records) { User.all }
+            allow(datatable).to receive(:get_raw_records) { User.all }
             datatable.fetch_records
+            expect(datatable).to have_received(:get_raw_records)
           end
 
           it 'returns a collection of records' do
-            expect(datatable).to receive(:get_raw_records) { User.all }
+            allow(datatable).to receive(:get_raw_records) { User.all }
             expect(datatable.fetch_records).to be_a(ActiveRecord::Relation)
           end
         end
@@ -204,7 +205,7 @@ RSpec.describe AjaxDatatablesRails::Base do
       context 'with additional_data' do
         it 'returns a hash' do
           create_list(:user, 5)
-          expect(datatable).to receive(:additional_data) { { foo: 'bar' } }
+          allow(datatable).to receive(:additional_data).and_return({ foo: 'bar' })
           data = datatable.as_json
           expect(data[:recordsTotal]).to eq 5
           expect(data[:recordsFiltered]).to eq 5
@@ -228,8 +229,9 @@ RSpec.describe AjaxDatatablesRails::Base do
     end
 
     describe '#column_data' do
-      let(:datatable) { ComplexDatatable.new(sample_params) }
       before { datatable.params[:columns]['0'][:search][:value] = 'doe' }
+
+      let(:datatable) { ComplexDatatable.new(sample_params) }
 
       it 'returns column data from params' do
         expect(datatable.column_data(:username)).to eq('doe')
