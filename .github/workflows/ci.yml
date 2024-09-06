@@ -61,7 +61,6 @@ jobs:
         rails:
           - rails_7.1.0
           - rails_7.0.8
-          - rails_6.1.7
         adapter:
           - sqlite3
           - postgresql

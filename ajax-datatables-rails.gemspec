@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files`.split("\n")
 
-  s.add_dependency 'rails', '>= 6.1'
+  s.add_dependency 'rails', '>= 7.0'
   s.add_dependency 'zeitwerk'
 end
