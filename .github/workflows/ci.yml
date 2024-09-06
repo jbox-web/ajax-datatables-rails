@@ -12,6 +12,24 @@ on:
     - cron: '0 4 1 * *'
 
 jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Bundler
+        run: bundle install
+
+      - name: Rubocop
+        run: bin/rubocop
+
   rspec:
     runs-on: ubuntu-latest
 
@@ -108,4 +126,4 @@ jobs:
           DB_ADAPTER: ${{ matrix.adapter }}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: bin/rake
+          coverageCommand: bin/rspec
