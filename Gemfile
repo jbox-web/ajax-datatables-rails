@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'appraisal', git: 'https://github.com/n-rodriguez/appraisal.git', branch: 'wip/combustion'
+gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git'
 
 # gem 'activerecord-oracle_enhanced-adapter'
 gem 'combustion'
