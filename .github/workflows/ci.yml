@@ -139,7 +139,7 @@ jobs:
           DB_ADAPTER: ${{ matrix.adapter }}
 
       - name: RSpec & publish code coverage
-        uses: paambaati/codeclimate-action@v8.0.0
+        uses: paambaati/codeclimate-action@v9.0.0
         env:
           DB_ADAPTER: ${{ matrix.adapter }}
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
