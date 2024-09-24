@@ -9,7 +9,6 @@ gem "factory_bot"
 gem "faker"
 gem "generator_spec"
 gem "guard-rspec"
-gem "pg"
 gem "pry"
 gem "puma"
 gem "rake"
@@ -22,27 +21,7 @@ gem "rubocop-rake"
 gem "rubocop-rspec"
 gem "simplecov"
 gem "rails", "7.0.8"
-
-install_if -> { ENV["DB_ADAPTER"] == "sqlite3" } do
-  gem "sqlite3", "~> 1.5.0"
-end
-
-install_if -> { ENV["DB_ADAPTER"] == "mysql2" } do
-  gem "mysql2"
-end
-
-install_if -> { ENV["DB_ADAPTER"] == "trilogy" } do
-  gem "activerecord-trilogy-adapter"
-end
-
-install_if -> { ENV["DB_ADAPTER"] == "oracle_enhanced" } do
-  gem "ruby-oci8"
-  gem "activerecord-oracle_enhanced-adapter", "~> 7.0.0"
-end
-
-install_if -> { ENV["DB_ADAPTER"] == "postgis" } do
-  gem "activerecord-postgis-adapter"
-end
+gem "sqlite3", "~> 1.5.0"
 
 install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") } do
   gem "base64"

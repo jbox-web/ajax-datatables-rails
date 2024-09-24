@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
-      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.rails }}.gemfile
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.rails }}_with_${{ matrix.adapter }}.gemfile
       ORACLE_COOKIE: sqldev
       ORACLE_FILE: oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
       ORACLE_HOME: /u01/app/oracle/product/11.2.0/xe
