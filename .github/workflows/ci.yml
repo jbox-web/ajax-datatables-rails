@@ -86,6 +86,10 @@ jobs:
           - mysql2
           - oracle_enhanced
           - postgis
+          # Disabled for now:
+          # Rails 7.0: trilogy_auth_recv: caching_sha2_password requires either TCP with TLS or a unix socket: TRILOGY_UNSUPPORTED
+          # Rails 7.1: unknown keyword: :uses_transaction
+          # Rails 7.2: NotImplementedError
           # - trilogy
         exclude:
           # Rails 7.2 needs Ruby > 3.1
