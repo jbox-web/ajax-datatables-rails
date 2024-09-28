@@ -109,8 +109,6 @@ jobs:
           # `create_apiwrap'
           - rails: rails_7.2.0
             adapter: oracle_enhanced
-          - rails: rails_7.1.0
-            adapter: oracle_enhanced
 
     steps:
       - name: Checkout
