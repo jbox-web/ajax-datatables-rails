@@ -21,7 +21,6 @@ gem "rubocop-rake"
 gem "rubocop-rspec"
 gem "simplecov"
 gem "rails", "7.1.0"
-gem "ruby-oci8"
-gem "activerecord-oracle_enhanced-adapter", git: "https://github.com/rsim/oracle-enhanced.git"
+gem "activerecord-oracle_enhanced-adapter", "~> 7.1.0"
 
 gemspec path: "../"

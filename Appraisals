@@ -147,8 +147,7 @@ end
 
 appraise 'rails_7.1.0_with_oracle_enhanced' do
   gem 'rails', '7.1.0'
-  gem 'ruby-oci8'
-  gem 'activerecord-oracle_enhanced-adapter', git: 'https://github.com/rsim/oracle-enhanced.git'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 7.1.0'
   remove_gem 'pg'
 end
 
@@ -187,7 +186,6 @@ end
 
 appraise 'rails_7.2.0_with_oracle_enhanced' do
   gem 'rails', '7.2.0'
-  gem 'ruby-oci8'
   gem 'activerecord-oracle_enhanced-adapter', git: 'https://github.com/rsim/oracle-enhanced.git'
   remove_gem 'pg'
 end
