@@ -25,6 +25,7 @@ end
 appraise 'rails_7.0.8_with_sqlite3' do
   gem 'rails', '7.0.8'
   gem 'sqlite3', '~> 1.5.0'
+  remove_gem 'pg'
 
   # Fix:
   # warning: logger was loaded from the standard library, but will no longer be part of the default gems since Ruby 3.5.0
@@ -43,6 +44,7 @@ end
 appraise 'rails_7.0.8_with_mysql2' do
   gem 'rails', '7.0.8'
   gem 'mysql2'
+  remove_gem 'pg'
 
   # Fix:
   # warning: logger was loaded from the standard library, but will no longer be part of the default gems since Ruby 3.5.0
@@ -61,6 +63,7 @@ end
 appraise 'rails_7.0.8_with_trilogy' do
   gem 'rails', '7.0.8'
   gem 'activerecord-trilogy-adapter'
+  remove_gem 'pg'
 
   # Fix:
   # warning: logger was loaded from the standard library, but will no longer be part of the default gems since Ruby 3.5.0
@@ -80,6 +83,7 @@ appraise 'rails_7.0.8_with_oracle_enhanced' do
   gem 'rails', '7.0.8'
   gem 'ruby-oci8'
   gem 'activerecord-oracle_enhanced-adapter', '~> 7.0.0'
+  remove_gem 'pg'
 
   # Fix:
   # warning: logger was loaded from the standard library, but will no longer be part of the default gems since Ruby 3.5.0
@@ -126,22 +130,26 @@ end
 appraise 'rails_7.1.0_with_sqlite3' do
   gem 'rails', '7.1.0'
   gem 'sqlite3', '~> 1.5.0'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.1.0_with_mysql2' do
   gem 'rails', '7.1.0'
   gem 'mysql2'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.1.0_with_trilogy' do
   gem 'rails', '7.1.0'
   gem 'activerecord-trilogy-adapter'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.1.0_with_oracle_enhanced' do
   gem 'rails', '7.1.0'
   gem 'ruby-oci8'
   gem 'activerecord-oracle_enhanced-adapter', git: 'https://github.com/rsim/oracle-enhanced.git'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.1.0_with_postgis' do
@@ -162,22 +170,26 @@ end
 appraise 'rails_7.2.0_with_sqlite3' do
   gem 'rails', '7.2.0'
   gem 'sqlite3', '~> 1.5.0'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.2.0_with_mysql2' do
   gem 'rails', '7.2.0'
   gem 'mysql2'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.2.0_with_trilogy' do
   gem 'rails', '7.2.0'
   gem 'activerecord-trilogy-adapter'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.2.0_with_oracle_enhanced' do
   gem 'rails', '7.2.0'
   gem 'ruby-oci8'
   gem 'activerecord-oracle_enhanced-adapter', git: 'https://github.com/rsim/oracle-enhanced.git'
+  remove_gem 'pg'
 end
 
 appraise 'rails_7.2.0_with_postgis' do

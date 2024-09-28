@@ -24,6 +24,5 @@ gem 'rubocop-rake'
 gem 'rubocop-rspec'
 gem 'simplecov'
 
-# Fallback to pg if DB_ADAPTER is not set (like in dev/local environment)
-# so we can still call bin/rspec
-gem 'pg' if $PROGRAM_NAME == 'bin/rspec' && ENV['DB_ADAPTER'].nil?
+# Fallback to pg in dev/local environment
+gem 'pg'
