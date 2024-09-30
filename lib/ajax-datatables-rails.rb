@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
+# require external dependencies
 require 'zeitwerk'
-loader = Zeitwerk::Loader.for_gem
-generators = "#{__dir__}/generators"
-loader.ignore(generators)
-loader.inflector.inflect(
-  'orm'                   => 'ORM',
-  'ajax-datatables-rails' => 'AjaxDatatablesRails'
-)
-loader.setup
+
+# load zeitwerk
+Zeitwerk::Loader.for_gem.tap do |loader|
+  loader.ignore("#{__dir__}/generators")
+  loader.inflector.inflect(
+    'orm'                   => 'ORM',
+    'ajax-datatables-rails' => 'AjaxDatatablesRails'
+  )
+  loader.setup
+end
 
 module AjaxDatatablesRails
 end

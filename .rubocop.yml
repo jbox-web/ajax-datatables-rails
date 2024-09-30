@@ -12,7 +12,6 @@ AllCops:
     - bin/*
     - gemfiles/*
     - spec/dummy/**/*
-    - lib/generators/**/*.rb
 
 #########
 # STYLE #
