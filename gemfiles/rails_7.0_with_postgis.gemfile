@@ -21,7 +21,8 @@ gem "rubocop-rake"
 gem "rubocop-rspec"
 gem "simplecov"
 gem "pg"
-gem "rails", "7.0.8"
+gem "rails", "~> 7.0.0"
+gem "activerecord-postgis-adapter"
 
 install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") } do
   gem "base64"

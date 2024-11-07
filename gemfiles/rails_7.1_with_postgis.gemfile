@@ -20,18 +20,8 @@ gem "rubocop-performance"
 gem "rubocop-rake"
 gem "rubocop-rspec"
 gem "simplecov"
-gem "rails", "7.0.8"
-gem "ruby-oci8"
-gem "activerecord-oracle_enhanced-adapter", "~> 7.0.0"
-
-install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") } do
-  gem "base64"
-  gem "bigdecimal"
-  gem "benchmark"
-  gem "drb"
-  gem "logger"
-  gem "mutex_m"
-  gem "ostruct"
-end
+gem "pg"
+gem "rails", "~> 7.1.0"
+gem "activerecord-postgis-adapter"
 
 gemspec path: "../"

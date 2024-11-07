@@ -20,17 +20,7 @@ gem "rubocop-performance"
 gem "rubocop-rake"
 gem "rubocop-rspec"
 gem "simplecov"
-gem "rails", "7.0.8"
-gem "activerecord-trilogy-adapter"
-
-install_if -> { Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.4.0") } do
-  gem "base64"
-  gem "bigdecimal"
-  gem "benchmark"
-  gem "drb"
-  gem "logger"
-  gem "mutex_m"
-  gem "ostruct"
-end
+gem "rails", "~> 7.2.0"
+gem "mysql2"
 
 gemspec path: "../"

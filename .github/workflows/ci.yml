@@ -77,9 +77,9 @@ jobs:
           - '3.0'
           - 'head'
         rails:
-          - rails_7.2.0
-          - rails_7.1.0
-          - rails_7.0.8
+          - rails_7.2
+          - rails_7.1
+          - rails_7.0
         adapter:
           - sqlite3
           - postgresql
@@ -93,7 +93,7 @@ jobs:
           # - trilogy
         exclude:
           # Rails 7.2 needs Ruby > 3.1
-          - rails: rails_7.2.0
+          - rails: rails_7.2
             ruby: '3.0'
 
           # Disabled for now because of build error:
@@ -107,7 +107,7 @@ jobs:
           # from
           # /home/runner/work/ajax-datatables-rails/ajax-datatables-rails/vendor/bundle/ruby/3.0.0/gems/ruby-oci8-2.2.14/ext/oci8/apiwrap.rb:64:in
           # `create_apiwrap'
-          - rails: rails_7.2.0
+          - rails: rails_7.2
             adapter: oracle_enhanced
 
     steps:
