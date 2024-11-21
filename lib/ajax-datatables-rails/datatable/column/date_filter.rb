@@ -38,7 +38,7 @@ module AjaxDatatablesRails
         end
 
         def empty_range_search?
-          (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
+          formatted_value.exclude?(delimiter) || (formatted_value == delimiter) || (range_start.blank? && range_end.blank?)
         end
 
         # Do a range search
