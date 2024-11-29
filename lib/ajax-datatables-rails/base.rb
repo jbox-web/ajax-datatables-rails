@@ -118,7 +118,7 @@ module AjaxDatatablesRails
         if record.is_a?(Array)
           record.map { |td| ERB::Util.html_escape(td) }
         else
-          record.update(record) { |_, v| ERB::Util.html_escape(v) }
+          record.update(record) { |_, v| v.is_a?(Hash) ? v : ERB::Util.html_escape(v) }
         end
       end
     end
