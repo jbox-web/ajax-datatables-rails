@@ -8,19 +8,18 @@ gem "database_cleaner"
 gem "factory_bot"
 gem "faker"
 gem "generator_spec"
-gem "guard-rspec"
-gem "pry"
 gem "puma"
 gem "rake"
 gem "rspec"
 gem "rspec-retry"
-gem "rubocop"
-gem "rubocop-factory_bot"
-gem "rubocop-performance"
-gem "rubocop-rake"
-gem "rubocop-rspec"
 gem "simplecov"
 gem "pg"
+gem "guard-rspec", require: false
+gem "rubocop", require: false
+gem "rubocop-factory_bot", require: false
+gem "rubocop-performance", require: false
+gem "rubocop-rake", require: false
+gem "rubocop-rspec", require: false
 gem "rails", "~> 7.2.0"
 gem "activerecord-postgis-adapter", git: "https://github.com/rgeo/activerecord-postgis-adapter.git"
 
