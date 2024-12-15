@@ -77,6 +77,7 @@ jobs:
           - '3.0'
           - 'head'
         rails:
+          - rails_8.0
           - rails_7.2
           - rails_7.1
           - rails_7.0
@@ -93,8 +94,15 @@ jobs:
           # - trilogy
         exclude:
           # Rails 7.2 needs Ruby > 3.1
-          - rails: rails_7.2
+          - rails: 'rails_7.2'
             ruby: '3.0'
+
+          # Rails 8.0 needs Ruby > 3.2
+          - rails: 'rails_8.0'
+            ruby: '3.0'
+
+          - rails: 'rails_8.0'
+            ruby: '3.1'
 
           # Disabled for now because of build error:
           #  /opt/hostedtoolcache/Ruby/3.0.7/x64/lib/ruby/3.0.0/psych.rb:457:in

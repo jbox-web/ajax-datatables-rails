@@ -195,3 +195,42 @@ appraise 'rails_7.2_with_postgis' do
   gem 'pg'
   gem 'activerecord-postgis-adapter', git: 'https://github.com/rgeo/activerecord-postgis-adapter.git'
 end
+
+###############
+# RAILS 8.0.0 #
+###############
+
+appraise 'rails_8.0_with_postgresql' do
+  gem 'rails', '~> 8.0.0'
+  gem 'pg'
+end
+
+appraise 'rails_8.0_with_sqlite3' do
+  gem 'rails', '~> 8.0.0'
+  gem 'sqlite3'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.0_with_mysql2' do
+  gem 'rails', '~> 8.0.0'
+  gem 'mysql2'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.0_with_trilogy' do
+  gem 'rails', '~> 8.0.0'
+  gem 'activerecord-trilogy-adapter'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.0_with_oracle_enhanced' do
+  gem 'rails', '~> 8.0.0'
+  gem 'activerecord-oracle_enhanced-adapter', git: 'https://github.com/rsim/oracle-enhanced.git'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.0_with_postgis' do
+  gem 'rails', '~> 8.0.0'
+  gem 'pg'
+  gem 'activerecord-postgis-adapter', git: 'https://github.com/rgeo/activerecord-postgis-adapter.git'
+end
