@@ -9,6 +9,7 @@
 * Make gem smaller
 * Drop support of Rails 6.0
 * Drop support of Rails 6.1
+* Drop support of Rails 7.0
 * Drop support of Ruby 2.7
 * Add support for Rails 7.2
 * Add support for Rails 8.0

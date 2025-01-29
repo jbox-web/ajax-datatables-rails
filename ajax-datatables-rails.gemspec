@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
 
   s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb', 'lib/**/*.erb']
 
-  s.add_dependency 'rails', '>= 7.0'
+  s.add_dependency 'rails', '>= 7.1'
   s.add_dependency 'zeitwerk'
 end
