@@ -12,7 +12,7 @@
 It's tested against :
 
 * Rails: 7.1 / 7.2 / 8.0
-* Ruby: 3.0 / 3.1 / 3.2 / 3.3 / 3.4
+* Ruby: 3.1 / 3.2 / 3.3 / 3.4
 * Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
 * Adapters: sqlite / mysql2 / trilogy / postgres / postgis / oracle
 
