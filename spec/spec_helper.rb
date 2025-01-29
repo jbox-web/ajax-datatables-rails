@@ -73,11 +73,11 @@ class RunningSpec
   end
 
   def self.mysql?
-    ENV['DB_ADAPTER'] == 'mysql2' || ENV['DB_ADAPTER'] == 'trilogy'
+    %w[mysql2 trilogy].include?(ENV.fetch('DB_ADAPTER', nil))
   end
 
   def self.postgresql?
-    ENV['DB_ADAPTER'] == 'postgresql' || ENV['DB_ADAPTER'] == 'postgis'
+    %w[postgresql postgis].include?(ENV.fetch('DB_ADAPTER', nil))
   end
 end
 
