@@ -1,15 +1,28 @@
 # CHANGELOG
 
+## 1.6.0 (2025-??-??)
+
+* Remove dead code
 * Implementing `searchable: false` tests
+* Improve objects shape
+* Fix Rubocop offenses
+* Make gem smaller
+* Drop support of Rails 6.0
+* Drop support of Rails 6.1
+* Drop support of Ruby 2.7
+* Add support for Rails 7.2
+* Add support for Rails 8.0
+* Add support for Ruby 3.4
 
 ## 1.5.0 (2024-04-08)
 
-* Drop support of Rails 5.2
 * Add support for grouped results (merge: [#419](https://github.com/jbox-web/ajax-datatables-rails/pull/419))
 * Fix server-side out of order ajax responses (merge: [#418](https://github.com/jbox-web/ajax-datatables-rails/pull/418))
 * Add support for postgis adapter (merge: [#417](https://github.com/jbox-web/ajax-datatables-rails/pull/417))
 * Add support for trilogy adapter (merge: [#423](https://github.com/jbox-web/ajax-datatables-rails/pull/423))
+* Drop support of Rails 5.2
 * Add support for Rails 7.1
+* Add support for Ruby 3.2
 * Add support for Ruby 3.3
 
 This is the last version to support Rails 6.0.x and Ruby 2.7.x.
@@ -21,7 +34,7 @@ This is the last version to support Rails 6.0.x and Ruby 2.7.x.
 * Drop support of Ruby 2.5
 * Drop support of Ruby 2.6
 * Add support of Ruby 3.1
-* Add support of Rails 7
+* Add support of Rails 7.0
 * Fix: prevent establishing ActiveRecord connection on startup
 
 ## 1.3.1 (2021-02-09)
