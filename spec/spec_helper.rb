@@ -6,6 +6,7 @@ Combustion.path = 'spec/dummy'
 Combustion.initialize! :active_record, :action_controller
 
 require 'simplecov'
+require 'simplecov_json_formatter'
 require 'rspec'
 require 'rspec/retry'
 require 'database_cleaner'
@@ -15,6 +16,7 @@ require 'pry'
 
 # Start Simplecov
 SimpleCov.start do
+  formatter SimpleCov::Formatter::JSONFormatter
   add_filter 'spec/'
 end
 

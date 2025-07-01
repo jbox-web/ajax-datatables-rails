@@ -1,0 +1,35 @@
+config_version = "0"
+
+[[source]]
+name = "default"
+default = true
+
+[[plugin]]
+name = "actionlint"
+
+[[plugin]]
+name = "checkov"
+version = "3.2.49"
+
+[[plugin]]
+name = "markdownlint"
+version = "0.31.1"
+
+[[plugin]]
+name = "osv-scanner"
+
+[[plugin]]
+name = "prettier"
+version = "2.8.4"
+
+[[plugin]]
+name = "ripgrep"
+
+[[plugin]]
+name = "trivy"
+
+[[plugin]]
+name = "trufflehog"
+
+[[plugin]]
+name = "yamllint"

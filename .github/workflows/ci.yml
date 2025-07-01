@@ -142,10 +142,13 @@ jobs:
         env:
           DB_ADAPTER: ${{ matrix.adapter }}
 
-      - name: RSpec & publish code coverage
-        uses: paambaati/codeclimate-action@v9.0.0
+      - name: Run RSpec
         env:
           DB_ADAPTER: ${{ matrix.adapter }}
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: bin/rspec
+
+      - name: Publish code coverage
+        uses: qltysh/qlty-action/coverage@v1
         with:
-          coverageCommand: bin/rspec
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/coverage.json
