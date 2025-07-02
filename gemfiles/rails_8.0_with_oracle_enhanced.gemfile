@@ -20,6 +20,6 @@ gem "rubocop-performance", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 gem "rails", "~> 8.0.0"
-gem "activerecord-oracle_enhanced-adapter", git: "https://github.com/rsim/oracle-enhanced.git"
+gem "activerecord-oracle_enhanced-adapter", "~> 8.0.0"
 
 gemspec path: "../"
