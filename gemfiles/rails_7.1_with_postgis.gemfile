@@ -21,6 +21,6 @@ gem "rubocop-performance", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 gem "rails", "~> 7.1.0"
-gem "activerecord-postgis-adapter"
+gem "activerecord-postgis-adapter", "~> 9.0.0"
 
 gemspec path: "../"

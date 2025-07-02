@@ -36,7 +36,7 @@ end
 appraise 'rails_7.1_with_postgis' do
   gem 'rails', '~> 7.1.0'
   gem 'pg'
-  gem 'activerecord-postgis-adapter'
+  gem 'activerecord-postgis-adapter', '~> 9.0.0'
 end
 
 ###############
@@ -75,7 +75,7 @@ end
 appraise 'rails_7.2_with_postgis' do
   gem 'rails', '~> 7.2.0'
   gem 'pg'
-  gem 'activerecord-postgis-adapter', git: 'https://github.com/rgeo/activerecord-postgis-adapter.git'
+  gem 'activerecord-postgis-adapter', '~> 10.0.0'
 end
 
 ###############
@@ -114,5 +114,5 @@ end
 appraise 'rails_8.0_with_postgis' do
   gem 'rails', '~> 8.0.0'
   gem 'pg'
-  gem 'activerecord-postgis-adapter', git: 'https://github.com/rgeo/activerecord-postgis-adapter.git'
+  gem 'activerecord-postgis-adapter', '~> 11.0.0'
 end
