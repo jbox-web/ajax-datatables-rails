@@ -198,7 +198,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
             result = datatable.build_conditions_for_selected_columns
             expect(result).to respond_to(:to_sql)
             expect(result.to_sql).to eq(
-              "CAST(\"USERS\".\"USERNAME\" AS VARCHAR2(4000)) LIKE '%doe%' AND CAST(\"USERS\".\"EMAIL\" AS VARCHAR2(4000)) LIKE '%example%'"
+              "UPPER(CAST(\"USERS\".\"USERNAME\" AS VARCHAR2(4000))) LIKE UPPER('%doe%') AND UPPER(CAST(\"USERS\".\"EMAIL\" AS VARCHAR2(4000))) LIKE UPPER('%example%')" # rubocop:disable Layout/LineLength
             )
           end
         end

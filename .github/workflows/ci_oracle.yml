@@ -1,0 +1,104 @@
+---
+name: CI Oracle
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  schedule:
+    - cron: '0 4 1 * *'
+  # Run workflow manually
+  workflow_dispatch:
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.rails }}_with_${{ matrix.adapter }}.gemfile
+      ORACLE_HOME: /opt/oracle/instantclient_23_8
+      LD_LIBRARY_PATH: /opt/oracle/instantclient_23_8
+      TNS_ADMIN: ./ci/network/admin
+      DATABASE_SYS_PASSWORD: Oracle18
+      DATABASE_NAME: FREEPDB1
+
+    services:
+      oracle:
+        image: gvenzl/oracle-free:latest
+        ports:
+          - 1521:1521
+        env:
+          TZ: Europe/Paris
+          ORACLE_PASSWORD: Oracle18
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - '3.4'
+          - '3.3'
+          - '3.2'
+          - '3.1'
+          - 'head'
+        rails:
+          - rails_8.0
+          - rails_7.2
+          - rails_7.1
+        adapter:
+          - oracle_enhanced
+        exclude:
+          - rails: 'rails_8.0'
+            ruby: '3.1'
+            adapter: 'oracle_enhanced'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create symbolic link for libaio library compatibility
+        run: |
+          sudo ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
+
+      - name: Download Oracle instant client
+        run: |
+          wget -q https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-basic-linux.x64-23.8.0.25.04.zip
+          wget -q https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-sdk-linux.x64-23.8.0.25.04.zip
+          wget -q https://download.oracle.com/otn_software/linux/instantclient/2380000/instantclient-sqlplus-linux.x64-23.8.0.25.04.zip
+
+      - name: Install Oracle instant client
+        run: |
+          sudo unzip instantclient-basic-linux.x64-23.8.0.25.04.zip -d /opt/oracle/
+          sudo unzip -o instantclient-sdk-linux.x64-23.8.0.25.04.zip -d /opt/oracle/
+          sudo unzip -o instantclient-sqlplus-linux.x64-23.8.0.25.04.zip -d /opt/oracle/
+          echo "/opt/oracle/instantclient_23_8" >> $GITHUB_PATH
+
+      - name: Create database user
+        run: |
+          ./ci/setup_accounts.sh
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+        env:
+          DB_ADAPTER: ${{ matrix.adapter }}
+
+      - name: Run RSpec
+        env:
+          DB_ADAPTER: ${{ matrix.adapter }}
+        run: bin/rspec
+
+      - name: Publish code coverage
+        uses: qltysh/qlty-action/coverage@v1
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/coverage.json

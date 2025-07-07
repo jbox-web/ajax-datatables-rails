@@ -15,10 +15,10 @@ test:
   username: 'root'
   password: 'root'
 <% elsif adapter == 'oracle_enhanced' %>
-  host: '127.0.0.1/xe'
-  username: <%= ENV.fetch('USER') %>
-  password: <%= ENV.fetch('USER') %>
-  database: 'xe'
+  host: '127.0.0.1'
+  username: 'oracle_enhanced'
+  password: 'oracle_enhanced'
+  database: 'FREEPDB1'
 <% elsif adapter == 'sqlite3' %>
   # database: ':memory:'
   database: db/ajax_datatables_rails.sqlite3
