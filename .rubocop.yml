@@ -1,5 +1,5 @@
 ---
-require:
+plugins:
   - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rake
