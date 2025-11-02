@@ -49,13 +49,18 @@ jobs:
           - '3.1'
           - 'head'
         rails:
+          - rails_8.1
           - rails_8.0
           - rails_7.2
           - rails_7.1
         adapter:
           - oracle_enhanced
         exclude:
+          # Rails 8.0 needs Ruby > 3.2
           - rails: 'rails_8.0'
+            ruby: '3.1'
+            adapter: 'oracle_enhanced'
+          - rails: 'rails_8.1'
             ruby: '3.1'
             adapter: 'oracle_enhanced'
 

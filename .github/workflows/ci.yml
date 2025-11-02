@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -75,6 +75,7 @@ jobs:
           - '3.1'
           - 'head'
         rails:
+          - rails_8.1
           - rails_8.0
           - rails_7.2
           - rails_7.1
@@ -92,10 +93,12 @@ jobs:
           # Rails 8.0 needs Ruby > 3.2
           - rails: 'rails_8.0'
             ruby: '3.1'
+          - rails: 'rails_8.1'
+            ruby: '3.1'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set DB Adapter
         env:
