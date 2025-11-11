@@ -14,7 +14,7 @@ gem 'generator_spec'
 gem 'puma'
 gem 'rake'
 gem 'rspec'
-gem 'rspec-retry'
+gem 'rspec-rebound'
 gem 'simplecov'
 
 # Fallback to pg in dev/local environment

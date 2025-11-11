@@ -8,7 +8,7 @@ Combustion.initialize! :active_record, :action_controller
 require 'simplecov'
 require 'simplecov_json_formatter'
 require 'rspec'
-require 'rspec/retry'
+require 'rspec/rebound'
 require 'database_cleaner'
 require 'factory_bot'
 require 'faker'
@@ -60,7 +60,7 @@ RSpec.configure do |config|
 
   if ENV.key?('GITHUB_ACTIONS')
     config.around do |ex|
-      ex.run_with_retry retry: 3
+      ex.run_with_retry retry: 2
     end
   end
 end

@@ -11,7 +11,7 @@ gem "generator_spec"
 gem "puma"
 gem "rake"
 gem "rspec"
-gem "rspec-retry"
+gem "rspec-rebound"
 gem "simplecov"
 gem "pg"
 gem "guard-rspec", require: false
