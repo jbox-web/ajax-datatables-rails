@@ -1,6 +1,8 @@
 ---
 name: CI
 
+permissions: {}
+
 on:
   push:
     branches:
@@ -19,7 +21,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -96,7 +100,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Set DB Adapter
         env:
