@@ -83,6 +83,14 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
       it {
         expect(datatable.paginate?).to be(true)
       }
+
+      context 'when params[:length] == -1 (show all)' do
+        let(:datatable) { ComplexDatatable.new({ length: '-1' }).datatable }
+
+        it 'is false' do
+          expect(datatable.paginate?).to be(false)
+        end
+      end
     end
 
     describe '#per_page' do
@@ -123,6 +131,16 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
       it 'calculates page number from params[:start] and #per_page' do
         expect(datatable.page).to eq(2)
       end
+
+      context 'when per_page is 0 (params[:length] == 0)' do
+        let(:datatable) { ComplexDatatable.new({ length: '0' }).datatable }
+
+        it 'does not raise ZeroDivisionError and falls back to 1' do
+          expect { datatable.page }.to_not raise_error
+          expect(datatable.page).to eq(1)
+        end
+      end
     end
+
   end
 end

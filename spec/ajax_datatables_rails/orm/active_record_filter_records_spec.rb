@@ -144,20 +144,18 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
-      # TODO: improve (or delete?) this test
-      context 'when column.search_query returns nil' do
+      context 'when column.search_query returns nil (unhandled condition)' do
         let(:datatable) { DatatableCondUnknown.new(sample_params) }
 
         before do
           datatable.params[:search] = { value: 'john doe', regex: 'false' }
         end
 
-        it 'does not raise error' do
+        it 'skips that column and still filters on the others' do
           allow_any_instance_of(AjaxDatatablesRails::Datatable::Column).to receive(:valid_search_condition?).and_return(true) # rubocop:disable RSpec/AnyInstance
 
-          expect {
-            datatable.data.size
-          }.to_not raise_error
+          results = datatable.data.map { |record| record[:username] }
+          expect(results).to eq(['johndoe'])
         end
       end
     end
@@ -284,6 +282,19 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           it 'filters records created between the range' do
             datatable.params[:columns]['7'][:search][:value] = '01/12/1999-15/01/2000'
             expect(datatable.data.size).to eq 1
+          end
+        end
+
+        context 'when the range is malformed' do
+          it 'does not raise and does not apply the broken date filter' do
+            datatable.params[:columns]['7'][:search][:value] = 'foo-bar'
+            expect { datatable.data }.to_not raise_error
+            expect(datatable.data.size).to eq 2
+          end
+
+          it 'does not raise on an out-of-range date' do
+            datatable.params[:columns]['7'][:search][:value] = '32/13/2020-99/99/9999'
+            expect { datatable.data }.to_not raise_error
           end
         end
 
@@ -446,6 +457,12 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         it 'returns the matching user' do
           datatable.params[:columns]['5'][:search][:value] = largest_postgresql_integer_value
           expect(datatable.data.size).to eq 1
+        end
+
+        it 'returns an empty result without a DB error for a hexadecimal value' do
+          datatable.params[:columns]['5'][:search][:value] = '0x1f'
+          expect { datatable.data }.to_not raise_error
+          expect(datatable.data.size).to eq 0
         end
       end
     end

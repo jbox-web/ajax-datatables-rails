@@ -4,17 +4,15 @@
 [![Gem](https://img.shields.io/gem/v/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![CI](https://github.com/jbox-web/ajax-datatables-rails/workflows/CI/badge.svg)](https://github.com/jbox-web/ajax-datatables-rails/actions)
-[![Code Climate](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/gpa.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails)
-[![Test Coverage](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/badges/coverage.svg)](https://codeclimate.com/github/jbox-web/ajax-datatables-rails/coverage)
 
 **Important : This gem is targeted at DataTables version 1.10.x.**
 
 It's tested against :
 
 * Rails: 7.1 / 7.2 / 8.0
-* Ruby: 3.1 / 3.2 / 3.3 / 3.4
-* Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle XE 11.2 (thanks to [travis-oracle](https://github.com/cbandy/travis-oracle))
-* Adapters: sqlite / mysql2 / trilogy / postgres / postgis / oracle
+* Ruby: 3.1 / 3.2 / 3.3 / 3.4 / 4.0
+* Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle Free 23
+* Adapters: sqlite / mysql2 / postgres / postgis / oracle (trilogy is supported but not currently exercised in CI)
 
 ## Description
 
@@ -70,7 +68,7 @@ Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performi
 
 Adding support for `Sequel`, `Mongoid` and `MongoMapper` is (more or less) a planned feature for this gem.
 
-If you'd be interested in contributing to speed development, please [open an issue](https://github.com/antillas21/ajax-datatables-rails/issues/new) and get in touch.
+If you'd be interested in contributing to speed development, please [open an issue](https://github.com/jbox-web/ajax-datatables-rails/issues/new) and get in touch.
 
 
 ## Quick start (in 5 steps)
@@ -175,6 +173,30 @@ class MyDatatable < AjaxDatatablesRails::ActiveRecord
   self.nulls_last = true
 
   # ... other methods (view_columns, data...)
+end
+```
+
+The `sort_field` param lets you order on a different column than the one displayed (e.g. sort a computed/aliased column by an underlying real column) :
+
+```ruby
+class MyDatatable < AjaxDatatablesRails::ActiveRecord
+  def view_columns
+    @view_columns ||= {
+      full_name: { source: "User.last_name", sort_field: "last_name" },
+    }
+  end
+end
+```
+
+The `use_regex` param (default `true`) disables regex search for a column. This is useful when DataTables multi-select filters auto-enable regex search but the column is a numeric/primary key that the DB cannot compare with a regex operator (use it together with `cond: :in`) :
+
+```ruby
+class MyDatatable < AjaxDatatablesRails::ActiveRecord
+  def view_columns
+    @view_columns ||= {
+      post_id: { source: "User.post_id", cond: :in, use_regex: false },
+    }
+  end
 end
 ```
 

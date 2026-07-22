@@ -67,6 +67,8 @@ module AjaxDatatablesRails
       end
 
       def page
+        return 1 if per_page <= 0
+
         (offset / per_page) + 1
       end
 
@@ -75,7 +77,10 @@ module AjaxDatatablesRails
 
         if options[param].is_a? Array
           hash = {}
-          options[param].each_with_index { |value, index| hash[index] = value }
+          # Keys are stringified so the array-param form matches the hash-param
+          # form (with_indifferent_access), otherwise Column#index (Integer) never
+          # matches SimpleOrder#column_index (String) and sorting is silently dropped.
+          options[param].each_with_index { |value, index| hash[index.to_s] = value }
           hash
         else
           options[param].to_unsafe_h.with_indifferent_access

@@ -46,6 +46,15 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
+  describe '#sort_records with json (array-form) params' do
+    let(:datatable) { ComplexDatatable.new(sample_params_json) }
+
+    it 'sorts using the array-form order param' do
+      datatable.params[:order] = [{ 'column' => '1', 'dir' => 'desc' }]
+      expect(datatable.sort_records(records).to_sql).to include('ORDER BY users.email DESC')
+    end
+  end
+
   describe '#sort_records with nulls last using global config' do
     before { datatable.nulls_last = true }
     after  { datatable.nulls_last = false }

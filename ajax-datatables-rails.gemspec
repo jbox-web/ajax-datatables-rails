@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.1.0'
 
-  s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'lib/**/*.rb', 'lib/**/*.erb']
+  s.files = Dir['README.md', 'CHANGELOG.md', 'LICENSE', 'doc/**/*', 'lib/**/*.rb', 'lib/**/*.erb']
 
   s.add_dependency 'rails', '>= 7.1'
   s.add_dependency 'zeitwerk'

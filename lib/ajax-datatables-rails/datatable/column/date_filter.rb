@@ -45,7 +45,14 @@ module AjaxDatatablesRails
         def date_range_search
           return nil if empty_range_search?
 
-          table[field].between(DateRange.new(range_start_casted, range_end_casted))
+          start_date = range_start_casted
+          end_date   = range_end_casted
+          # A non-blank but unparsable bound (parse_date returns nil) means the
+          # filter cannot be built: skip it rather than crashing or emitting a
+          # NULL-bounded BETWEEN.
+          return nil if start_date.nil? || end_date.nil?
+
+          table[field].between(DateRange.new(start_date, end_date))
         end
 
         private
@@ -60,6 +67,8 @@ module AjaxDatatablesRails
 
         def parse_date(date)
           Time.zone ? Time.zone.parse(date) : Time.parse(date)
+        rescue ArgumentError, TypeError
+          nil
         end
 
       end
