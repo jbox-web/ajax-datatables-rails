@@ -3,6 +3,6 @@
 class GroupedDatatable < ComplexDatatable
 
   def get_raw_records # rubocop:disable Naming/AccessorMethodName
-    User.all.group(:id)
+    User.group(:id)
   end
 end

@@ -51,7 +51,7 @@ module AjaxDatatablesRails
       end
 
       def custom_field?
-        !source.include?('.')
+        source.exclude?('.')
       end
 
       # Add formatter option to allow modification of the value

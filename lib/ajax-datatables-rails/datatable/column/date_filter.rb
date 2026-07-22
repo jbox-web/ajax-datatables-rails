@@ -66,7 +66,9 @@ module AjaxDatatablesRails
         end
 
         def parse_date(date)
-          Time.zone ? Time.zone.parse(date) : Time.parse(date)
+          # Zone-aware when a Time.zone is configured; the bare Time.parse is the
+          # intentional fallback for apps that never set one.
+          Time.zone ? Time.zone.parse(date) : Time.parse(date) # rubocop:disable Rails/TimeZone
         rescue ArgumentError, TypeError
           nil
         end

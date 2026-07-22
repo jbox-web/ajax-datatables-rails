@@ -87,13 +87,9 @@ module AjaxDatatablesRails
         end
       end
 
-      def db_adapter
-        @datatable.db_adapter
-      end
+      delegate :db_adapter, to: :@datatable
 
-      def nulls_last
-        @datatable.nulls_last
-      end
+      delegate :nulls_last, to: :@datatable
 
     end
   end

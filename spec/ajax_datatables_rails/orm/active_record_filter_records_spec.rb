@@ -173,7 +173,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         it 'skips that column and still filters on the others' do
           allow_any_instance_of(AjaxDatatablesRails::Datatable::Column).to receive(:valid_search_condition?).and_return(true) # rubocop:disable RSpec/AnyInstance
 
-          results = datatable.data.map { |record| record[:username] }
+          results = datatable.data.pluck(:username)
           expect(results).to eq(['johndoe'])
         end
       end
@@ -723,7 +723,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
     it 'filters by a per-column search' do
       datatable.params[:columns][0][:search][:value] = 'johndoe'
-      expect(datatable.data.map { |record| record[:username] }).to eq(['johndoe'])
+      expect(datatable.data.pluck(:username)).to eq(['johndoe'])
     end
 
     it 'paginates through the array-form columns' do

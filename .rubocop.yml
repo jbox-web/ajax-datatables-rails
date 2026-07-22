@@ -2,6 +2,7 @@
 plugins:
   - rubocop-factory_bot
   - rubocop-performance
+  - rubocop-rails
   - rubocop-rake
   - rubocop-rspec
 
@@ -70,6 +71,16 @@ Layout/HashAlignment:
 Naming/FileName:
   Exclude:
     - lib/ajax-datatables-rails.rb
+
+#########
+# RAILS #
+#########
+
+# The spec dummy models subclass ActiveRecord::Base directly; the Combustion
+# dummy app has no ApplicationRecord base class to inherit from.
+Rails/ApplicationRecord:
+  Exclude:
+    - spec/support/models/**/*
 
 #########
 # RSPEC #
