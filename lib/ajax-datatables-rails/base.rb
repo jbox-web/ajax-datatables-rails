@@ -116,10 +116,24 @@ module AjaxDatatablesRails
     def sanitize_data(data)
       data.map do |record|
         if record.is_a?(Array)
-          record.map { |td| ERB::Util.html_escape(td) }
+          record.map { |td| escape_value(td) }
         else
-          record.update(record) { |_, v| ERB::Util.html_escape(v) }
+          record.update(record) { |_, v| escape_value(v) }
         end
+      end
+    end
+
+    # Escape leaf values while preserving nested Hash/Array structure, so
+    # DataTables row properties like DT_RowAttr/DT_RowData (which are objects)
+    # survive instead of being stringified by html_escape.
+    def escape_value(value)
+      case value
+      when Hash
+        value.transform_values { |v| escape_value(v) }
+      when Array
+        value.map { |v| escape_value(v) }
+      else
+        ERB::Util.html_escape(value)
       end
     end
 

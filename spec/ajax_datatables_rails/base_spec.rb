@@ -82,6 +82,15 @@ RSpec.describe AjaxDatatablesRails::Base do
           expect(item[:first_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;first_name&quot;)&gt;'
           expect(item[:last_name]).to eq 'Name &quot;&gt;&lt;img src=x onerror=alert(&quot;last_name&quot;)&gt;'
         end
+
+        it 'preserves nested hash/array values (e.g. DT_RowAttr) while escaping their leaves' do
+          data = [{ name: '<b>x</b>', DT_RowAttr: { 'data-note' => '<i>y</i>', tags: ['<u>a</u>', 1] } }]
+          item = datatable.send(:sanitize_data, data).first
+          expect(item[:name]).to eq '&lt;b&gt;x&lt;/b&gt;'
+          expect(item[:DT_RowAttr]).to be_a(Hash)
+          expect(item[:DT_RowAttr]['data-note']).to eq '&lt;i&gt;y&lt;/i&gt;'
+          expect(item[:DT_RowAttr][:tags]).to eq ['&lt;u&gt;a&lt;/u&gt;', '1']
+        end
       end
 
       context 'when data is defined as a array' do
