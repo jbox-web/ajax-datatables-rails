@@ -42,6 +42,12 @@ class DatatableCondIn < ComplexDatatable
   end
 end
 
+class DatatableCondEqId < ComplexDatatable
+  def view_columns
+    super.deep_merge(id: { source: 'User.id', cond: :eq })
+  end
+end
+
 class DatatableCondInWithRegex < DatatableCondIn
   def view_columns
     super.deep_merge(post_id: { cond: :in, use_regex: false, orderable: true, formatter: ->(str) { cast_regex_value(str) } })

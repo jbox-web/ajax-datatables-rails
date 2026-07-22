@@ -465,6 +465,23 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
           expect(datatable.data.size).to eq 0
         end
       end
+
+      describe 'bigint column (value beyond the 32-bit integer range)' do
+        let(:datatable) { DatatableCondEqId.new(sample_params) }
+        let(:big_id) { 3_000_000_000 }
+
+        before do
+          datatable.params[:columns]['8'] = {
+            'data' => 'id', 'name' => '', 'searchable' => 'true', 'orderable' => 'true',
+            'search' => { 'value' => big_id.to_s, 'regex' => 'false' }
+          }
+          User.create!(id: big_id, username: 'big', email: 'big@example.com')
+        end
+
+        it 'matches a bigint value that a 32-bit range would wrongly reject' do
+          expect(datatable.data.size).to eq 1
+        end
+      end
     end
 
     context 'with proc condition' do

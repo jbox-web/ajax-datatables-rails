@@ -5,10 +5,18 @@ module AjaxDatatablesRails
     class Column
       module Search
 
-        SMALLEST_PQ_INTEGER = -2_147_483_648
-        LARGEST_PQ_INTEGER  = 2_147_483_647
-        NOT_NULL_VALUE      = '!NULL'
-        EMPTY_VALUE         = ''
+        # Signed-integer ranges by column byte size. The guard only exists to
+        # dodge PostgreSQL's strict "value out of range" error; PG always reports
+        # the limit, so nil (e.g. SQLite, which never raises) falls back to bigint.
+        INTEGER_RANGE_BY_BYTES = {
+          2 => (-32_768..32_767),
+          4 => (-2_147_483_648..2_147_483_647),
+          8 => (-9_223_372_036_854_775_808..9_223_372_036_854_775_807),
+        }.freeze
+        DEFAULT_INTEGER_BYTES = 8
+
+        NOT_NULL_VALUE = '!NULL'
+        EMPTY_VALUE    = ''
 
         def searchable?
           @view_column.fetch(:searchable, true)
@@ -109,7 +117,15 @@ module AjaxDatatablesRails
         end
 
         def out_of_range?(search_value)
-          Integer(search_value) > LARGEST_PQ_INTEGER || Integer(search_value) < SMALLEST_PQ_INTEGER
+          !column_integer_range.cover?(Integer(search_value))
+        end
+
+        # Range accepted for this column: keyed on the column's byte size when the
+        # adapter exposes it (2/4/8), else the bigint range (permissive adapters
+        # never raise; only PostgreSQL does, and it always reports the limit).
+        def column_integer_range
+          bytes = model.columns_hash[field.to_s]&.limit unless custom_field?
+          INTEGER_RANGE_BY_BYTES[bytes] || INTEGER_RANGE_BY_BYTES[DEFAULT_INTEGER_BYTES]
         end
 
         def integer?(string)
