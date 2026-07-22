@@ -693,4 +693,23 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       expect(item[:last_name]).to eq 'DOE'
     end
   end
+
+  describe 'json (array-form) params' do
+    let(:datatable) { ComplexDatatable.new(sample_params_json) }
+
+    before do
+      create(:user, username: 'johndoe', email: 'johndoe@example.com')
+      create(:user, username: 'msmith', email: 'mary.smith@example.com')
+    end
+
+    it 'filters by a per-column search' do
+      datatable.params[:columns][0][:search][:value] = 'johndoe'
+      expect(datatable.data.map { |record| record[:username] }).to eq(['johndoe'])
+    end
+
+    it 'paginates through the array-form columns' do
+      datatable.params[:length] = '1'
+      expect(datatable.data.size).to eq 1
+    end
+  end
 end

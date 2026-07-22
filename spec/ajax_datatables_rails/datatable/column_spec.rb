@@ -122,6 +122,35 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     end
   end
 
+  describe 'regex search' do
+    let(:column) { datatable.datatable.columns.first }
+
+    before do
+      datatable.params[:columns]['0'][:search][:value] = 'john|jane'
+      datatable.params[:columns]['0'][:search][:regex] = 'true'
+    end
+
+    it 'builds an Arel regexp node when use_regex is enabled (default)' do
+      expect(column.search_query).to be_a(Arel::Nodes::Regexp)
+    end
+  end
+
+  describe 'date range column with a custom delimiter' do
+    let(:datatable) { DatatableCondDateCustomDelimiter.new(sample_params) }
+    let(:column) { datatable.datatable.columns.find { |c| c.data == 'created_at' } }
+
+    before { datatable.params[:columns]['7'][:search][:value] = '2000-01-01|2000-12-31' }
+
+    it 'uses the custom delimiter' do
+      expect(column.delimiter).to eq('|')
+    end
+
+    it 'splits range_start and range_end on the custom delimiter' do
+      expect(column.range_start).to eq('2000-01-01')
+      expect(column.range_end).to eq('2000-12-31')
+    end
+  end
+
   describe 'unsearchable column' do
     let(:column) { datatable.datatable.columns.find { |c| c.data == 'email_hash' } }
 

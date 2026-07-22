@@ -31,6 +31,7 @@ Style/BlockDelimiters:
 
 Style/OneClassPerFile:
   Exclude:
+    - spec/support/datatables/datatable_cond_date.rb
     - spec/support/datatables/datatable_cond_numeric.rb
     - spec/support/datatables/datatable_cond_string.rb
 
