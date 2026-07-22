@@ -46,6 +46,25 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
+  describe '#sort_records with a column whose source is not a database column' do
+    # 'post' resolves to User.post, which is not a physical column (the column is
+    # post_id) — an ORDER BY against users.post would raise StatementInvalid.
+    let(:datatable) { DatatableNonexistentColumn.new(sample_params) }
+
+    before do
+      datatable.params[:columns]['8'] = {
+        'data' => 'post', 'name' => '', 'searchable' => 'false', 'orderable' => 'true',
+        'search' => { 'value' => '', 'regex' => 'false' }
+      }
+      datatable.params[:order]['0'] = { column: '8', dir: 'asc' }
+    end
+
+    it 'skips the non-existent column instead of raising' do
+      expect { datatable.sort_records(records).load }.to_not raise_error
+      expect(datatable.sort_records(records).to_sql).to_not include('users.post')
+    end
+  end
+
   describe '#sort_records with json (array-form) params' do
     let(:datatable) { ComplexDatatable.new(sample_params_json) }
 

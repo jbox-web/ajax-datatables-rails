@@ -283,5 +283,9 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     it 'is not searchable' do
       expect(column.searchable?).to be(false)
     end
+
+    it 'is not orderable' do
+      expect(column.orderable?).to be(false)
+    end
   end
 end
