@@ -265,4 +265,23 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
       expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message(message)
     end
   end
+
+  describe 'when source is not a database column' do
+    # 'post' resolves to User.post, which is not a physical column (the column
+    # is post_id) — reproduces #427 where an association name generated a WHERE
+    # against a non-existent column.
+    let(:datatable) { DatatableNonexistentColumn.new(sample_params) }
+    let(:column) { datatable.datatable.column_by(:data, 'post') }
+
+    before do
+      datatable.params[:columns]['8'] = {
+        'data' => 'post', 'name' => '', 'searchable' => 'true', 'orderable' => 'false',
+        'search' => { 'value' => '', 'regex' => 'false' }
+      }
+    end
+
+    it 'is not searchable' do
+      expect(column.searchable?).to be(false)
+    end
+  end
 end

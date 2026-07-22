@@ -19,7 +19,16 @@ module AjaxDatatablesRails
         EMPTY_VALUE    = ''
 
         def searchable?
-          @view_column.fetch(:searchable, true)
+          @view_column.fetch(:searchable, true) && searchable_field?
+        end
+
+        # A dotted source (Model.field) is only searchable if `field` is a real
+        # database column; building a WHERE against a source that points at an
+        # association name (e.g. `Model.user` when the column is `user_id`) would
+        # raise. Custom fields (no dot in the source) never hit the DB directly,
+        # so they are always allowed here and filtered out later in the query.
+        def searchable_field?
+          custom_field? || model.column_names.include?(field.to_s)
         end
 
         def cond

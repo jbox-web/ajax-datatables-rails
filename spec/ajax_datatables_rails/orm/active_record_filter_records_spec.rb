@@ -29,6 +29,25 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       end
     end
 
+    context 'with a column whose source is not a database column' do
+      # 'post' resolves to User.post, which is not a physical column (the column
+      # is post_id) — reproduces #427 where an association name produced a WHERE
+      # against a non-existent column and raised StatementInvalid.
+      let(:datatable) { DatatableNonexistentColumn.new(sample_params) }
+
+      before do
+        datatable.params[:columns]['8'] = {
+          'data' => 'post', 'name' => '', 'searchable' => 'true', 'orderable' => 'false',
+          'search' => { 'value' => '', 'regex' => 'false' }
+        }
+        datatable.params[:search] = { value: 'smith', regex: 'false' }
+      end
+
+      it 'does not raise and skips the non-existent column' do
+        expect { datatable.filter_records(records).load }.to_not raise_error
+      end
+    end
+
     it 'performs a composite search second' do
       datatable.params[:search] = { value: '' }
       allow(datatable).to receive(:build_conditions_for_selected_columns)
