@@ -116,3 +116,42 @@ appraise 'rails_8.0_with_postgis' do
   gem 'pg'
   gem 'activerecord-postgis-adapter', '~> 11.0.0'
 end
+
+###############
+# RAILS 8.1.0 #
+###############
+
+appraise 'rails_8.1_with_postgresql' do
+  gem 'rails', '~> 8.1.0'
+  gem 'pg'
+end
+
+appraise 'rails_8.1_with_sqlite3' do
+  gem 'rails', '~> 8.1.0'
+  gem 'sqlite3'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.1_with_mysql2' do
+  gem 'rails', '~> 8.1.0'
+  gem 'mysql2'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.1_with_trilogy' do
+  gem 'rails', '~> 8.1.0'
+  gem 'activerecord-trilogy-adapter'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.1_with_oracle_enhanced' do
+  gem 'rails', '~> 8.1.0'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 8.1.0'
+  remove_gem 'pg'
+end
+
+appraise 'rails_8.1_with_postgis' do
+  gem 'rails', '~> 8.1.0'
+  gem 'pg'
+  gem 'activerecord-postgis-adapter', '~> 11.1.0'
+end
