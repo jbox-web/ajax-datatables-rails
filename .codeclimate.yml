@@ -1,8 +1,0 @@
----
-plugins:
-  rubocop:
-    enabled: true
-    channel: rubocop-1-31-0
-exclude_patterns:
-  - spec/
-  - lib/generators/rails/templates/
