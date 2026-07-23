@@ -158,6 +158,9 @@ module AjaxDatatablesRails
       numeric_count filter_records(fetch_records).count(:all)
     end
 
+    # A grouped datatable (get_raw_records with a GROUP BY) makes AR#count return
+    # a Hash keyed by group, so the reported count must be the number of groups.
+    # Ungrouped queries return an Integer and pass through unchanged.
     def numeric_count(count)
       count.is_a?(Hash) ? count.values.size : count
     end

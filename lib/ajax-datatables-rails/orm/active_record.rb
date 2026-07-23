@@ -25,6 +25,9 @@ module AjaxDatatablesRails
 
       # ----------------- SEARCH HELPER METHODS --------------------
 
+      # Final WHERE = (per-column searches) AND (global search box), each part
+      # optional: reduce(:and) collapses the surviving Arel nodes and compact
+      # drops whichever part produced nothing.
       def build_conditions
         @build_conditions ||= begin
           criteria = [build_conditions_for_selected_columns]
@@ -33,6 +36,13 @@ module AjaxDatatablesRails
         end
       end
 
+      # Global search (the single top-level search box). The value is split into
+      # space-separated atoms; an atom matches when ANY searchable column matches
+      # it (OR), and every atom must match (AND) — the classic "all words present,
+      # anywhere" behaviour. Columns already filtered by their own per-column
+      # search are excluded here. The transient `search=` assignment feeds each
+      # atom through the column's existing search_query builder for the duration
+      # of the loop; it does not mutate the incoming request params.
       def build_conditions_for_datatable
         columns = searchable_columns.reject(&:searched?)
         search_for.inject([]) do |crit, atom|
@@ -43,10 +53,14 @@ module AjaxDatatablesRails
         end.compact.reduce(:and)
       end
 
+      # Per-column search: each column carrying its own search value contributes
+      # one condition, all AND-ed together.
       def build_conditions_for_selected_columns
         search_columns.filter_map(&:search_query).reduce(:and)
       end
 
+      # Split the global search box value into individual atoms (words) on the
+      # delimiter, so multi-word searches are AND-ed term by term.
       def search_for
         datatable.search.value.split(global_search_delimiter)
       end
