@@ -452,6 +452,17 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
+      describe 'global search does not leave columns marked as searched' do
+        let(:datatable) { ComplexDatatable.new(sample_params) }
+
+        it 'restores each column search state after building conditions' do
+          datatable.params[:search][:value] = 'foo'
+          datatable.send(:filter_records, User.all).to_sql
+          username = datatable.datatable.column_by(:data, 'username')
+          expect(username.searched?).to be(false)
+        end
+      end
+
       describe 'it returns an empty result for a non-integer value on a numeric column' do
         let(:datatable) { DatatableCondEq.new(sample_params) }
 

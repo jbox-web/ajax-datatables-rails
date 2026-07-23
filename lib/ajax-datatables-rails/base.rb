@@ -4,8 +4,18 @@ module AjaxDatatablesRails
   class Base # rubocop:disable Metrics/ClassLength
 
     class << self
+      # Auto-detected from the app's first ActiveRecord config for the current
+      # env. With no such config (or an ambiguous multi-database setup) the host
+      # app should set the `db_adapter` class attribute explicitly rather than
+      # get a bare NoMethodError on nil.
       def default_db_adapter
-        ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).first.adapter.downcase.to_sym
+        config = ::ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).first
+        unless config
+          raise "ajax-datatables-rails: no ActiveRecord configuration for env '#{Rails.env}'; " \
+                'set the `db_adapter` class attribute on your datatable'
+        end
+
+        config.adapter.downcase.to_sym
       end
     end
 

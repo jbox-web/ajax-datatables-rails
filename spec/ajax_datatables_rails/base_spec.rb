@@ -4,6 +4,13 @@ require 'spec_helper'
 
 RSpec.describe AjaxDatatablesRails::Base do
 
+  describe '.default_db_adapter' do
+    it 'raises a descriptive error when no ActiveRecord config exists for the env' do
+      allow(ActiveRecord::Base.configurations).to receive(:configs_for).and_return([])
+      expect { described_class.default_db_adapter }.to raise_error(/db_adapter/)
+    end
+  end
+
   describe 'an instance' do
     it 'requires a hash of params' do
       expect { described_class.new }.to raise_error ArgumentError

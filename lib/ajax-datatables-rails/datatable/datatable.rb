@@ -58,8 +58,10 @@ module AjaxDatatablesRails
         per_page != -1
       end
 
+      # A present-but-blank length (e.g. `length=`) must fall back to the default,
+      # otherwise `''.to_i` yields 0 and paginates to an empty result set.
       def per_page
-        options.fetch(:length, 10).to_i
+        (options[:length].presence || 10).to_i
       end
 
       def offset

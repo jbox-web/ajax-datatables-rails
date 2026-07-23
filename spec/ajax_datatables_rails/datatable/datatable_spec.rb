@@ -133,6 +133,14 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
           expect(datatable.per_page).to eq(20)
         end
       end
+
+      context 'when params[:length] is present but blank' do
+        let(:datatable) { ComplexDatatable.new({ length: '' }).datatable }
+
+        it 'defaults to 10 instead of collapsing to 0' do
+          expect(datatable.per_page).to eq(10)
+        end
+      end
     end
 
     describe '#offset' do

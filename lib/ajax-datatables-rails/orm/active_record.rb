@@ -40,17 +40,28 @@ module AjaxDatatablesRails
       # space-separated atoms; an atom matches when ANY searchable column matches
       # it (OR), and every atom must match (AND) — the classic "all words present,
       # anywhere" behaviour. Columns already filtered by their own per-column
-      # search are excluded here. The transient `search=` assignment feeds each
-      # atom through the column's existing search_query builder for the duration
-      # of the loop; it does not mutate the incoming request params.
+      # search are excluded here. Each atom is fed through the column's existing
+      # search_query builder by temporarily assigning `search=` (restored below).
       def build_conditions_for_datatable
         columns = searchable_columns.reject(&:searched?)
-        search_for.inject([]) do |crit, atom|
-          crit << columns.filter_map do |simple_column|
-            simple_column.search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
-            simple_column.search_query
-          end.reduce(:or)
-        end.compact.reduce(:and)
+        preserving_search(columns) do
+          search_for.filter_map do |atom|
+            columns.filter_map do |simple_column|
+              simple_column.search = Datatable::SimpleSearch.new(value: atom, regex: datatable.search.regexp?)
+              simple_column.search_query
+            end.reduce(:or)
+          end.reduce(:and)
+        end
+      end
+
+      # Runs the block, then restores each column's search, so the shared,
+      # memoized Column objects are not left reporting a stale
+      # `searched?`/`search.value` after a global search mutates them.
+      def preserving_search(columns)
+        originals = columns.map(&:search)
+        yield
+      ensure
+        columns.each_with_index { |simple_column, i| simple_column.search = originals[i] }
       end
 
       # Per-column search: each column carrying its own search value contributes

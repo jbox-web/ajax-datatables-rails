@@ -13,6 +13,15 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
     it 'sql query' do
       expect(simple_order.query('firstname')).to eq('firstname DESC')
     end
+
+    context 'when the order param carries no direction' do
+      let(:options) { ActiveSupport::HashWithIndifferentAccess.new({ 'column' => '1' }) }
+
+      it 'falls back to ASC instead of raising NoMethodError' do
+        expect { simple_order.query('firstname') }.to_not raise_error
+        expect(simple_order.query('firstname')).to eq('firstname ASC')
+      end
+    end
   end
 
   describe 'option methods with nulls last' do

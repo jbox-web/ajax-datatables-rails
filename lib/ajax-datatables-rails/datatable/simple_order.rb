@@ -35,8 +35,10 @@ module AjaxDatatablesRails
         @options[:column]
       end
 
+      # A malformed order param may omit `dir`; `to_s` keeps this nil-safe and
+      # `direction` then falls back to ASC via its `|| DIRECTION_ASC`.
       def column_direction
-        @options[:dir].upcase
+        @options[:dir].to_s.upcase
       end
 
       def sort_nulls_last?
