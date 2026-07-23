@@ -452,6 +452,16 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
         end
       end
 
+      describe 'it returns an empty result for a non-integer value on a numeric column' do
+        let(:datatable) { DatatableCondEq.new(sample_params) }
+
+        it 'skips the DB cast and matches nothing' do
+          datatable.params[:columns]['5'][:search][:value] = 'not-a-number'
+          expect { datatable.data }.to_not raise_error
+          expect(datatable.data.size).to eq 0
+        end
+      end
+
       describe 'Integer overflows' do
         let(:datatable) { DatatableCondEq.new(sample_params) }
         let(:largest_postgresql_integer_value) { 2_147_483_647 }

@@ -256,6 +256,16 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
     end
   end
 
+  describe 'when column data is missing (nil)' do
+    before { datatable.params[:columns]['0'][:data] = nil }
+
+    let(:message) { 'Unknown column. Check that `data` field is filled on JS side with the column name' }
+
+    it 'raises a descriptive error rather than a NoMethodError' do
+      expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message(message)
+    end
+  end
+
   describe 'when unknown column' do
     before { datatable.params[:columns]['0'][:data] = 'foo' }
 
@@ -263,6 +273,81 @@ RSpec.describe AjaxDatatablesRails::Datatable::Column do
 
     it 'raises error' do
       expect { datatable.to_json }.to raise_error(AjaxDatatablesRails::Error::InvalidSearchColumn).with_message(message)
+    end
+  end
+
+  describe 'custom (non-database) column' do
+    let(:column) { datatable.datatable.column_by(:data, 'full_name') }
+
+    describe '#model' do
+      it 'resolves to the raw source string' do
+        expect(column.model).to eq('full_name')
+      end
+    end
+
+    describe '#field' do
+      it 'resolves to the raw source string' do
+        expect(column.field).to eq('full_name')
+      end
+    end
+
+    describe '#search_query with a numeric condition' do
+      let(:datatable) do
+        Class.new(ComplexDatatable) do
+          def view_columns
+            super.deep_merge(full_name: { cond: :eq })
+          end
+        end.new(sample_params)
+      end
+
+      before { datatable.params[:columns]['4'][:search][:value] = '5' }
+
+      it 'returns nil because a custom field cannot target a raw column' do
+        expect(column.search_query).to be_nil
+      end
+    end
+  end
+
+  describe 'regex search on a custom column' do
+    let(:column) { datatable.datatable.column_by(:data, 'full_name') }
+
+    before do
+      datatable.params[:columns]['4'][:search][:value] = 'jo|ja'
+      datatable.params[:columns]['4'][:search][:regex] = 'true'
+    end
+
+    it 'builds an Arel regexp node targeting the raw field' do
+      expect(column.search_query).to be_a(Arel::Nodes::Regexp)
+    end
+  end
+
+  describe 'regex search with use_regex disabled' do
+    let(:datatable) { DatatableCondInWithRegex.new(sample_params) }
+    let(:column) { datatable.datatable.column_by(:data, 'post_id') }
+
+    before do
+      datatable.params[:columns]['5'][:search][:value] = '1|2'
+      datatable.params[:columns]['5'][:search][:regex] = 'true'
+    end
+
+    it 'falls back to non_regex_search instead of a regexp node' do
+      expect(column.search_query).to_not be_a(Arel::Nodes::Regexp)
+    end
+  end
+
+  describe 'date range parsing without a configured Time.zone' do
+    let(:datatable) { DatatableCondDateCustomDelimiter.new(sample_params) }
+    let(:column) { datatable.datatable.column_by(:data, 'created_at') }
+
+    before do
+      datatable.params[:columns]['7'][:search][:value] = '2020-01-01|2020-12-31'
+      # In a Rails app Time.zone always falls back to config.time_zone (UTC by
+      # default), so the bare-Time.parse branch is only reachable by forcing nil.
+      allow(Time).to receive(:zone).and_return(nil)
+    end
+
+    it 'falls back to Time.parse and still builds the range query' do
+      expect(column.search_query).to_not be_nil
     end
   end
 

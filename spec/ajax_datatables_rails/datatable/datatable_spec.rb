@@ -62,6 +62,32 @@ RSpec.describe AjaxDatatablesRails::Datatable::Datatable do
     it_behaves_like 'columns methods'
   end
 
+  describe '#order_by' do
+    before { datatable.options[:order] = order_option }
+
+    it 'finds the SimpleOrder matching the given attribute' do
+      expect(datatable.order_by(:direction, 'ASC')).to be(datatable.orders.first)
+    end
+
+    it 'returns nil when no order matches' do
+      expect(datatable.order_by(:direction, 'NOPE')).to be_nil
+    end
+  end
+
+  describe '#get_param' do
+    context 'when the requested param is absent' do
+      let(:datatable) { ComplexDatatable.new({}).datatable }
+
+      it 'returns no columns' do
+        expect(datatable.columns).to eq([])
+      end
+
+      it 'returns no orders' do
+        expect(datatable.orders).to eq([])
+      end
+    end
+  end
+
   describe 'search methods' do
     it 'is searchable' do
       datatable.options[:search][:value] = 'atom'

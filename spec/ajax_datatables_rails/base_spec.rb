@@ -227,6 +227,46 @@ RSpec.describe AjaxDatatablesRails::Base do
     end
   end
 
+  describe '#retrieve_records' do
+    let(:datatable) { ComplexDatatable.new(sample_params) }
+
+    before { create_list(:user, 3) }
+
+    context 'when the request carries no ordering' do
+      before { datatable.params[:order] = nil }
+
+      it 'skips the sort step and still returns every record' do
+        expect(datatable.data.size).to eq 3
+      end
+    end
+
+    context 'when pagination is disabled (params[:length] == -1)' do
+      before { datatable.params[:length] = '-1' }
+
+      it 'skips the paginate step and returns every record' do
+        expect(datatable.data.size).to eq 3
+      end
+    end
+  end
+
+  describe '#draw_id' do
+    context 'when params[:draw] is present' do
+      let(:datatable) { ComplexDatatable.new(sample_params) }
+
+      it 'returns the draw number' do
+        expect(datatable.send(:draw_id)).to eq(draw: 1)
+      end
+    end
+
+    context 'when params[:draw] is absent' do
+      let(:datatable) { ComplexDatatable.new(sample_params.except('draw')) }
+
+      it 'returns an empty hash' do
+        expect(datatable.send(:draw_id)).to eq({})
+      end
+    end
+  end
+
   describe 'User helper methods' do
     describe '#column_id' do
       let(:datatable) { ComplexDatatable.new(sample_params) }
