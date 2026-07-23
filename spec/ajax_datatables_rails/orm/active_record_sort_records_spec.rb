@@ -86,7 +86,7 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(datatable.sort_records(records).to_sql).to include(
-        "ORDER BY users.username ASC #{nulls_last_sql(datatable)}, users.email DESC #{nulls_last_sql(datatable)}"
+        "ORDER BY #{nulls_last_term(datatable, 'users.username', 'ASC')}, #{nulls_last_term(datatable, 'users.email', 'DESC')}"
       )
     end
   end
@@ -100,8 +100,28 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
       nulls_last_datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
       nulls_last_datatable.params[:order]['1'] = { column: '1', dir: 'desc' }
       expect(nulls_last_datatable.sort_records(records).to_sql).to include(
-        "ORDER BY users.username ASC, users.email DESC #{nulls_last_sql(datatable)}"
+        "ORDER BY users.username ASC, #{nulls_last_term(datatable, 'users.email', 'DESC')}"
       )
+    end
+  end
+
+  describe '#sort_records with nulls last executed against the database' do
+    before do
+      create(:user, username: 'aaa', email: nil)
+      create(:user, username: 'zzz', email: nil)
+    end
+
+    it 'orders NULLs last without raising a SQL syntax error' do
+      skip('unsupported database adapter') if RunningSpec.oracle?
+
+      # order by email DESC with nulls_last enabled on the email column
+      nulls_last_datatable.params[:order]['0'] = { column: '1', dir: 'desc' }
+
+      emails = nil
+      expect { emails = nulls_last_datatable.sort_records(records).map(&:email) }.to_not raise_error
+      # non-null values come first (DESC), the two NULLs are pushed to the end
+      expect(emails.first).to eq('mary.smith@example.com')
+      expect(emails.last(2)).to eq([nil, nil])
     end
   end
 

@@ -76,12 +76,15 @@ def sample_params_json
   ActionController::Parameters.new(hash_params)
 end
 
-def nulls_last_sql(datatable)
+# Full ORDER BY fragment for one column when nulls-last is active, per adapter:
+# a native `NULLS LAST` suffix on PostgreSQL/Oracle, a leading `IS NULL` key on
+# MySQL/SQLite.
+def nulls_last_term(datatable, column, direction)
   case datatable.db_adapter
   when :pg, :postgresql, :postgres, :oracle, :postgis
-    'NULLS LAST'
+    "#{column} #{direction} NULLS LAST"
   when :mysql, :mysql2, :trilogy, :sqlite, :sqlite3
-    'IS NULL'
+    "#{column} IS NULL, #{column} #{direction}"
   else
     raise 'unsupported database adapter'
   end

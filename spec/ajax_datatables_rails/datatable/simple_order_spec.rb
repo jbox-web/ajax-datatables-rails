@@ -23,9 +23,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
       it 'sql query' do
         skip('unsupported database adapter') if RunningSpec.oracle?
 
-        expect(simple_order.query('email')).to eq(
-          "email DESC #{nulls_last_sql(parent)}"
-        )
+        expect(simple_order.query('email')).to eq(nulls_last_term(parent, 'email', 'DESC'))
       end
     end
 
@@ -54,7 +52,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
         before { parent.db_adapter = :sqlite }
 
         it 'sql query' do
-          expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
+          expect(nulls_last_order.query('email')).to eq('email IS NULL, email DESC')
         end
       end
 
@@ -62,7 +60,7 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
         before { parent.db_adapter = :mysql }
 
         it 'sql query' do
-          expect(nulls_last_order.query('email')).to eq('email DESC IS NULL')
+          expect(nulls_last_order.query('email')).to eq('email IS NULL, email DESC')
         end
       end
     end

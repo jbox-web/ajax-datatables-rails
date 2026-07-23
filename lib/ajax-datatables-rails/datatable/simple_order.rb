@@ -16,7 +16,9 @@ module AjaxDatatablesRails
       end
 
       def query(sort_column)
-        [sort_column, direction, nulls_last_sql].compact.join(' ')
+        return "#{sort_column} #{direction}" unless sort_nulls_last?
+
+        nulls_last_query(sort_column)
       end
 
       def column
@@ -41,29 +43,36 @@ module AjaxDatatablesRails
         column.nulls_last? || @nulls_last == true
       end
 
-      PG_NULL_STYLE    = 'NULLS LAST'
-      MYSQL_NULL_STYLE = 'IS NULL'
-      private_constant :PG_NULL_STYLE
-      private_constant :MYSQL_NULL_STYLE
+      # NULLs-last ordering has no portable syntax. PostgreSQL and Oracle support
+      # the native, index-friendly `NULLS LAST` suffix. MySQL and SQLite do not,
+      # so a leading `<col> IS NULL` key (0 for present values, 1 for NULLs) sorts
+      # them last — and it MUST be a separate, comma-separated ordering term:
+      # appending `IS NULL` after `<col> <dir>` is a SQL syntax error.
+      def nulls_last_query(sort_column)
+        case null_sort_style
+        when :native
+          "#{sort_column} #{direction} NULLS LAST"
+        when :is_null
+          "#{sort_column} IS NULL, #{sort_column} #{direction}"
+        end
+      end
 
-      NULL_STYLE_MAP = {
-        pg:         PG_NULL_STYLE,
-        postgresql: PG_NULL_STYLE,
-        postgres:   PG_NULL_STYLE,
-        postgis:    PG_NULL_STYLE,
-        oracle:     PG_NULL_STYLE,
-        mysql:      MYSQL_NULL_STYLE,
-        mysql2:     MYSQL_NULL_STYLE,
-        trilogy:    MYSQL_NULL_STYLE,
-        sqlite:     MYSQL_NULL_STYLE,
-        sqlite3:    MYSQL_NULL_STYLE,
+      NULL_SORT_STYLE = {
+        pg:         :native,
+        postgresql: :native,
+        postgres:   :native,
+        postgis:    :native,
+        oracle:     :native,
+        mysql:      :is_null,
+        mysql2:     :is_null,
+        trilogy:    :is_null,
+        sqlite:     :is_null,
+        sqlite3:    :is_null,
       }.freeze
-      private_constant :NULL_STYLE_MAP
+      private_constant :NULL_SORT_STYLE
 
-      def nulls_last_sql
-        return unless sort_nulls_last?
-
-        NULL_STYLE_MAP[@adapter] || raise("unsupported database adapter: #{@adapter}")
+      def null_sort_style
+        NULL_SORT_STYLE[@adapter] || raise("unsupported database adapter: #{@adapter}")
       end
 
     end
