@@ -9,7 +9,7 @@
 
 It's tested against :
 
-* Rails: 7.1 / 7.2 / 8.0
+* Rails: 7.1 / 7.2 / 8.0 / 8.1
 * Ruby: 3.1 / 3.2 / 3.3 / 3.4 / 4.0
 * Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle Free 23
 * Adapters: sqlite / mysql2 / postgres / postgis / oracle (trilogy is supported but not currently exercised in CI)
@@ -34,9 +34,7 @@ The final goal of this gem is to **generate a JSON** content that will be given 
 All the datatable customizations (header, tr, td, css classes, width, height, buttons, etc...) **must** take place in the [javascript definition](#5-wire-up-the-javascript) of the datatable.
 jQuery DataTables is a very powerful tool with a lot of customizations available. Take the time to [read the doc](https://datatables.net/reference/option/).
 
-You'll find a sample project here : https://ajax-datatables-rails.herokuapp.com
-
-Its real world examples. The code is here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
+You'll find a sample project with real world examples here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
 
 
 ## Installation
@@ -409,7 +407,7 @@ class UserDatatable < AjaxDatatablesRails::ActiveRecord
         first_name: link_to(record.first_name, edit_user_path(record)),
         last_name:  record.last_name,
         email:      mail_to(record.email),
-        bio:        record.bio
+        bio:        record.bio,
         DT_RowId:   record.id,
       }
     end
@@ -443,9 +441,9 @@ class UserDatatable < AjaxDatatablesRails::ActiveRecord
       {
         id:         record.decorate.check_box,
         first_name: record.decorate.link_to,
-        last_name:  record.decorate.last_name
+        last_name:  record.decorate.last_name,
         email:      record.decorate.email,
-        bio:        record.decorate.bio
+        bio:        record.decorate.bio,
         DT_RowId:   record.id,
       }
     end
@@ -558,7 +556,7 @@ def view_columns
     order_created_at: { source: 'PurchaseOrder.created_at' },
     quantity:         { source: 'Purchase::LineItem.quantity' },
     unit_price:       { source: 'Purchase::LineItem.unit_price' },
-    item_total:       { source: 'Purchase::LineItem.item_total }'
+    item_total:       { source: 'Purchase::LineItem.item_total' }
   }
 end
 ```
