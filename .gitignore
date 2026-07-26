@@ -24,3 +24,6 @@ spec/dummy/tmp/
 
 # Ignore MacOS files
 .DS_Store
+
+# Ignore codegraph db
+/.codegraph
