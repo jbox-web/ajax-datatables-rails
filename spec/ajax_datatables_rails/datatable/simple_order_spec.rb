@@ -30,8 +30,6 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
       after  { parent.nulls_last = false }
 
       it 'sql query' do
-        skip('unsupported database adapter') if RunningSpec.oracle?
-
         expect(simple_order.query('email')).to eq(nulls_last_term(parent, 'email', 'DESC'))
       end
     end
@@ -70,6 +68,33 @@ RSpec.describe AjaxDatatablesRails::Datatable::SimpleOrder do
 
         it 'sql query' do
           expect(nulls_last_order.query('email')).to eq('email IS NULL, email DESC')
+        end
+      end
+
+      # :oracle_enhanced is the adapter name Rails reports for Oracle, so it is
+      # what `default_db_adapter` auto-detects: it must map to the native syntax
+      # like the shorter :oracle alias.
+      context 'with oracle database adapter' do
+        before { parent.db_adapter = :oracle_enhanced }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC NULLS LAST')
+        end
+      end
+
+      context 'with oracleenhanced database adapter' do
+        before { parent.db_adapter = :oracleenhanced }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('email DESC NULLS LAST')
+        end
+      end
+
+      context 'with sqlserver database adapter' do
+        before { parent.db_adapter = :sqlserver }
+
+        it 'sql query' do
+          expect(nulls_last_order.query('email')).to eq('CASE WHEN email IS NULL THEN 1 ELSE 0 END, email DESC')
         end
       end
     end

@@ -2,6 +2,8 @@
 
 ## 1.6.0 (2025-??-??)
 
+* Fix `nulls_last` raising on the `oracle_enhanced` adapter (the name Rails actually reports for Oracle)
+* Add `nulls_last` support for the `sqlserver` adapter
 * Remove dead code
 * Implementing `searchable: false` tests
 * Improve objects shape

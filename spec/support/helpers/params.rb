@@ -104,13 +104,15 @@ end
 
 # Full ORDER BY fragment for one column when nulls-last is active, per adapter:
 # a native `NULLS LAST` suffix on PostgreSQL/Oracle, a leading `IS NULL` key on
-# MySQL/SQLite.
+# MySQL/SQLite, a CASE expression on SQL Server.
 def nulls_last_term(datatable, column, direction)
   case datatable.db_adapter
-  when :pg, :postgresql, :postgres, :oracle, :postgis
+  when :pg, :postgresql, :postgres, :postgis, :oracle, :oracleenhanced, :oracle_enhanced
     "#{column} #{direction} NULLS LAST"
   when :mysql, :mysql2, :trilogy, :sqlite, :sqlite3
     "#{column} IS NULL, #{column} #{direction}"
+  when :sqlserver
+    "CASE WHEN #{column} IS NULL THEN 1 ELSE 0 END, #{column} #{direction}"
   else
     raise 'unsupported database adapter'
   end

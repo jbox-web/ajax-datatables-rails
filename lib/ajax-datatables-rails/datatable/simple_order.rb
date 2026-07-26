@@ -50,26 +50,36 @@ module AjaxDatatablesRails
       # so a leading `<col> IS NULL` key (0 for present values, 1 for NULLs) sorts
       # them last — and it MUST be a separate, comma-separated ordering term:
       # appending `IS NULL` after `<col> <dir>` is a SQL syntax error.
+      # SQL Server rejects a bare predicate in ORDER BY, so the same key has to be
+      # spelled out as a CASE expression.
       def nulls_last_query(sort_column)
         case null_sort_style
         when :native
           "#{sort_column} #{direction} NULLS LAST"
         when :is_null
           "#{sort_column} IS NULL, #{sort_column} #{direction}"
+        when :case_when
+          "CASE WHEN #{sort_column} IS NULL THEN 1 ELSE 0 END, #{sort_column} #{direction}"
         end
       end
 
+      # Keys must cover every spelling `db_adapter` can take: the value is either
+      # auto-detected from the app's AR config (`oracle_enhanced` for Oracle) or
+      # set by hand on the datatable class, hence the aliases.
       NULL_SORT_STYLE = {
-        pg:         :native,
-        postgresql: :native,
-        postgres:   :native,
-        postgis:    :native,
-        oracle:     :native,
-        mysql:      :is_null,
-        mysql2:     :is_null,
-        trilogy:    :is_null,
-        sqlite:     :is_null,
-        sqlite3:    :is_null,
+        pg:              :native,
+        postgresql:      :native,
+        postgres:        :native,
+        postgis:         :native,
+        oracle:          :native,
+        oracleenhanced:  :native,
+        oracle_enhanced: :native,
+        mysql:           :is_null,
+        mysql2:          :is_null,
+        trilogy:         :is_null,
+        sqlite:          :is_null,
+        sqlite3:         :is_null,
+        sqlserver:       :case_when,
       }.freeze
       private_constant :NULL_SORT_STYLE
 

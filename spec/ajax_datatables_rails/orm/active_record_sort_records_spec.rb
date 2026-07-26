@@ -120,8 +120,6 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     after  { datatable.nulls_last = false }
 
     it 'can handle multiple sorting columns' do
-      skip('unsupported database adapter') if RunningSpec.oracle?
-
       # set to order by Users username in ascending order, and
       # by Users email in descending order
       datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
@@ -134,8 +132,6 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
 
   describe '#sort_records with nulls last using column config' do
     it 'can handle multiple sorting columns' do
-      skip('unsupported database adapter') if RunningSpec.oracle?
-
       # set to order by Users username in ascending order, and
       # by Users email in descending order
       nulls_last_datatable.params[:order]['0'] = { column: '0', dir: 'asc' }
@@ -153,8 +149,6 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
 
     it 'orders NULLs last without raising a SQL syntax error' do
-      skip('unsupported database adapter') if RunningSpec.oracle?
-
       # order by email DESC with nulls_last enabled on the email column
       nulls_last_datatable.params[:order]['0'] = { column: '1', dir: 'desc' }
 
