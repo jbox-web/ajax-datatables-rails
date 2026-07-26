@@ -74,6 +74,47 @@ RSpec.describe AjaxDatatablesRails::ORM::ActiveRecord do
     end
   end
 
+  # A JSON body preserves the native JS types, so `column` arrives as an Integer
+  # while Column#index, built from the params hash key, is a String. Comparing
+  # the two raw values never matched and the ORDER BY was silently dropped: the
+  # request answered 200 with unsorted rows and no error anywhere.
+  describe '#sort_records with json params carrying native types' do
+    let(:datatable) { ComplexDatatable.new(sample_params_json_native) }
+
+    it 'sorts on the requested column' do
+      datatable.params[:order] = [{ 'column' => 1, 'dir' => 'desc' }]
+      expect(datatable.sort_records(records).to_sql).to include('ORDER BY users.email DESC')
+    end
+
+    it 'honours the requested direction' do
+      datatable.params[:order] = [{ 'column' => 1, 'dir' => 'asc' }]
+      expect(datatable.sort_records(records).to_sql).to include('ORDER BY users.email ASC')
+    end
+
+    it 'handles multiple sorting columns' do
+      datatable.params[:order] = [
+        { 'column' => 0, 'dir' => 'asc' },
+        { 'column' => 1, 'dir' => 'desc' },
+      ]
+      expect(datatable.sort_records(records).to_sql).to include(
+        'ORDER BY users.username ASC, users.email DESC'
+      )
+    end
+
+    # post_id is declared `orderable: false` in ComplexDatatable#view_columns.
+    it 'still skips a column which is not orderable' do
+      datatable.params[:order] = [{ 'column' => 5, 'dir' => 'asc' }]
+      expect(datatable.sort_records(records).to_sql).to_not include('ORDER BY')
+    end
+
+    it 'actually reorders the records' do
+      datatable.params[:order] = [{ 'column' => 1, 'dir' => 'desc' }]
+      expect(datatable.sort_records(records).map(&:email)).to eq(
+        ['mary.smith@example.com', 'johndoe@example.com']
+      )
+    end
+  end
+
   describe '#sort_records with nulls last using global config' do
     before { datatable.nulls_last = true }
     after  { datatable.nulls_last = false }

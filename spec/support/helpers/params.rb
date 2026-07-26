@@ -76,6 +76,32 @@ def sample_params_json
   ActionController::Parameters.new(hash_params)
 end
 
+# A form-encoded body reaches Rails as strings only; a JSON body preserves the
+# native JS types, so a client posting `contentType: application/json` sends
+# `order[].column` as an Integer rather than "0". sample_params_json only covers
+# the array shape, still with string values — this helper covers the types too.
+def sample_params_json_native
+  hash_params = sample_params_json.to_unsafe_h
+
+  %w[draw start length].each { |key| hash_params[key] = hash_params[key].to_i }
+  hash_params['order']   = hash_params['order'].map { |order| json_native_order(order) }
+  hash_params['columns'] = hash_params['columns'].map { |column| json_native_column(column) }
+
+  ActionController::Parameters.new(hash_params)
+end
+
+def json_native_order(order)
+  order.merge('column' => order['column'].to_i)
+end
+
+def json_native_column(column)
+  column.merge(
+    'searchable' => column['searchable'] == 'true',
+    'orderable'  => column['orderable'] == 'true',
+    'search'     => column['search'].merge('regex' => column['search']['regex'] == 'true')
+  )
+end
+
 # Full ORDER BY fragment for one column when nulls-last is active, per adapter:
 # a native `NULLS LAST` suffix on PostgreSQL/Oracle, a leading `IS NULL` key on
 # MySQL/SQLite.

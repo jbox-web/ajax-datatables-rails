@@ -48,8 +48,13 @@ module AjaxDatatablesRails
         end
       end
 
+      # Compared as strings on purpose. The same request carries different types
+      # depending on how it was encoded: a form-encoded body gives Rails nothing
+      # but strings, while a JSON body preserves native types, so `order[].column`
+      # arrives as an Integer. Comparing raw values made sorting silently vanish
+      # for JSON clients — no error, a 200, and unsorted rows.
       def column_by(how, what)
-        columns.find { |simple_column| simple_column.send(how) == what }
+        columns.find { |simple_column| simple_column.send(how).to_s == what.to_s }
       end
 
       # ----------------- OPTIONS METHODS --------------------
