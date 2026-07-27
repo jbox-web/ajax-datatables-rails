@@ -5,14 +5,17 @@
 [![Gem](https://img.shields.io/gem/dtv/ajax-datatables-rails.svg)](https://rubygems.org/gems/ajax-datatables-rails)
 [![CI](https://github.com/jbox-web/ajax-datatables-rails/workflows/CI/badge.svg)](https://github.com/jbox-web/ajax-datatables-rails/actions)
 
-**Important : This gem is targeted at DataTables version 1.10.x.**
+**Important : This gem implements the [server-side processing protocol](https://datatables.net/manual/server-side) introduced in DataTables 1.10.
+It works with any DataTables version speaking that protocol (1.10.x and 2.x).**
 
 It's tested against :
 
 * Rails: 7.1 / 7.2 / 8.0 / 8.1
-* Ruby: 3.1 / 3.2 / 3.3 / 3.4 / 4.0
+* Ruby: 3.1 / 3.2 / 3.3 / 3.4 / 4.0 (Rails 8.0 and 8.1 require Ruby >= 3.2)
 * Databases: MySQL 8 / SQLite3 / Postgresql 16 / Oracle Free 23
-* Adapters: sqlite / mysql2 / postgres / postgis / oracle (trilogy is supported but not currently exercised in CI)
+* Adapters: sqlite / mysql2 / postgres / postgis / oracle
+
+`trilogy` and `sqlserver` are implemented (type casting and `NULLS LAST` ordering) but are not currently exercised in CI.
 
 ## Description
 
@@ -36,6 +39,10 @@ jQuery DataTables is a very powerful tool with a lot of customizations available
 
 You'll find a sample project with real world examples here : https://github.com/jbox-web/ajax-datatables-rails-sample-project
 
+This gem handles **only the server side**. For the client side, its companion gem
+[datatables-factory](https://github.com/jbox-web/datatables-factory) builds the HTML table and the
+javascript for you ([see below](#companion-gem-datatables-factory)).
+
 
 ## Installation
 
@@ -55,16 +62,20 @@ We assume here that you have already installed [jQuery DataTables](https://datat
 
 You can install jQuery DataTables :
 
-* with the [`jquery-datatables`](https://github.com/mkhairi/jquery-datatables) gem
+* with `importmap-rails` (`bin/importmap pin datatables.net-dt`), the Rails 7+ default
+* with `jsbundling-rails` (`yarn add datatables.net-dt`)
 * by adding the assets manually (in `vendor/assets`)
-* with [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
+* with the legacy [Rails webpacker gem](https://github.com/rails/webpacker) (see [here](/doc/webpack.md) for more infos)
+
+Migrating from an older version of the gem ? See [the migration guide](/doc/migrate.md).
 
 
 ## Note
 
-Currently `AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
+`AjaxDatatablesRails` only supports `ActiveRecord` as ORM for performing database queries.
 
-Adding support for `Sequel`, `Mongoid` and `MongoMapper` is (more or less) a planned feature for this gem.
+The `AjaxDatatablesRails::ORM` namespace exists so other backends (`Sequel`, `Mongoid`...) could be plugged in,
+but none is implemented and none is currently being worked on.
 
 If you'd be interested in contributing to speed development, please [open an issue](https://github.com/jbox-web/ajax-datatables-rails/issues/new) and get in touch.
 
@@ -72,7 +83,7 @@ If you'd be interested in contributing to speed development, please [open an iss
 ## Quick start (in 5 steps)
 
 The following examples assume that we are setting up `ajax-datatables-rails` for an index page of users from a `User` model,
-and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, [see above](#change-the-db-adapter-for-a-datatable-class))
+and that we are using Postgresql as our db, because you **should be using it**. (It also works with other DB, [see below](#change-the-db-adapter-for-a-datatable-class))
 
 The goal is to render a users table and display : `id`, `first name`, `last name`, `email`, and `bio` for each user.
 
@@ -163,6 +174,34 @@ end
 * `:date_range` for date range
 * `:null_value` for nil field
 * `Proc` for whatever (see [here](https://github.com/jbox-web/ajax-datatables-rails-sample-project/blob/master/app/datatables/city_datatable.rb) for real example)
+
+Any other value raises `AjaxDatatablesRails::Error::InvalidSearchCondition`.
+
+**About the numeric conditions :** the search value must be an integer that fits the column
+(the gem checks the column byte size to avoid a Postgresql *value out of range* error).
+A non-integer or out-of-range value produces an always-false condition instead of a SQL error.
+
+**About `:null_value` :** the search value drives the direction of the test. The special value
+`!NULL` searches for *non-null* rows (`WHERE col IS NOT NULL`), anything else searches for
+null rows (`WHERE col IS NULL`).
+
+**About `Proc` :** the lambda receives the `Column` object and the (formatted) search value,
+and must return an Arel node :
+
+```ruby
+def view_columns
+  @view_columns ||= {
+    population: { source: 'City.population', cond: ->(column, value) { column.table[column.field].gt(value.to_i) } },
+  }
+end
+```
+
+**Silent fallbacks :** a column whose `source` is a `Model.field` pair is only searchable if
+`field` is a real database column, and only orderable if `field` is a real database column or
+an explicit `sort_field` is given. A `source` pointing at an association name (e.g. `User.posts`)
+would otherwise generate an invalid `WHERE` / `ORDER BY` — such a column is silently dropped from
+filtering and sorting rather than raising. If a column mysteriously refuses to sort or search,
+check that its `source` names a column and not an association.
 
 The `nulls_last` param allows for nulls to be ordered last. You can configure it by column, like above, or by datatable class :
 
@@ -258,6 +297,24 @@ The drawback of this method is that you can't pass the `DT_RowId` so it's tricky
 
 [See here](#using-view-helpers) if you need to use view helpers like `link_to`, `mail_to`, etc...
 
+**HTML escaping :** every leaf value returned by `data` is run through `ERB::Util.html_escape`
+before being serialized. Markup you generate on purpose (with `link_to`, a decorator...) is
+already `html_safe` and passes through untouched; a raw `String` containing `<` is escaped.
+Nested `Hash` / `Array` values are traversed, not stringified, so DataTables row properties like
+`DT_RowAttr` and `DT_RowData` (which are objects) survive :
+
+```ruby
+def data
+  records.map do |record|
+    {
+      id:         record.id,
+      DT_RowId:   record.id,
+      DT_RowData: { url: user_path(record) }, # kept as a JSON object, values escaped
+    }
+  end
+end
+```
+
 #### c. Get Raw Records
 
 This is where your query goes.
@@ -295,7 +352,7 @@ def additional_data
 end
 ```
 
-Very useful with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)) to provide values for dropdown filters.
+Very useful with [datatables-factory](#companion-gem-datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)) to provide values for dropdown filters.
 
 
 ### 4) Setup the Controller action
@@ -319,31 +376,7 @@ Don't forget to make sure the proper route has been added to `config/routes.rb`.
 
 ### 5) Wire up the Javascript
 
-Finally, the javascript to tie this all together. In the appropriate `coffee` file:
-
-```coffeescript
-# users.coffee
-
-$ ->
-  $('#users-datatable').dataTable
-    processing: true
-    serverSide: true
-    ajax:
-      url: $('#users-datatable').data('source')
-    pagingType: 'full_numbers'
-    columns: [
-      {data: 'id'}
-      {data: 'first_name'}
-      {data: 'last_name'}
-      {data: 'email'}
-      {data: 'bio'}
-    ]
-    # pagingType is optional, if you want full pagination controls.
-    # Check dataTables documentation to learn more about
-    # available options.
-```
-
-or, if you're using plain javascript:
+Finally, the javascript to tie this all together. In the appropriate `js` file:
 
 ```javascript
 // users.js
@@ -370,7 +403,82 @@ jQuery(document).ready(function() {
 });
 ```
 
+or, if you're using CoffeeScript:
+
+```coffeescript
+# users.coffee
+
+$ ->
+  $('#users-datatable').dataTable
+    processing: true
+    serverSide: true
+    ajax:
+      url: $('#users-datatable').data('source')
+    pagingType: 'full_numbers'
+    columns: [
+      {data: 'id'}
+      {data: 'first_name'}
+      {data: 'last_name'}
+      {data: 'email'}
+      {data: 'bio'}
+    ]
+    # pagingType is optional, if you want full pagination controls.
+    # Check dataTables documentation to learn more about
+    # available options.
+```
+
 ## Advanced usage
+
+### Companion gem: datatables-factory
+
+Everything described in [step 2](#2-build-the-view) and [step 5](#5-wire-up-the-javascript) — writing the
+`<table>` markup by hand, then the matching javascript column definitions — is exactly what
+[datatables-factory](https://github.com/jbox-web/datatables-factory) automates.
+It is a Rails engine + javascript library, maintained by the same author, designed to be used on the
+client side while `ajax-datatables-rails` serves the JSON.
+
+It brings :
+
+* AJAX-powered data loading
+* filters : text, select, multi-select, range and **date range** (the front-end counterpart of the [`:date_range` cond](#daterange-search))
+* checkbox selection with a "select all" toggle
+* context menus for row actions
+* column visibility toggles and CSV export buttons
+* configurable HTTP method (`POST` or `QUERY`), which pairs with the [POST setup](#use-http-post-method-medium) below
+* touch device support and debug logging
+
+Installation, in the `Gemfile` :
+
+```ruby
+gem 'datatables-factory'
+```
+
+and in `package.json` :
+
+```json
+{
+  "dependencies": {
+    "@jbox-web/datatables-factory": "^1.0.0"
+  }
+}
+```
+
+The view then declares the table and its filters in Ruby, instead of raw HTML :
+
+```erb
+<% dt = bootstrap_datatables_for(:users, source: users_path) do |dt| %>
+  <% dt.head_for :name, label: 'Name', sortable: true %>
+  <% dt.search_form do |f| %>
+    <%= f.text_field :name %>
+  <% end %>
+<% end %>
+```
+
+Dropdown / multi-select filters need their possible values : feed them from the datatable class with
+[`additional_data`](#d-additional-data).
+
+See the [datatables-factory README](https://github.com/jbox-web/datatables-factory) for the javascript
+class definition and the `DatatableBase.load_datatables()` initialization.
 
 ### Using view helpers
 
@@ -537,6 +645,44 @@ class MySharedModelDatatable < AjaxDatatablesRails::ActiveRecord
 end
 ```
 
+### How the global search box works
+
+The single search box at the top of the table is handled apart from the per-column search fields :
+
+* its value is split on spaces, each word being one search atom
+* an atom matches if **any** searchable column matches it (`OR`)
+* **all** atoms must match (`AND`) — the classic "all words present, anywhere" behaviour
+* columns that already carry their own per-column search value are excluded from the global search
+* each atom goes through the column's own `cond` / `formatter`, so a `:like` column is matched with `LIKE`, an `:eq` column with `=`, etc...
+
+The final `WHERE` clause is therefore `(per-column searches) AND (global search)`, each part being optional.
+
+### Grouped queries
+
+`get_raw_records` may return a grouped relation. In that case ActiveRecord's `count` returns a Hash
+keyed by group, and the gem reports the **number of groups** in `recordsTotal` / `recordsFiltered`
+(instead of choking on a Hash) :
+
+```ruby
+def get_raw_records
+  User.group(:role)
+end
+```
+
+### Reading the request params
+
+Two helpers are available in your datatable class to inspect the incoming request :
+
+```ruby
+# index of a column in view_columns (the position DataTables uses)
+column_id(:first_name) # => 1
+
+# per-column search value sent by DataTables for that column
+column_data(:first_name) # => 'John'
+```
+
+Useful when `get_raw_records` needs to branch on what the user is filtering on.
+
 ### Columns syntax
 
 You can mix several model in the same datatable.
@@ -652,14 +798,20 @@ See [DefaultScope is evil](https://rails-bestpractices.com/posts/2013/06/15/defa
 
 ### DateRange search
 
-This feature works with [datatables-factory](https://github.com/jbox-web/datatables-factory) (or [yadcf](https://github.com/vedmack/yadcf)).
+This feature works with [datatables-factory](#companion-gem-datatables-factory), which provides a
+ready-made date range filter (or with [yadcf](https://github.com/vedmack/yadcf)).
 
 To enable the date range search, for example `created_at` :
 
 * add a `created_at` `<th>` in your html
 * declare your column in `view_columns` : `created_at: { source: 'Post.created_at', cond: :date_range, delimiter: '-yadcf_delim-' }`
 * add it in `data` : `created_at: record.decorate.created_at`
-* setup yadcf to make `created_at` search field a range
+* setup the front-end filter to send a range for `created_at`
+
+The `delimiter` option must match what the front-end sends : the value received is split in two
+around it (`<range_start><delimiter><range_end>`). It defaults to `-`, and `-yadcf_delim-` is what
+yadcf uses. An empty bound falls back to `01/01/1970` (start) or `9999-12-31 23:59:59` (end), and an
+unparsable bound simply skips the filter instead of raising.
 
 ### Generator Syntax
 
@@ -776,7 +928,31 @@ then in your views :
 <table id="users-datatable" data-source="<%= datatable_users_path(format: :json) %>">
 ```
 
-then in your Coffee/JS :
+then in your JS :
+
+```javascript
+// send params in form data
+$('#posts-datatable').dataTable({
+  "ajax": {
+    "url": $('#posts-datatable').data('source'),
+    "type": "POST"
+  }
+  // ...others options, see [here](#5-wire-up-the-javascript)
+});
+
+// send params as json data
+$('#users-datatable').dataTable({
+  "ajax": {
+    "url": $('#users-datatable').data('source'),
+    "contentType": "application/json",
+    "type": "POST",
+    "data": function(d) { return JSON.stringify(d); }
+  }
+  // ...others options, see [here](#5-wire-up-the-javascript)
+});
+```
+
+or in CoffeeScript :
 
 ```coffee
 # send params in form data
