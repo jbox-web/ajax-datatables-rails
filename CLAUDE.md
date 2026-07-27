@@ -16,9 +16,11 @@ Tests run against a real database selected by the `DB_ADAPTER` env var (default 
 which requires a running Postgres). `sqlite3` is the only zero-setup local adapter:
 
 ```sh
-DB_ADAPTER=sqlite3 bin/rspec                       # full suite, no external DB needed
-DB_ADAPTER=sqlite3 bin/rspec spec/ajax_datatables_rails/base_spec.rb        # one file
-DB_ADAPTER=sqlite3 bin/rspec spec/ajax_datatables_rails/base_spec.rb:42     # one example (by line)
+DB_ADAPTER=postgresql bin/rspec                    # full suite (needs a running Postgres)
+# sqlite3 is NOT in the root Gemfile: it only works through its appraisal gemfile
+BUNDLE_GEMFILE=gemfiles/rails_8.1_with_sqlite3.gemfile DB_ADAPTER=sqlite3 bin/rspec
+DB_ADAPTER=postgresql bin/rspec spec/ajax_datatables_rails/base_spec.rb     # one file
+DB_ADAPTER=postgresql bin/rspec spec/ajax_datatables_rails/base_spec.rb:42  # one example (by line)
 bin/rubocop                                        # lint (must pass in CI)
 ```
 
@@ -64,6 +66,11 @@ Per-adapter SQL type-casting (`CAST(... AS VARCHAR/CHAR/TEXT/...)`) is decided h
 
 ### Cross-cutting details that bite
 
+- **Param types depend on the request encoding.** A form-encoded body reaches Rails as strings
+  only; a JSON body preserves the native JS types, so `order[].column` arrives as an Integer and
+  `search[regex]` as a boolean. Always compare normalised (`.to_s`), never raw: `column_by` and
+  `SimpleSearch#regexp?` both silently dropped behaviour for JSON clients — a 200 with unsorted
+  rows and no error anywhere. `sample_params_json_native` covers that shape in the specs.
 - **Adapter awareness is pervasive.** `db_adapter` (auto-detected from the app's AR config in
   `Base.default_db_adapter`, overridable via the `db_adapter` class_attribute) drives both the
   type-cast in `Column` and the `NULLS LAST` SQL dialect in `SimpleOrder`. Any change touching SQL
